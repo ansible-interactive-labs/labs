@@ -122,7 +122,17 @@
           "explanation": { "type": "string", "minLength": 20 },
           "expected": { "type": "string", "minLength": 10 },
           "note": { "type": "string" },
-          "troubleshooting": { "type": "string", "minLength": 10 }
+          "troubleshooting": { "type": "string", "minLength": 10 },
+          "media": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "source", "transcript"],
+            "properties": {
+              "type": { "const": "terminal" },
+              "source": { "type": "string", "pattern": "^/demos/.+\\.cast$" },
+              "transcript": { "type": "string", "pattern": "^/demos/.+\\.txt$" }
+            }
+          }
         }
       }
     },

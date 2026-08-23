@@ -1,0 +1,9 @@
+[learner@demo ~]$ cat /etc/redhat-release
+Red Hat Enterprise Linux release 9.8 (Plow)
+[learner@demo ~]$ uname -m
+aarch64
+[learner@demo ~]$ hostnamectl --static
+demo.ansible.com
+[learner@demo ~]$ rpm -q ansible-core
+package ansible-core is not installed
+[learner@demo ~]$

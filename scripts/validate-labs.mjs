@@ -8,6 +8,8 @@ const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const imagePattern = /^\/demos\/.+\.(png|jpe?g|webp)$/i;
 const maxImageBytes = 2 * 1024 * 1024;
 const maxLabImageBytes = 12 * 1024 * 1024;
+const maxRecordingBytes = 1024 * 1024;
+const sensitiveRecordingPattern = /(?:VNC|SSH) Password|192\.168\.\d+\.\d+|password\s*=|\brajat\b|\[sudo\] password|machine-id|boot-id/i;
 const errors = [];
 const warnings = [];
 
@@ -27,6 +29,7 @@ const titles = new Set();
 const orders = new Set();
 let totalSteps = 0;
 let totalImages = 0;
+let totalRecordings = 0;
 
 for (const directory of directories) {
   const source = join(labsRoot, directory, "lab.json");
@@ -144,6 +147,30 @@ for (const directory of directories) {
       if (!nonEmptyString(step[key])) fail(sourceName, `${key} is required`);
     });
     if ((step.alt ?? "").length < 10) fail(sourceName, "alt text must be descriptive");
+    if (step.media) {
+      if (step.media.type !== "terminal") fail(sourceName, `unsupported media type: ${step.media.type ?? "(missing)"}`);
+      const assets = [
+        ["terminal source", step.media.source, /\.cast$/i],
+        ["transcript", step.media.transcript, /\.txt$/i],
+      ];
+      assets.forEach(([label, asset, extension]) => {
+        if (!nonEmptyString(asset) || !asset.startsWith("/demos/") || !extension.test(asset)) {
+          fail(sourceName, `${label} must be a matching file path under /demos`);
+          return;
+        }
+        const file = join(publicRoot, asset.replace(/^\//, ""));
+        if (!existsSync(file)) {
+          fail(sourceName, `${label} does not exist: ${asset}`);
+          return;
+        }
+        if (label === "terminal source" && statSync(file).size > maxRecordingBytes) {
+          fail(sourceName, `${label} exceeds the 1 MiB asset budget: ${asset}`);
+        }
+        const contents = readFileSync(file, "utf8");
+        if (sensitiveRecordingPattern.test(contents)) fail(sourceName, `possible credential, local address, or host identifier found in ${label}`);
+      });
+      totalRecordings += 1;
+    }
   });
   totalSteps += lab.steps?.length ?? 0;
 
@@ -163,4 +190,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Validated ${directories.length} lab(s), ${totalSteps} step(s), and ${totalImages} referenced image(s).`);
+console.log(`Validated ${directories.length} lab(s), ${totalSteps} step(s), ${totalImages} referenced image(s), and ${totalRecordings} terminal replay(s).`);

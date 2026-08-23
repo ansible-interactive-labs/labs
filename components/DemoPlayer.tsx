@@ -6,6 +6,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { Lab } from "@/content/labs/types";
+import TerminalReplay from "@/components/TerminalReplay";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -150,9 +151,20 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
 
       <div className="player-stage">
         <div className="stage-media">
-          <img key={step.image} src={`${basePath}${step.image}`} alt={step.alt} />
+          {step.media?.type === "terminal" ? (
+            <TerminalReplay
+              key={step.media.source}
+              source={step.media.source}
+              transcript={step.media.transcript}
+              title={step.title}
+              fallbackImage={step.image}
+              fallbackAlt={step.alt}
+            />
+          ) : (
+            <img key={step.image} src={`${basePath}${step.image}`} alt={step.alt} />
+          )}
           <span className="stage-number">{String(stepIndex + 1).padStart(2, "0")}</span>
-          <a className="image-link" href={`${basePath}${step.image}`} target="_blank" rel="noreferrer">Open full-size screenshot ↗</a>
+          {step.media?.type !== "terminal" && <a className="image-link" href={`${basePath}${step.image}`} target="_blank" rel="noreferrer">Open full-size screenshot ↗</a>}
         </div>
         <aside className="stage-guide">
           <p className="step-label">Step {stepIndex + 1} of {lab.steps.length} · {step.label}</p>

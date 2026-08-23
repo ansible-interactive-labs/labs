@@ -1,0 +1,16 @@
+[learner@demo ~]$ sudo rhc status
+Connection status for demo.ansible.com:
+
+● Connected to Red Hat Subscription Management
+● Connected to Red Hat Insights
+● The Remote Host Configuration daemon is inactive
+
+Manage your connected systems: https://red.ht/connector
+[learner@demo ~]$ sudo subscription-manager status
++-------------------------------------------+
+   System Status Details
++-------------------------------------------+
+Overall Status: Registered
+Content Access Mode is set to Simple Content Access. This host has access to content, regardless of subscription status.
+
+[learner@demo ~]$

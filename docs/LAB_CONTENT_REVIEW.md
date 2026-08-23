@@ -10,7 +10,7 @@ For every new or substantially changed lab, provide the owner with a short repor
 2. **Missing or unclear content:** Steps, explanations, prerequisites, expected results, recovery guidance, verification, or cleanup that should be added.
 3. **Comparison opportunities:** Terms or tools learners may confuse and how the lab will distinguish them.
 4. **Accuracy and currency:** Environment tested, version-sensitive statements, and official references checked.
-5. **Learner experience:** Mobile, keyboard, screenshot, command-copying, progress, and accessibility observations.
+5. **Learner experience:** Mobile, keyboard, replay, transcript, screenshot-fallback, command-copying, progress, and accessibility observations.
 
 If no gaps are found, say so explicitly rather than omitting the review.
 
@@ -20,7 +20,9 @@ Review each lab through all of these lenses:
 
 - The title, objective, outcomes, and final verification describe the same skill.
 - Prerequisites state the operating system, privileges, access, accounts or subscriptions, connectivity, and starting state.
-- No setup action is implied or hidden between screenshots.
+- No setup action is implied or hidden between recorded steps.
+- Every terminal replay has a readable transcript and a verified screenshot fallback.
+- Credential entry and other secrets are excluded rather than simulated in the recording.
 - Every step explains what the command does, why it is needed, what success looks like, and what to check when the result differs.
 - Commands are safe to copy and do not expose credentials, local addresses, account identifiers, or destructive shortcuts.
 - Version-dependent output is identified so learners do not expect an exact match unnecessarily.

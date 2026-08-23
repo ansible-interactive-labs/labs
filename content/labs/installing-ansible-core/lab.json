@@ -7,8 +7,8 @@
   "description": "Register RHEL, inspect subscribed repositories, install the supported package, and prove that Ansible can execute a module.",
   "coverImage": "/demos/installing-ansible-core/assets/06-package-and-version.png",
   "coverAlt": "RHEL terminal showing the installed ansible-core package and Ansible version",
-  "duration": "8 min",
-  "durationMinutes": 8,
+  "duration": "12 min",
+  "durationMinutes": 12,
   "difficulty": "Beginner",
   "topic": "Foundation",
   "platform": "RHEL 9",
@@ -85,23 +85,43 @@
     }
   ],
   "verified": {
-    "date": "August 22, 2026",
-    "dateISO": "2026-08-22",
+    "date": "August 23, 2026",
+    "dateISO": "2026-08-23",
     "os": "Red Hat Enterprise Linux 9",
     "architecture": "aarch64",
     "package": "ansible-core 2.14.18-3.el9_8.1"
   },
   "steps": [
     {
-      "label": "Prepare",
-      "title": "Start from a current RHEL 9 system",
+      "label": "Verify",
+      "title": "Verify the RHEL 9 starting environment",
       "image": "/demos/installing-ansible-core/assets/01-clean-rhel-desktop.png",
       "alt": "Clean Red Hat Enterprise Linux 9 desktop with a terminal ready for commands",
-      "command": "sudo dnf upgrade --refresh",
-      "explanation": "Begin with a fully updated RHEL 9 control node. Updating first reduces dependency conflicts and ensures the installation uses current package metadata and security fixes.",
-      "expected": "DNF reports that the system is up to date, or completes the available updates.",
-      "note": "The demonstration VM was fully upgraded before this workflow was recorded.",
-      "troubleshooting": "If DNF cannot reach Red Hat, confirm internet access, DNS resolution, and the system clock before continuing."
+      "command": "cat /etc/redhat-release\nuname -m\nhostnamectl --static\nrpm -q ansible-core",
+      "explanation": "Confirm the operating system, processor architecture, hostname, and clean package state before making changes. This recording uses RHEL 9 on aarch64; your architecture and hostname may differ.",
+      "expected": "The host reports RHEL 9, a supported architecture, its own hostname, and that ansible-core is not installed.",
+      "note": "The demonstration VM was fully upgraded before recording. On an existing system, rpm may report an installed package; compare its version before continuing.",
+      "troubleshooting": "If the system is not RHEL 9, stop and use installation guidance for that operating system. If ansible-core is already installed, this lab can still be used to inspect and verify it.",
+      "media": {
+        "type": "terminal",
+        "source": "/demos/installing-ansible-core/recordings/01-verify-rhel.cast",
+        "transcript": "/demos/installing-ansible-core/recordings/01-verify-rhel.txt"
+      }
+    },
+    {
+      "label": "Baseline",
+      "title": "Confirm the disconnected starting state",
+      "image": "/demos/installing-ansible-core/assets/01-clean-rhel-desktop.png",
+      "alt": "RHEL terminal showing that the system is not yet connected or registered",
+      "command": "sudo rhc status\nsudo subscription-manager status",
+      "explanation": "Check both clients before registration. rhc reports the host's connections to Red Hat services, while subscription-manager reports its content-subscription state.",
+      "expected": "The clean lab VM is not connected through rhc and is not registered with Subscription Management.",
+      "troubleshooting": "If the system is already registered, do not disconnect it just to match the recording. Verify the enabled repositories and continue at the repository step.",
+      "media": {
+        "type": "terminal",
+        "source": "/demos/installing-ansible-core/recordings/02-registration-status.cast",
+        "transcript": "/demos/installing-ansible-core/recordings/02-registration-status.txt"
+      }
     },
     {
       "label": "Register",
@@ -109,30 +129,46 @@
       "image": "/demos/installing-ansible-core/assets/02-registration-complete.png",
       "alt": "RHEL terminal confirming successful Red Hat Subscription Management registration",
       "command": "sudo rhc connect",
-      "explanation": "The rhc client connects the host to Red Hat services. Enter your Red Hat account credentials only at the interactive prompts—never place them directly in a shell command or script.",
-      "expected": "subscription-manager reports Overall Status: Registered and Simple Content Access is enabled.",
-      "note": "A separate Ansible Automation Platform subscription is not required for this RHEL-provided package. Red Hat Insights connectivity is also not required.",
-      "troubleshooting": "If registration fails, verify the account has an active RHEL entitlement and check network, DNS, proxy, and system-time settings. Then run subscription-manager status before retrying."
+      "explanation": "The rhc client prompts interactively for your Red Hat account and connects the host to Subscription Management and Insights. Enter credentials only at those prompts—never place them in a command, recording, or script.",
+      "expected": "rhc reports connected services, and subscription-manager reports Overall Status: Registered with Simple Content Access.",
+      "note": "The replay omits credential entry and begins with safe post-registration checks. An inactive rhcd service does not prevent DNF package installation; rhcd supports optional remote configuration features.",
+      "troubleshooting": "If no credential prompt appears, make sure rhc connect is running in an interactive terminal. If registration fails, verify network, DNS, proxy, system time, and the account's RHEL entitlement.",
+      "media": {
+        "type": "terminal",
+        "source": "/demos/installing-ansible-core/recordings/03-register.cast",
+        "transcript": "/demos/installing-ansible-core/recordings/03-register.txt"
+      }
     },
     {
       "label": "Repositories",
       "title": "Verify the enabled repositories",
       "image": "/demos/installing-ansible-core/assets/03-enabled-repositories.png",
       "alt": "DNF output listing enabled RHEL BaseOS and AppStream repositories",
-      "command": "sudo dnf repolist --enabled",
-      "explanation": "BaseOS supplies the operating-system foundation. AppStream contains ansible-core and several of its dependencies. Repository names differ by architecture; this captured VM uses aarch64 content.",
+      "command": "sudo subscription-manager repos --list-enabled\nsudo dnf repolist --enabled",
+      "explanation": "subscription-manager shows the repositories enabled in the Red Hat subscription configuration. dnf repolist shows the enabled repositories DNF can currently use. BaseOS supplies the operating-system foundation; AppStream contains ansible-core and several dependencies.",
       "expected": "Both the RHEL 9 BaseOS and AppStream RPM repositories appear as enabled.",
-      "troubleshooting": "If either repository is missing, refresh subscription data, then enable the architecture-specific BaseOS and AppStream repository IDs shown in the troubleshooting guide."
+      "note": "Repository IDs include the architecture. This recording uses aarch64; x86_64 systems show corresponding x86_64 repository IDs.",
+      "troubleshooting": "If either repository is missing, refresh subscription data, then enable the architecture-specific BaseOS and AppStream repository IDs shown in the troubleshooting guide.",
+      "media": {
+        "type": "terminal",
+        "source": "/demos/installing-ansible-core/recordings/04-repositories.cast",
+        "transcript": "/demos/installing-ansible-core/recordings/04-repositories.txt"
+      }
     },
     {
       "label": "Inspect",
       "title": "Inspect the supported package",
       "image": "/demos/installing-ansible-core/assets/04-package-information.png",
       "alt": "DNF repoquery output showing ansible-core package information",
-      "command": "sudo dnf repoquery --latest-limit 1 --info ansible-core",
+      "command": "sudo dnf list --available ansible-core\nsudo dnf repoquery --latest-limit 1 --info ansible-core",
       "explanation": "Inspecting the package before installation confirms its version, architecture, source repository, size, license, and purpose. The exact version will change as Red Hat publishes updates.",
       "expected": "The latest ansible-core build is available from the RHEL 9 AppStream repository.",
-      "troubleshooting": "If DNF reports no matching package, verify that AppStream is enabled, clean the DNF metadata, and rebuild the cache."
+      "troubleshooting": "If DNF reports no matching package, verify that AppStream is enabled, clean the DNF metadata, and rebuild the cache.",
+      "media": {
+        "type": "terminal",
+        "source": "/demos/installing-ansible-core/recordings/05-package-info.cast",
+        "transcript": "/demos/installing-ansible-core/recordings/05-package-info.txt"
+      }
     },
     {
       "label": "Install",
@@ -142,17 +178,43 @@
       "command": "sudo dnf install ansible-core",
       "explanation": "DNF resolves and installs ansible-core plus required Python, SSH, and Git dependencies. Review the transaction summary before confirming the installation in your environment.",
       "expected": "The transaction finishes with Complete! and lists ansible-core among the installed packages.",
-      "troubleshooting": "If dependency resolution fails, refresh package metadata and review the transaction without disabling signature checks or forcing package removal."
+      "troubleshooting": "If dependency resolution fails, refresh package metadata and review the transaction without disabling signature checks or forcing package removal.",
+      "media": {
+        "type": "terminal",
+        "source": "/demos/installing-ansible-core/recordings/06-install.cast",
+        "transcript": "/demos/installing-ansible-core/recordings/06-install.txt"
+      }
     },
     {
       "label": "Validate",
       "title": "Confirm the package and runtime",
       "image": "/demos/installing-ansible-core/assets/06-package-and-version.png",
       "alt": "Terminal output showing the ansible-core RPM and Ansible version details",
-      "command": "rpm -q ansible-core\ndnf list --installed ansible-core\nansible --version",
-      "explanation": "Use the RPM and DNF views to confirm installation provenance, then inspect the Ansible runtime. The version output also identifies the active configuration file, Python runtime, module paths, and collection paths.",
+      "command": "rpm -q ansible-core\nrpm -V ansible-core && echo \"Package verification: passed\"\nsudo dnf list --installed ansible-core\ncommand -v ansible\ncommand -v ansible-playbook\nansible --version",
+      "explanation": "Confirm the installed RPM, verify that its packaged files are unchanged, locate both primary command-line tools, and inspect the runtime. The version output identifies the active configuration file, Python runtime, module paths, and collection paths.",
       "expected": "All commands return successfully and ansible --version reports the installed core release.",
-      "troubleshooting": "If the RPM is installed but the shell cannot find ansible, start a new terminal or run hash -r, then check /usr/bin/ansible."
+      "troubleshooting": "If rpm -V prints file differences, investigate them before relying on the installation. If the shell cannot find ansible, start a new terminal or run hash -r, then check /usr/bin/ansible.",
+      "media": {
+        "type": "terminal",
+        "source": "/demos/installing-ansible-core/recordings/07-package-runtime.cast",
+        "transcript": "/demos/installing-ansible-core/recordings/07-package-runtime.txt"
+      }
+    },
+    {
+      "label": "Explore",
+      "title": "Inspect configuration and module help",
+      "image": "/demos/installing-ansible-core/assets/06-package-and-version.png",
+      "alt": "Terminal showing Ansible configuration and ping module documentation",
+      "command": "PAGER=cat ansible-config dump --only-changed\nPAGER=cat ansible-doc -s ansible.builtin.ping",
+      "explanation": "Inspect non-default configuration and confirm that built-in module documentation is available. The fully qualified collection name ansible.builtin.ping identifies the module unambiguously.",
+      "expected": "Ansible reports its active configuration file and displays the argument summary for ansible.builtin.ping.",
+      "note": "PAGER=cat keeps the output non-interactive for this short inspection. Omit it when you prefer paged output in a normal terminal.",
+      "troubleshooting": "If ansible-doc cannot find the module, confirm ansible-core is installed and that the Ansible executable and Python environment come from the expected RHEL package.",
+      "media": {
+        "type": "terminal",
+        "source": "/demos/installing-ansible-core/recordings/08-config-docs.cast",
+        "transcript": "/demos/installing-ansible-core/recordings/08-config-docs.txt"
+      }
     },
     {
       "label": "Test",
@@ -163,7 +225,12 @@
       "explanation": "A version check proves that the executable starts. This ad hoc command goes further: it executes a real Ansible module locally without requiring inventory or another managed host.",
       "expected": "localhost returns SUCCESS with ping: pong and changed: false.",
       "note": "You now have a working Ansible control node and can continue with inventories, playbooks, and collections.",
-      "troubleshooting": "An implicit-inventory warning can be normal for this localhost-only test. The important result is localhost | SUCCESS and ping: pong."
+      "troubleshooting": "An implicit-inventory warning can be normal for this localhost-only test. The important result is localhost | SUCCESS and ping: pong.",
+      "media": {
+        "type": "terminal",
+        "source": "/demos/installing-ansible-core/recordings/09-smoke-test.cast",
+        "transcript": "/demos/installing-ansible-core/recordings/09-smoke-test.txt"
+      }
     }
   ],
   "troubleshooting": [
@@ -192,6 +259,8 @@
     "subscription-manager reports that the system is registered",
     "BaseOS and AppStream are enabled",
     "rpm -q ansible-core returns the installed package",
+    "rpm -V ansible-core reports no package-file differences",
+    "ansible-config and ansible-doc return usable output",
     "ansible --version starts successfully",
     "The localhost ping test returns SUCCESS and ping: pong"
   ],

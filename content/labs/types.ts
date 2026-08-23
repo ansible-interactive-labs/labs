@@ -8,6 +8,11 @@ export type LabStep = {
   expected: string;
   note?: string;
   troubleshooting: string;
+  media?: {
+    type: "terminal";
+    source: string;
+    transcript: string;
+  };
 };
 
 export type LabTroubleshooting = {

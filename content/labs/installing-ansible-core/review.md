@@ -1,10 +1,10 @@
 # Installing ansible-core content review
 
-Reviewed: August 22, 2026
+Reviewed: August 23, 2026
 
 ## Readiness
 
-Ready with recommended enhancements. The current sequence reaches the stated outcome safely and includes prerequisites, installation, package inspection, functional verification, troubleshooting, and cleanup.
+Ready. The complete sequence was re-recorded on a reset RHEL 9 VM and reaches the stated outcome safely with prerequisites, installation, package inspection, functional verification, troubleshooting, transcripts, and cleanup.
 
 ## Findings
 
@@ -13,11 +13,12 @@ Implemented in this review:
 - Added a source-backed comparison of the RHEL-provided and upstream community `ansible-core` delivery models.
 - Explained that the community package named `ansible` is broader than the minimal `ansible-core` runtime.
 
-Recommended when the VM is next captured:
-
-- Add an initial environment-confirmation capture using `cat /etc/redhat-release` and `uname -m` so learners verify their own starting system rather than relying only on the lab metadata.
-- Show `subscription-manager status` after `rhc connect` as an explicit registration verification.
-- Show `subscription-manager repos --list-enabled` alongside `dnf repolist --enabled`, and explain that the first reports the subscription configuration while the second reports repositories available to DNF.
+- Added an initial environment check for the RHEL release, architecture, hostname, and pre-install package state.
+- Added pre-registration and post-registration checks with both `rhc status` and `subscription-manager status`.
+- Added both repository views and explained the difference between subscription configuration and DNF availability.
+- Added package-file verification, command discovery, configuration inspection, module documentation, and a functional localhost test.
+- Replaced static-only evidence with sanitized terminal replays, text transcripts, and screenshot fallbacks.
+- Clarified that an inactive `rhcd` service does not block DNF package installation.
 
 No blocking omissions were found in the install, package inspection, runtime validation, functional smoke test, troubleshooting, or cleanup sequence.
 
@@ -30,5 +31,6 @@ The likely confusion point is RHEL-provided `ansible-core`, upstream community `
 - Commands have explanations, expected results, and recovery guidance.
 - Credentials are entered only at the interactive prompt and are not stored in lab content.
 - Version-sensitive output is identified.
-- Screenshot descriptions state the evidence shown.
+- Replays show command execution and output while screenshot fallbacks preserve access when playback is unavailable.
+- Every replay has a plain-text transcript, remains paused until the learner starts it, and contains no credentials.
 - The comparison table supports keyboard focus and horizontal scrolling on narrow screens.

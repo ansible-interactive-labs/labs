@@ -1,0 +1,6 @@
+[learner@demo ~]$ ansible localhost -m ansible.builtin.ping -c local
+localhost | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+[learner@demo ~]$

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import 'asciinema-player/dist/bundle/asciinema-player.css';
 import './globals.css';
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';

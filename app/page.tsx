@@ -71,9 +71,9 @@ export default function Home() {
         <div className="standard-grid">
           {[
             ["01", "Verified", "Tested OS, architecture, package details, and a visible last-verified date."],
-            ["02", "Accessible", "Keyboard navigation, meaningful screenshot descriptions, strong contrast, and reduced motion."],
+            ["02", "Accessible", "Keyboard navigation, terminal transcripts, meaningful image descriptions, strong contrast, and reduced motion."],
             ["03", "Recoverable", "Per-step diagnostics, common-issue guidance, completion checks, and optional cleanup."],
-            ["04", "Portable", "Responsive on phones and tablets, with full-size screenshots and saved local progress."]
+            ["04", "Portable", "Responsive on phones and tablets, with terminal replays, screenshot fallbacks, and saved local progress."]
           ].map(([number, title, detail]) => (
             <article key={number}><span>{number}</span><h3>{title}</h3><p>{detail}</p></article>
           ))}
