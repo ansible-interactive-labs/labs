@@ -1,9 +1,11 @@
 import Link from "next/link";
 import DemoCatalog from "@/components/DemoCatalog";
-import { labs } from "@/content/labs";
+import { getLabSummaries } from "@/content/labs/loader";
 
 export default function Home() {
+  const labs = getLabSummaries();
   const firstLab = labs.find((lab) => lab.status === "Available") ?? labs[0];
+  if (!firstLab) throw new Error("At least one lab is required");
 
   return (
     <main id="main-content">

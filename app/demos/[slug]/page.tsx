@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import DemoPlayer from "@/components/DemoPlayer";
-import { getLab, labs } from "@/content/labs";
+import { getLab, getLabSlugs } from "@/content/labs/loader";
 
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return labs.map((lab) => ({ slug: lab.slug }));
+  return getLabSlugs().map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {

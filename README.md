@@ -28,6 +28,7 @@ Open <http://localhost:3000>.
 ## Build the static site
 
 ```bash
+pnpm validate:labs
 pnpm build
 ```
 
@@ -47,12 +48,23 @@ The workflow detects whether the repository is a root site (`owner.github.io`) o
 
 ## Add another demo
 
-1. Create `public/demos/<demo-slug>/assets/`.
-2. Add clean 16:9 screenshots with sequential names such as `01-prepare.png`.
-3. Add one complete `Lab` record to `content/labs.ts`. The catalog and dedicated static route are generated from that record.
+1. Copy an existing `content/labs/<demo-slug>/lab.json` into a new directory and update every field. The included `schema.json` provides editor validation.
+2. Create `public/demos/<demo-slug>/assets/`.
+3. Add clean 16:9 screenshots with sequential names such as `01-prepare.png` and reference them from the lab JSON.
 4. Include a command, plain-language explanation, expected result, and troubleshooting guidance for every meaningful action.
 5. Record the tested OS, architecture, package or image version, and verification date.
-6. Run `pnpm lint` and `pnpm build`, then test the exported root and dedicated demo route over local HTTP.
+6. Run `pnpm validate:labs`, `pnpm lint`, and `pnpm build`, then test the exported root and dedicated demo route over local HTTP.
+
+No central registry or route file needs to be edited. The build discovers each `lab.json`, validates required content and assets, creates its static route, and adds it to the sitemap automatically.
+
+## Architecture for a large lab library
+
+- Each lab is an independent content unit under `content/labs/<slug>/lab.json`, so contributors do not edit a growing monolithic file.
+- The homepage ships compact `LabSummary` records only. Full steps, commands, troubleshooting, and completion content are sent only on that lab's dedicated route.
+- The catalog searches and sorts the summaries, but renders only 12 cards initially and reveals additional groups on demand.
+- Build-time validation rejects duplicate slugs, invalid metadata, missing screenshots, screenshots above the 2 MiB budget, incomplete instructional fields, and likely private data.
+- Static routes and `sitemap.xml` are generated from discovered labs. Adding lab 101 follows exactly the same workflow as adding lab 2.
+- Lab JSON follows the versioned schema in `content/labs/schema.json`, allowing future content migrations without coupling content to UI components.
 
 ## Lab publishing standard
 

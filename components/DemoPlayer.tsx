@@ -5,7 +5,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import type { Lab } from "@/content/labs";
+import type { Lab } from "@/content/labs/types";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 

@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ansible-interactive-labs.github.io/labs/lab.schema.json",
+  "title": "Ansible Automation Lab",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "slug", "title", "shortDescription", "description",
+    "coverImage", "coverAlt", "duration", "durationMinutes", "difficulty",
+    "topic", "platform", "status", "publishedOrder", "tags", "outcomes",
+    "prerequisites", "verified", "steps", "troubleshooting", "completion", "cleanup"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": 1 },
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "title": { "type": "string", "minLength": 3 },
+    "shortDescription": { "type": "string", "minLength": 10 },
+    "description": { "type": "string", "minLength": 20 },
+    "coverImage": { "type": "string", "pattern": "^/demos/.+\\.(png|jpg|jpeg|webp)$" },
+    "coverAlt": { "type": "string", "minLength": 10 },
+    "duration": { "type": "string", "minLength": 3 },
+    "durationMinutes": { "type": "integer", "minimum": 1 },
+    "difficulty": { "enum": ["Beginner", "Intermediate", "Advanced"] },
+    "topic": { "type": "string", "minLength": 2 },
+    "platform": { "type": "string", "minLength": 2 },
+    "status": { "enum": ["Available", "Coming soon"] },
+    "publishedOrder": { "type": "integer", "minimum": 0 },
+    "tags": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 2 } },
+    "outcomes": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 5 } },
+    "prerequisites": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "value", "detail"],
+        "properties": {
+          "label": { "type": "string", "minLength": 2 },
+          "value": { "type": "string", "minLength": 2 },
+          "detail": { "type": "string", "minLength": 5 },
+          "href": { "type": "string", "format": "uri" }
+        }
+      }
+    },
+    "verified": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["date", "dateISO", "os", "architecture", "package"],
+      "properties": {
+        "date": { "type": "string" },
+        "dateISO": { "type": "string", "format": "date" },
+        "os": { "type": "string" },
+        "architecture": { "type": "string" },
+        "package": { "type": "string" }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "title", "image", "alt", "explanation", "expected", "troubleshooting"],
+        "properties": {
+          "label": { "type": "string", "minLength": 2 },
+          "title": { "type": "string", "minLength": 5 },
+          "image": { "type": "string", "pattern": "^/demos/.+\\.(png|jpg|jpeg|webp)$" },
+          "alt": { "type": "string", "minLength": 10 },
+          "command": { "type": "string" },
+          "explanation": { "type": "string", "minLength": 20 },
+          "expected": { "type": "string", "minLength": 10 },
+          "note": { "type": "string" },
+          "troubleshooting": { "type": "string", "minLength": 10 }
+        }
+      }
+    },
+    "troubleshooting": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "command", "detail"],
+        "properties": {
+          "title": { "type": "string" },
+          "command": { "type": "string" },
+          "detail": { "type": "string" }
+        }
+      }
+    },
+    "completion": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 5 } },
+    "cleanup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["explanation", "command"],
+      "properties": {
+        "explanation": { "type": "string", "minLength": 10 },
+        "command": { "type": "string", "minLength": 3 }
+      }
+    }
+  }
+}
