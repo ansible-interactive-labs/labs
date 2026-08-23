@@ -44,6 +44,46 @@
       "href": "https://developers.redhat.com/articles/faqs-no-cost-red-hat-enterprise-linux"
     }
   ],
+  "comparisons": [
+    {
+      "title": "RHEL-provided ansible-core vs upstream community ansible-core",
+      "introduction": "The command-line experience is intentionally familiar in both cases, but the delivery channel determines who packages it, how updates arrive, and where support comes from.",
+      "columns": ["RHEL-provided package", "Upstream community release"],
+      "rows": [
+        {
+          "aspect": "Source and installation",
+          "values": ["Installed from the RHEL AppStream repository with DNF.", "Usually installed from Python Package Index with pip or another Python packaging tool."]
+        },
+        {
+          "aspect": "Maintenance model",
+          "values": ["Built, tested, patched, and delivered according to the RHEL package lifecycle.", "Released by the Ansible community on the upstream project's release schedule."]
+        },
+        {
+          "aspect": "Version cadence",
+          "values": ["May remain on an older core version while receiving selected fixes through RHEL updates.", "New upstream features and releases generally become available sooner."]
+        },
+        {
+          "aspect": "Support path",
+          "values": ["Covered through the applicable RHEL subscription and Red Hat support policy.", "Help comes from upstream documentation and community channels unless another vendor support agreement applies."]
+        },
+        {
+          "aspect": "Not the same as the ansible package",
+          "values": ["This lab installs the minimal ansible-core runtime supplied by RHEL.", "The community package named ansible combines ansible-core with a curated set of community collections; ansible-core alone is the smaller runtime."]
+        }
+      ],
+      "takeaway": "Use the RHEL package when you want RHEL-managed installation and lifecycle alignment. Choose an upstream installation when you specifically need a newer community release and can manage its Python environment and support model.",
+      "sources": [
+        {
+          "label": "Ansible installation guide",
+          "href": "https://docs.ansible.com/projects/ansible/latest/installation_guide/intro_installation.html"
+        },
+        {
+          "label": "RHEL 9 package manifest",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/package_manifest/index"
+        }
+      ]
+    }
+  ],
   "verified": {
     "date": "August 22, 2026",
     "dateISO": "2026-08-22",

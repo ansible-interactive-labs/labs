@@ -23,6 +23,21 @@ export type LabPrerequisite = {
   href?: string;
 };
 
+export type LabComparison = {
+  title: string;
+  introduction: string;
+  columns: [string, string];
+  rows: Array<{
+    aspect: string;
+    values: [string, string];
+  }>;
+  takeaway: string;
+  sources: Array<{
+    label: string;
+    href: string;
+  }>;
+};
+
 export type Lab = {
   schemaVersion: 1;
   slug: string;
@@ -41,6 +56,7 @@ export type Lab = {
   tags: string[];
   outcomes: string[];
   prerequisites: LabPrerequisite[];
+  comparisons?: LabComparison[];
   verified: {
     date: string;
     dateISO: string;

@@ -30,6 +30,15 @@ let totalImages = 0;
 
 for (const directory of directories) {
   const source = join(labsRoot, directory, "lab.json");
+  const reviewSource = join(labsRoot, directory, "review.md");
+  if (!existsSync(reviewSource)) {
+    fail(directory, "review.md is required; complete the instructional audit before publishing");
+  } else {
+    const review = readFileSync(reviewSource, "utf8");
+    ["## Readiness", "## Findings", "## Comparison review", "## Learner experience"].forEach((heading) => {
+      if (!review.includes(heading)) fail(directory, `review.md must include ${heading}`);
+    });
+  }
   let lab;
   try {
     lab = JSON.parse(readFileSync(source, "utf8"));
@@ -82,6 +91,27 @@ for (const directory of directories) {
   (lab.troubleshooting ?? []).forEach((item, index) => {
     ["title", "command", "detail"].forEach((key) => {
       if (!nonEmptyString(item?.[key])) fail(directory, `troubleshooting[${index}].${key} is required`);
+    });
+  });
+  (lab.comparisons ?? []).forEach((comparison, index) => {
+    const sourceName = `${directory} comparison ${index + 1}`;
+    ["title", "introduction", "takeaway"].forEach((key) => {
+      if (!nonEmptyString(comparison?.[key])) fail(sourceName, `${key} is required`);
+    });
+    if (!Array.isArray(comparison?.columns) || comparison.columns.length !== 2 || comparison.columns.some((item) => !nonEmptyString(item))) {
+      fail(sourceName, "columns must contain exactly two labels");
+    }
+    if (!Array.isArray(comparison?.rows) || comparison.rows.length < 2) fail(sourceName, "at least two comparison rows are required");
+    (comparison?.rows ?? []).forEach((row, rowIndex) => {
+      if (!nonEmptyString(row?.aspect)) fail(sourceName, `rows[${rowIndex}].aspect is required`);
+      if (!Array.isArray(row?.values) || row.values.length !== 2 || row.values.some((item) => !nonEmptyString(item))) {
+        fail(sourceName, `rows[${rowIndex}].values must contain exactly two explanations`);
+      }
+    });
+    if (!Array.isArray(comparison?.sources) || comparison.sources.length === 0) fail(sourceName, "at least one official source is required");
+    (comparison?.sources ?? []).forEach((source, sourceIndex) => {
+      if (!nonEmptyString(source?.label)) fail(sourceName, `sources[${sourceIndex}].label is required`);
+      try { new URL(source?.href); } catch { fail(sourceName, `sources[${sourceIndex}].href must be a valid URL`); }
     });
   });
 

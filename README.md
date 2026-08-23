@@ -53,7 +53,9 @@ The workflow detects whether the repository is a root site (`owner.github.io`) o
 3. Add clean 16:9 screenshots with sequential names such as `01-prepare.png` and reference them from the lab JSON.
 4. Include a command, plain-language explanation, expected result, and troubleshooting guidance for every meaningful action.
 5. Record the tested OS, architecture, package or image version, and verification date.
-6. Run `pnpm validate:labs`, `pnpm lint`, and `pnpm build`, then test the exported root and dedicated demo route over local HTTP.
+6. Complete the instructional audit in `docs/LAB_CONTENT_REVIEW.md`, save the findings as `content/labs/<demo-slug>/review.md`, and share them even when no gaps are found.
+7. Add a source-backed `comparisons` block whenever learners may confuse related tools, packages, commands, or support models.
+8. Run `pnpm validate:labs`, `pnpm lint`, and `pnpm build`, then test the exported root and dedicated demo route over local HTTP.
 
 No central registry or route file needs to be edited. The build discovers each `lab.json`, validates required content and assets, creates its static route, and adds it to the sitemap automatically.
 
@@ -63,8 +65,10 @@ No central registry or route file needs to be edited. The build discovers each `
 - The homepage ships compact `LabSummary` records only. Full steps, commands, troubleshooting, and completion content are sent only on that lab's dedicated route.
 - The catalog searches and sorts the summaries, but renders only 12 cards initially and reveals additional groups on demand.
 - Build-time validation rejects duplicate slugs, invalid metadata, missing screenshots, screenshots above the 2 MiB budget, incomplete instructional fields, and likely private data.
+- Every lab directory must contain a review report, preventing a structurally valid but instructionally incomplete lab from entering the build unnoticed.
 - Static routes and `sitemap.xml` are generated from discovered labs. Adding lab 101 follows exactly the same workflow as adding lab 2.
 - Lab JSON follows the versioned schema in `content/labs/schema.json`, allowing future content migrations without coupling content to UI components.
+- Optional comparison records render as accessible, mobile-scrollable tables with a practical decision takeaway and official references.
 
 ## Lab publishing standard
 
