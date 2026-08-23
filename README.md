@@ -6,7 +6,7 @@ The first demo covers installing `ansible-core` on RHEL 9:
 
 1. Prepare an updated RHEL 9 host.
 2. Register it with `rhc connect`.
-3. verify BaseOS and AppStream repositories.
+3. Verify BaseOS and AppStream repositories.
 4. Inspect the supported `ansible-core` package.
 5. Install it with DNF.
 6. Validate the installed package and runtime.
@@ -49,8 +49,25 @@ The workflow detects whether the repository is a root site (`owner.github.io`) o
 
 1. Create `public/demos/<demo-slug>/assets/`.
 2. Add clean 16:9 screenshots with sequential names such as `01-prepare.png`.
-3. Add the demo’s step content and card to `app/page.tsx`.
-4. Include a command, plain-language explanation, expected result, and verification step for every meaningful action.
-5. Run `pnpm lint` and `pnpm build`, then test the exported site over local HTTP.
+3. Add one complete `Lab` record to `content/labs.ts`. The catalog and dedicated static route are generated from that record.
+4. Include a command, plain-language explanation, expected result, and troubleshooting guidance for every meaningful action.
+5. Record the tested OS, architecture, package or image version, and verification date.
+6. Run `pnpm lint` and `pnpm build`, then test the exported root and dedicated demo route over local HTTP.
+
+## Lab publishing standard
+
+Every published lab must include:
+
+- A dedicated, shareable URL and device-local progress tracking
+- Searchable topic, platform, difficulty, tags, duration, and learning outcomes
+- Explicit OS, privilege, connectivity, subscription, and registry prerequisites
+- A tested environment record and visible last-verified date
+- Sequential screenshots with meaningful alternative text and no private data
+- Copyable commands, expected results, and per-step troubleshooting
+- Keyboard, touch, mobile, reduced-motion, and screen-reader support
+- A functional verification step, completion checklist, and optional cleanup
+- Step-specific and general GitHub issue-reporting links
+
+Before publishing, check the homepage and lab route at desktop, tablet, and phone widths; exercise step navigation, saved progress, completion, reset, search, filters, full-size screenshots, and issue links.
 
 Keep secrets, account names, subscription identifiers, IP addresses, and passwords out of screenshots and source files.
