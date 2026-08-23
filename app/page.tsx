@@ -14,6 +14,7 @@ type DemoStep = {
   explanation: string;
   expected: string;
   note?: string;
+  troubleshooting?: string;
 };
 
 const steps: DemoStep[] = [
@@ -25,7 +26,8 @@ const steps: DemoStep[] = [
     command: "sudo dnf upgrade --refresh",
     explanation: "Begin with a fully updated RHEL 9 control node. Updating first reduces dependency conflicts and ensures the installation uses current package metadata and security fixes.",
     expected: "DNF reports that the system is up to date, or completes the available updates.",
-    note: "The demonstration VM was fully upgraded before this workflow was recorded."
+    note: "The demonstration VM was fully upgraded before this workflow was recorded.",
+    troubleshooting: "If DNF cannot reach Red Hat, confirm internet access, DNS resolution, and the system clock before continuing."
   },
   {
     label: "Register",
@@ -35,7 +37,8 @@ const steps: DemoStep[] = [
     command: "sudo rhc connect",
     explanation: "The rhc client connects the host to Red Hat services. Enter your Red Hat account credentials only at the interactive prompts—never place them directly in a shell command or script.",
     expected: "subscription-manager reports Overall Status: Registered and Simple Content Access is enabled.",
-    note: "Registration is required to retrieve supported RHEL content. Red Hat Insights connectivity is not required to install ansible-core."
+    note: "A separate Ansible Automation Platform subscription is not required for this RHEL-provided package. Red Hat Insights connectivity is also not required.",
+    troubleshooting: "If registration fails, verify the account has an active RHEL entitlement and check network, DNS, proxy, and system-time settings. Then run subscription-manager status before retrying."
   },
   {
     label: "Repositories",
@@ -44,7 +47,8 @@ const steps: DemoStep[] = [
     alt: "DNF output listing enabled RHEL BaseOS and AppStream repositories",
     command: "sudo dnf repolist --enabled",
     explanation: "BaseOS supplies the operating-system foundation. AppStream contains ansible-core and several of its dependencies. Repository names differ by architecture; this Apple Silicon VM uses aarch64 content.",
-    expected: "Both the RHEL 9 BaseOS and AppStream RPM repositories appear as enabled."
+    expected: "Both the RHEL 9 BaseOS and AppStream RPM repositories appear as enabled.",
+    troubleshooting: "If either repository is missing, refresh subscription data, then enable the architecture-specific BaseOS and AppStream repository IDs shown in the troubleshooting guide below."
   },
   {
     label: "Inspect",
@@ -53,7 +57,8 @@ const steps: DemoStep[] = [
     alt: "DNF repoquery output showing ansible-core package information",
     command: "sudo dnf repoquery --latest-limit 1 --info ansible-core",
     explanation: "Inspecting the package before installation confirms its version, architecture, source repository, size, license, and purpose. The exact version will change as Red Hat publishes updates.",
-    expected: "The latest ansible-core build is available from the RHEL 9 AppStream repository."
+    expected: "The latest ansible-core build is available from the RHEL 9 AppStream repository.",
+    troubleshooting: "If DNF reports no matching package, verify that AppStream is enabled, clean the DNF metadata, and rebuild the cache."
   },
   {
     label: "Install",
@@ -62,7 +67,8 @@ const steps: DemoStep[] = [
     alt: "DNF transaction completing the ansible-core installation",
     command: "sudo dnf install ansible-core",
     explanation: "DNF resolves and installs ansible-core plus required Python, SSH, and Git dependencies. Review the transaction summary before confirming the installation in your environment.",
-    expected: "The transaction finishes with Complete! and lists ansible-core among the installed packages."
+    expected: "The transaction finishes with Complete! and lists ansible-core among the installed packages.",
+    troubleshooting: "If dependency resolution fails, refresh package metadata and review the transaction without disabling signature checks or forcing package removal."
   },
   {
     label: "Validate",
@@ -71,7 +77,8 @@ const steps: DemoStep[] = [
     alt: "Terminal output showing the ansible-core RPM and ansible version details",
     command: "rpm -q ansible-core\ndnf list --installed ansible-core\nansible --version",
     explanation: "Use the RPM and DNF views to confirm installation provenance, then inspect the Ansible runtime. The version output also identifies the active configuration file, Python runtime, module paths, and collection paths.",
-    expected: "All commands return successfully and ansible --version reports the installed core release."
+    expected: "All commands return successfully and ansible --version reports the installed core release.",
+    troubleshooting: "If the RPM is installed but the shell cannot find ansible, start a new terminal or run hash -r, then check /usr/bin/ansible."
   },
   {
     label: "Test",
@@ -81,7 +88,36 @@ const steps: DemoStep[] = [
     command: "ansible localhost -m ansible.builtin.ping -c local",
     explanation: "A version check proves that the executable starts. This ad hoc command goes further: it executes a real Ansible module locally without requiring inventory or another managed host.",
     expected: "localhost returns SUCCESS with ping: pong and changed: false.",
-    note: "You now have a working Ansible control node and can continue with inventories, playbooks, and collections."
+    note: "You now have a working Ansible control node and can continue with inventories, playbooks, and collections.",
+    troubleshooting: "An implicit-inventory warning can be normal for this localhost-only test. The important result is localhost | SUCCESS and ping: pong."
+  }
+];
+
+const troubleshootingItems = [
+  {
+    title: "rhc connect cannot register the system",
+    command: "sudo subscription-manager status",
+    detail: "Confirm internet access, DNS resolution, an accurate system clock, and any required proxy configuration. Verify that the Red Hat account has an active RHEL entitlement, then retry rhc connect."
+  },
+  {
+    title: "BaseOS or AppStream is not enabled",
+    command: [
+      "sudo subscription-manager refresh",
+      "sudo subscription-manager repos \\",
+      '  --enable="rhel-9-for-$(arch)-baseos-rpms" \\',
+      '  --enable="rhel-9-for-$(arch)-appstream-rpms"'
+    ].join("\n"),
+    detail: "Refresh the entitlement data and enable the repository IDs that match the system architecture. Run dnf repolist --enabled again to confirm both repositories."
+  },
+  {
+    title: "DNF reports: No match for argument ansible-core",
+    command: "sudo dnf clean all\nsudo dnf makecache\nsudo dnf repoquery --latest-limit 1 ansible-core",
+    detail: "This usually means AppStream is unavailable or the local metadata is stale. Rebuild the cache only after confirming the repository is enabled."
+  },
+  {
+    title: "The localhost smoke test shows a warning",
+    command: "ansible localhost -m ansible.builtin.ping -c local",
+    detail: "A warning about the implicit localhost or an empty inventory is expected in this inventory-free test. Continue if the result contains SUCCESS and ping: pong."
   }
 ];
 
@@ -109,13 +145,18 @@ export default function Home() {
 
   useEffect(() => {
     if (!demoOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") setDemoOpen(false);
       if (event.key === "ArrowRight") next();
       if (event.key === "ArrowLeft") previous();
     };
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
   }, [demoOpen]);
 
   return (
@@ -128,6 +169,7 @@ export default function Home() {
         <div className="nav-items">
           <a className="nav-link" href="#demos">Demos</a>
           <a className="nav-link subtle" href="#learning-path">Learning path</a>
+          <a className="nav-link subtle" href="#troubleshooting">Troubleshooting</a>
         </div>
       </nav>
 
@@ -167,6 +209,20 @@ export default function Home() {
           <p>Every demonstration includes the commands, explanations, expected results, and a practical verification step.</p>
         </div>
 
+        <aside className="prerequisite-callout">
+          <div className="callout-icon" aria-hidden="true">✓</div>
+          <div>
+            <strong>What subscription do I need?</strong>
+            <p>
+              A registered RHEL 9 system with BaseOS and AppStream access is enough to install the
+              RHEL-provided <code>ansible-core</code> package. Individual learners can obtain a
+              no-cost <a href="https://developers.redhat.com/articles/faqs-no-cost-red-hat-enterprise-linux" target="_blank" rel="noreferrer">Red Hat Developer Subscription for Individuals</a>, subject to the program terms.
+              An Ansible Automation Platform subscription is not required for this demo.
+            </p>
+          </div>
+          <a href="https://developers.redhat.com/register" target="_blank" rel="noreferrer">Join Red Hat Developer <span>↗</span></a>
+        </aside>
+
         <article className="demo-card">
           <button className="demo-visual" type="button" onClick={openDemo} aria-label="Open Installing ansible-core interactive demo">
             <img src="demos/installing-ansible-core/assets/06-package-and-version.png" alt="RHEL terminal showing the installed ansible-core package and Ansible version" />
@@ -185,6 +241,25 @@ export default function Home() {
             <button className="button button-dark" type="button" onClick={openDemo}>Open interactive demo <span>→</span></button>
           </div>
         </article>
+
+        <section className="troubleshooting-section" id="troubleshooting">
+          <div className="troubleshooting-intro">
+            <p className="eyebrow"><span /> Troubleshooting</p>
+            <h2>Common issues,<br />clear next checks.</h2>
+            <p>Use these checks when your result differs from the demonstration. They avoid unsafe shortcuts such as disabling package-signature verification.</p>
+          </div>
+          <div className="troubleshooting-list">
+            {troubleshootingItems.map((item, index) => (
+              <details key={item.title} open={index === 0}>
+                <summary><span>{String(index + 1).padStart(2, "0")}</span>{item.title}</summary>
+                <div>
+                  <p>{item.detail}</p>
+                  <pre><code>{item.command}</code></pre>
+                </div>
+              </details>
+            ))}
+          </div>
+        </section>
       </section>
 
       <section className="path-section" id="learning-path">
@@ -240,6 +315,7 @@ export default function Home() {
               <div className="stage-media">
                 <img key={step.image} src={step.image} alt={step.alt} />
                 <span className="stage-number">{String(stepIndex + 1).padStart(2, "0")}</span>
+                <a className="image-link" href={step.image} target="_blank" rel="noreferrer">Open full-size screenshot ↗</a>
               </div>
               <aside className="stage-guide">
                 <p className="step-label">Step {stepIndex + 1} of {steps.length} · {step.label}</p>
@@ -247,12 +323,18 @@ export default function Home() {
                 <p className="explanation">{step.explanation}</p>
                 {step.command && (
                   <div className="command-block">
-                    <div><span>Run in your environment</span><button type="button" onClick={copyCommand}>{copied ? "Copied!" : "Copy"}</button></div>
+                    <div><span>Run in your environment</span><button type="button" onClick={copyCommand} aria-live="polite">{copied ? "Copied!" : "Copy"}</button></div>
                     <pre><code>{step.command}</code></pre>
                   </div>
                 )}
                 <div className="expected"><strong>Expected result</strong><p>{step.expected}</p></div>
                 {step.note && <p className="step-note">ⓘ {step.note}</p>}
+                {step.troubleshooting && (
+                  <details className="step-troubleshooting">
+                    <summary>Result looks different?</summary>
+                    <p>{step.troubleshooting}</p>
+                  </details>
+                )}
               </aside>
             </div>
 
