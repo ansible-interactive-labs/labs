@@ -98,6 +98,7 @@ Every published lab must include:
 - Explicit OS, privilege, connectivity, subscription, and registry prerequisites
 - A tested environment record and visible last-verified date
 - Sanitized terminal replays branded with the `rajat` demonstration user, with text transcripts, screenshot fallbacks, meaningful alternative text, and no private infrastructure or credential data
+- A fixed 120×34 terminal canvas that fills the available media pane at desktop, tablet, and phone sizes without decorative inset padding
 - Copyable commands, expected results, and per-step troubleshooting
 - Keyboard, touch, mobile, reduced-motion, and screen-reader support
 - A functional verification step, completion checklist, and optional cleanup

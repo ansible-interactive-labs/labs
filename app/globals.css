@@ -180,12 +180,12 @@ body > main > footer p { color: #8f8992; font-size: 13px; margin: 0; }
 .player-stage { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(360px, .7fr); min-height: 620px; }
 .stage-media { background: #0b0a0c; position: relative; display: grid; place-items: center; overflow: hidden; }
 .stage-media img { width: 100%; height: 100%; object-fit: contain; animation: stage-in .28s ease-out; }
-.terminal-replay { width: 100%; min-width: 0; align-self: stretch; display: grid; place-items: center; position: relative; padding: clamp(20px, 4vw, 58px) clamp(12px, 3vw, 44px) 72px; }
-.terminal-replay-mount { width: 100%; min-width: 0; }
-.terminal-replay .ap-wrapper { width: 100%; box-shadow: 0 18px 55px rgba(0,0,0,.42); }
+.terminal-replay { width: 100%; height: 100%; min-width: 0; min-height: 0; align-self: stretch; display: grid; place-items: stretch; position: relative; overflow: hidden; }
+.terminal-replay-mount { width: 100%; height: 100%; min-width: 0; min-height: 0; display: grid; place-items: center; overflow: hidden; }
+.terminal-replay .ap-wrapper { width: 100%; height: 100%; max-width: 100%; max-height: 100%; box-shadow: 0 18px 55px rgba(0,0,0,.42); }
 .terminal-replay-fallback { width: 100%; height: 100%; display: grid; place-items: center; }
 .terminal-replay-fallback p { position: absolute; top: 14px; margin: 0; padding: 8px 11px; color: white; background: rgba(0,0,0,.8); font-size: 12px; }
-.terminal-replay-links { position: absolute; right: 18px; bottom: 18px; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.terminal-replay-links { position: absolute; z-index: 2; right: 18px; top: 18px; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
 .terminal-replay-links a { padding: 8px 10px; color: white; background: rgba(0,0,0,.72); font-size: 11px; font-weight: 700; }
 @keyframes stage-in { from { opacity: .2; transform: scale(.985); } }
 .stage-number { position: absolute; left: 18px; bottom: 18px; color: rgba(255,255,255,.58); font: 13px var(--font-geist-mono); background: rgba(0,0,0,.55); padding: 7px 9px; }
@@ -355,8 +355,7 @@ body > main > footer p { color: #8f8992; font-size: 13px; margin: 0; }
   .player-kicker, .player-tools button span { display: none; }
   .player-progress { padding: 14px 10px; gap: 2px; }
   .stage-media { min-height: 250px; }
-  .terminal-replay { padding: 18px 8px 64px; }
-  .terminal-replay-links { right: 10px; bottom: 10px; }
+  .terminal-replay-links { right: 10px; top: 10px; }
   .stage-guide { padding: 28px 22px 105px; }
   .image-link { right: 10px; bottom: 10px; }
   .stage-number { left: 10px; bottom: 10px; }
