@@ -156,7 +156,12 @@ body > main > footer p { color: #8f8992; font-size: 13px; margin: 0; }
 
 .demo-overlay { position: fixed; inset: 0; z-index: 100; background: rgba(8,7,9,.78); backdrop-filter: blur(12px); padding: clamp(0px, 2vw, 30px); display: grid; place-items: center; }
 .demo-player { width: min(1540px, 100%); max-height: 100%; overflow: auto; background: #f7f5f2; color: var(--ink); box-shadow: 0 30px 100px rgba(0,0,0,.5); }
-.demo-player:fullscreen { width: 100vw; height: 100vh; max-height: none; }
+.demo-player:fullscreen { width: 100vw; height: 100vh; max-height: none; overflow: hidden; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto auto; }
+.demo-player:fullscreen .player-header, .demo-player:fullscreen .player-footer { position: static; }
+.demo-player:fullscreen .player-stage { min-height: 0; overflow: hidden; }
+.demo-player:fullscreen .stage-media { min-width: 0; min-height: 0; }
+.demo-player:fullscreen .stage-guide { min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
+.demo-player:fullscreen .terminal-replay { min-height: 0; }
 .player-header { min-height: 74px; background: var(--ink); color: white; display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; gap: 20px; position: sticky; top: 0; z-index: 5; }
 .player-header > div:first-child { display: flex; align-items: baseline; gap: 16px; }
 .player-kicker { text-transform: uppercase; font-size: 10px; letter-spacing: .15em; color: #aaa4ac; }
@@ -210,6 +215,10 @@ body > main > footer p { color: #8f8992; font-size: 13px; margin: 0; }
 .player-utility-bar { min-height: 50px; display: flex; justify-content: flex-end; align-items: center; gap: 18px; padding: 10px 24px; color: #716b73; border-top: 1px solid var(--line); background: #ebe7e2; font-size: 11px; }
 .player-utility-bar button { padding: 6px 0; border: 0; background: transparent; color: inherit; cursor: pointer; text-decoration: underline; }
 .player-utility-bar a { text-decoration: underline; }
+
+@media (min-width: 901px) {
+  .demo-player:fullscreen .player-stage { grid-template-columns: minmax(0, 1.5fr) minmax(360px, .7fr); }
+}
 
 .lab-page { background: var(--paper); }
 .lab-topbar { background: rgba(246,243,239,.96); }
