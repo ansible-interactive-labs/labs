@@ -86,6 +86,22 @@ for (const directory of directories) {
       if (!nonEmptyString(item)) fail(directory, `${key}[${index}] must be a non-empty string`);
     });
   });
+  if (lab.overview) {
+    ["title", "introduction"].forEach((key) => {
+      if (!nonEmptyString(lab.overview?.[key])) fail(directory, `overview.${key} is required`);
+    });
+    if (!Array.isArray(lab.overview.items) || lab.overview.items.length < 2) {
+      fail(directory, "overview.items must contain at least two items");
+    }
+    (lab.overview.items ?? []).forEach((item, index) => {
+      ["title", "detail"].forEach((key) => {
+        if (!nonEmptyString(item?.[key])) fail(directory, `overview.items[${index}].${key} is required`);
+      });
+    });
+    if (lab.overview.note !== undefined && !nonEmptyString(lab.overview.note)) {
+      fail(directory, "overview.note must be a non-empty string when supplied");
+    }
+  }
   (lab.prerequisites ?? []).forEach((item, index) => {
     ["label", "value", "detail"].forEach((key) => {
       if (!nonEmptyString(item?.[key])) fail(directory, `prerequisites[${index}].${key} is required`);

@@ -1,0 +1,8 @@
+[rajat@demo ~]$
+[rajat@demo ~]$ ansible-doc --list | cut -d. -f1,2 | grep '^ansible\.' | sort -u
+ansible.builtin
+
+[rajat@demo ~]$ ansible-doc --list | cut -d. -f1,2 | grep '^ansible\.' | sort -u | wc -l
+1
+
+[rajat@demo ~]$

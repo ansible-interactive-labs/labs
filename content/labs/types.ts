@@ -28,6 +28,16 @@ export type LabPrerequisite = {
   href?: string;
 };
 
+export type LabOverview = {
+  title: string;
+  introduction: string;
+  items: Array<{
+    title: string;
+    detail: string;
+  }>;
+  note?: string;
+};
+
 export type LabComparison = {
   title: string;
   introduction: string;
@@ -60,6 +70,7 @@ export type Lab = {
   publishedOrder: number;
   tags: string[];
   outcomes: string[];
+  overview?: LabOverview;
   prerequisites: LabPrerequisite[];
   comparisons?: LabComparison[];
   verified: {

@@ -7,8 +7,8 @@
   "description": "Register RHEL, inspect subscribed repositories, install the RHEL-provided ansible-core RPM, and prove that Ansible can execute a module.",
   "coverImage": "/demos/installing-ansible-core/assets/06-package-and-version.png",
   "coverAlt": "RHEL terminal showing the installed ansible-core package and Ansible version",
-  "duration": "12 min",
-  "durationMinutes": 12,
+  "duration": "13 min",
+  "durationMinutes": 13,
   "difficulty": "Beginner",
   "topic": "Foundation",
   "platform": "RHEL 9",
@@ -19,8 +19,36 @@
     "Connect RHEL to Red Hat services",
     "Understand BaseOS and AppStream",
     "Install and inspect the RHEL-provided ansible-core RPM",
+    "Identify the collection namespace available from ansible-core",
     "Validate a working Ansible control node"
   ],
+  "overview": {
+    "title": "What is ansible-core?",
+    "introduction": "ansible-core is the minimal automation engine and extensible runtime maintained by the Ansible project. It provides the language and execution framework that turn inventories, playbooks, and ad hoc commands into automation, together with essential command-line tools and built-in content.",
+    "items": [
+      {
+        "title": "Command-line tools",
+        "detail": "Includes commands such as ansible, ansible-playbook, ansible-doc, ansible-config, and ansible-galaxy."
+      },
+      {
+        "title": "Automation language",
+        "detail": "Interprets YAML playbooks, tasks, handlers, variables, conditionals, loops, and includes."
+      },
+      {
+        "title": "Execution runtime",
+        "detail": "Loads inventory, connections, strategies, modules, and plugins to run automation against managed nodes."
+      },
+      {
+        "title": "Built-in content",
+        "detail": "Provides the ansible.builtin collection namespace, whose modules and plugins are maintained inside ansible-core."
+      },
+      {
+        "title": "Extensible by design",
+        "detail": "Can discover additional collections installed separately in configured collection paths when your automation needs more content."
+      }
+    ],
+    "note": "ansible-core can be used directly and also serves as the engine beneath other Ansible tools and delivery experiences. Its exact version and maintenance policy depend on how it is packaged and installed."
+  },
   "prerequisites": [
     {
       "label": "System",
@@ -246,6 +274,22 @@
       }
     },
     {
+      "label": "Collections",
+      "title": "Inspect the available collection namespace",
+      "image": "/demos/installing-ansible-core/assets/08-collection-inventory.png",
+      "alt": "Terminal showing ansible.builtin as the single collection namespace exposed by module documentation",
+      "command": "ansible-doc --list | cut -d. -f1,2 | grep '^ansible\\.' | sort -u\nansible-doc --list | cut -d. -f1,2 | grep '^ansible\\.' | sort -u | wc -l",
+      "explanation": "ansible-doc --list prints documented modules by fully qualified collection name. cut keeps the namespace and collection portions, grep retains Ansible collection names, and sort -u removes duplicates. The first command therefore shows which collection namespaces supply the available modules; the second adds wc -l to count those unique names.",
+      "expected": "On this clean RHEL ansible-core installation, the commands show ansible.builtin and then the count 1. This makes the minimal content boundary visible before later labs install other collections.",
+      "note": "This is a count of collection namespaces represented in the module documentation index—not a count of modules or plugins. ansible.builtin is embedded in ansible-core, so ansible-galaxy collection list, which inventories separately installed collection artifacts in collection paths, may not list it and can report that no usable collection path exists on a clean system.",
+      "troubleshooting": "If additional names appear, the system can already discover modules from other collections. Check ansible --version for collection paths and inspect those paths before comparing your result with this clean VM; do not remove existing collections blindly.",
+      "media": {
+        "type": "terminal",
+        "source": "/demos/installing-ansible-core/recordings/08-collection-inventory.cast",
+        "transcript": "/demos/installing-ansible-core/recordings/08-collection-inventory.txt"
+      }
+    },
+    {
       "label": "Explore",
       "title": "Inspect configuration and module help",
       "image": "/demos/installing-ansible-core/assets/08-config-docs.png",
@@ -298,6 +342,11 @@
       "title": "The localhost smoke test shows a warning",
       "command": "ansible localhost -m ansible.builtin.ping -c local",
       "detail": "A warning about the implicit localhost or an empty inventory is expected in this inventory-free test. Continue if the result contains SUCCESS and ping: pong."
+    },
+    {
+      "title": "The collection inventory shows more than ansible.builtin",
+      "command": "ansible --version\nansible-galaxy collection list --collections-path ~/.ansible/collections:/usr/share/ansible/collections",
+      "detail": "Additional collection namespaces mean this environment is not limited to the clean ansible-core content shown in the demonstration. Use the collection paths from ansible --version to locate separately installed content. A missing collection directory on a clean system is not an ansible-core installation failure."
     }
   ],
   "completion": [
@@ -305,6 +354,7 @@
     "BaseOS and AppStream are enabled",
     "rpm -q ansible-core returns the installed package",
     "rpm -V ansible-core reports no package-file differences",
+    "The module documentation inventory shows the ansible.builtin collection namespace",
     "ansible-config and ansible-doc return usable output",
     "ansible --version starts successfully",
     "The localhost ping test returns SUCCESS and ping: pong"

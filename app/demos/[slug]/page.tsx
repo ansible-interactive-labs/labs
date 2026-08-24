@@ -79,6 +79,26 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
         </aside>
       </header>
 
+      {lab.overview && (
+        <section className="lab-overview" aria-labelledby="overview-title">
+          <div className="overview-heading">
+            <p className="eyebrow"><span /> Core concept</p>
+            <h2 id="overview-title">{lab.overview.title}</h2>
+            <p>{lab.overview.introduction}</p>
+          </div>
+          <div className="overview-grid">
+            {lab.overview.items.map((item, index) => (
+              <article key={item.title}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <h3>{item.title}</h3>
+                <p>{item.detail}</p>
+              </article>
+            ))}
+          </div>
+          {lab.overview.note && <p className="overview-note"><strong>Keep in mind:</strong> {lab.overview.note}</p>}
+        </section>
+      )}
+
       <section className="lab-prerequisites" aria-labelledby="prerequisites-title">
         <div>
           <p className="eyebrow"><span /> Before you begin</p>
