@@ -10,10 +10,25 @@ import TerminalReplay from "@/components/TerminalReplay";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
+const splitCommands = (value: string) => {
+  const commands: string[] = [];
+  let current: string[] = [];
+  value.split("\n").forEach((line) => {
+    current.push(line);
+    if (!line.trimEnd().endsWith("\\")) {
+      commands.push(current.join("\n"));
+      current = [];
+    }
+  });
+  if (current.length) commands.push(current.join("\n"));
+  return commands;
+};
+
 export default function DemoPlayer({ lab }: { lab: Lab }) {
   const [stepIndex, setStepIndex] = useState(0);
-  const [copied, setCopied] = useState<"command" | "link" | null>(null);
+  const [copied, setCopied] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const [started, setStarted] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [announcement, setAnnouncement] = useState("");
   const playerRef = useRef<HTMLDivElement>(null);
@@ -56,9 +71,21 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
     } catch {
       // The lab remains usable when storage is unavailable.
     }
-    setAnnouncement(`Step ${stepIndex + 1} of ${lab.steps.length}: ${step.title}`);
-    titleRef.current?.focus({ preventScroll: true });
-  }, [completed, lab.steps.length, step.title, stepIndex, storageKey]);
+    if (started) {
+      const announceTimer = window.setTimeout(() => {
+        setAnnouncement(`Step ${stepIndex + 1} of ${lab.steps.length}: ${step.title}`);
+        titleRef.current?.focus({ preventScroll: true });
+      }, 0);
+      return () => window.clearTimeout(announceTimer);
+    }
+  }, [completed, lab.steps.length, started, step.title, stepIndex, storageKey]);
+
+  useEffect(() => {
+    if (!started) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = previousOverflow; };
+  }, [started]);
 
   useEffect(() => {
     const onFullscreenChange = () => setFullscreen(document.fullscreenElement === playerRef.current);
@@ -68,6 +95,7 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (!started) return;
       if (event.key === "ArrowRight") setStepIndex((current) => Math.min(current + 1, lab.steps.length - 1));
       if (event.key === "ArrowLeft") setStepIndex((current) => Math.max(current - 1, 0));
       if (event.key === "Escape" && document.fullscreenElement) document.exitFullscreen().catch(() => undefined);
@@ -89,13 +117,13 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [fullscreen, lab.steps.length]);
+  }, [fullscreen, lab.steps.length, started]);
 
-  const copyText = async (value: string, type: "command" | "link") => {
+  const copyCommand = async (value: string) => {
     try {
       await navigator.clipboard.writeText(value);
-      setCopied(type);
-      window.setTimeout(() => setCopied(null), 1600);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
     } catch {
       setAnnouncement("Copy failed. Select the text manually.");
     }
@@ -111,7 +139,18 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
 
   const markComplete = () => {
     setCompleted(true);
+    setStarted(false);
     setAnnouncement("Lab marked complete. Your progress is saved on this device.");
+  };
+
+  const startLab = () => {
+    const startingStep = completed ? 0 : stepIndex;
+    if (completed) {
+      setStepIndex(0);
+      setCompleted(false);
+    }
+    setStarted(true);
+    setAnnouncement(`Lab started. Step ${startingStep + 1} of ${lab.steps.length}.`);
   };
 
   const resetProgress = () => {
@@ -127,7 +166,7 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
   const issueUrl = `https://github.com/ansible-interactive-labs/labs/issues/new?title=${issueTitle}&body=${issueBody}`;
 
   return (
-    <div className="demo-player route-player" ref={playerRef} aria-label={`${lab.title} interactive demonstration`}>
+    <div className={`demo-player route-player${started ? " is-running" : ""}`} ref={playerRef} aria-label={`${lab.title} interactive demonstration`}>
       <p className="sr-only" aria-live="polite">{announcement}</p>
       <header className="player-header">
         <div>
@@ -135,21 +174,24 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
           <strong>{lab.title}</strong>
         </div>
         <div className="player-tools">
-          <button type="button" onClick={() => copyText(window.location.href, "link")} aria-label="Copy a link to this step">{copied === "link" ? "✓ Copied" : "⌁ Share step"}</button>
-          <button type="button" onClick={openFullscreen} aria-label="Open demo in fullscreen">↗ <span>Fullscreen</span></button>
+          {started && <button type="button" onClick={openFullscreen} aria-label="Open demo in fullscreen">↗ <span>Fullscreen</span></button>}
           <Link href="/" aria-label="Return to demo library">×</Link>
         </div>
       </header>
 
       <div className="player-progress" style={{ gridTemplateColumns: `repeat(${lab.steps.length}, 1fr)` }} aria-label={`Step ${stepIndex + 1} of ${lab.steps.length}`}>
         {lab.steps.map((item, index) => (
-          <button className={index === stepIndex ? "current" : index < stepIndex || completed ? "complete" : ""} type="button" key={item.label} onClick={() => setStepIndex(index)} aria-current={index === stepIndex ? "step" : undefined} aria-label={`Go to step ${index + 1}: ${item.label}`}>
-            <span>{index < stepIndex || completed ? "✓" : index + 1}</span><small>{item.label}</small>
-          </button>
+          started ? (
+            <button className={index === stepIndex ? "current" : index < stepIndex || completed ? "complete" : ""} type="button" key={item.label} onClick={() => setStepIndex(index)} aria-current={index === stepIndex ? "step" : undefined} aria-label={`Go to step ${index + 1}: ${item.label}`}>
+              <span>{index < stepIndex || completed ? "✓" : index + 1}</span><small>{item.label}</small>
+            </button>
+          ) : (
+            <div className="progress-step" key={item.label} aria-hidden="true"><span>{index + 1}</span><small>{item.label}</small></div>
+          )
         ))}
       </div>
 
-      <div className="player-stage">
+      {started ? <div className="player-stage">
         <div className="stage-media">
           {step.media?.type === "terminal" ? (
             <TerminalReplay
@@ -172,8 +214,8 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
           <p className="explanation">{step.explanation}</p>
           {step.command && (
             <div className="command-block">
-              <div><span>Run in your environment</span><button type="button" onClick={() => copyText(step.command ?? "", "command")} aria-live="polite">{copied === "command" ? "Copied!" : "Copy"}</button></div>
-              <pre tabIndex={0}><code>{step.command}</code></pre>
+              <div><span>Run in your environment</span><button type="button" onClick={() => copyCommand(step.command ?? "")} aria-live="polite">{copied ? "Copied!" : "Copy"}</button></div>
+              <pre tabIndex={0}><code>{splitCommands(step.command).map((command, index) => <span className="command-line" key={`${command}-${index}`}>{command}</span>)}</code></pre>
             </div>
           )}
           <div className="expected"><strong>Expected result</strong><p>{step.expected}</p></div>
@@ -183,25 +225,25 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
             <p>{step.troubleshooting}</p>
           </details>
           <a className="step-feedback" href={issueUrl} target="_blank" rel="noreferrer">This step didn’t work? Report it ↗</a>
+          <div className="stage-guide-utilities"><button type="button" onClick={resetProgress}>Reset progress</button><a href={issueUrl} target="_blank" rel="noreferrer">Report outdated content ↗</a></div>
         </aside>
-      </div>
+      </div> : (
+        <div className="player-ready">
+          <div className="player-ready-visual"><img src={`${basePath}${lab.coverImage}`} alt={lab.coverAlt} /></div>
+          <aside><p className="step-label">Ready when you are</p><h2>{lab.title}</h2><p>{lab.description}</p><ul>{lab.outcomes.map((outcome) => <li key={outcome}>{outcome}</li>)}</ul></aside>
+        </div>
+      )}
 
-      <footer className="player-footer">
-        <button className="player-back" type="button" onClick={() => setStepIndex((current) => Math.max(current - 1, 0))} disabled={stepIndex === 0}>← Back</button>
-        <span>{completed ? "Completed on this device" : "Use ← → arrow keys to navigate"}</span>
-        {stepIndex < lab.steps.length - 1 ? (
+      <footer className={`player-footer${started ? "" : " ready-footer"}`}>
+        {!started ? <><span>Begin with step 1 and work at your own pace.</span><button className="player-next start-lab-button" type="button" onClick={startLab}>Start lab →</button></> : <>
+          <button className="player-back" type="button" onClick={() => setStepIndex((current) => Math.max(current - 1, 0))} disabled={stepIndex === 0}>← Back</button>
+          <span>Use ← → arrow keys to navigate</span>
+          {stepIndex < lab.steps.length - 1 ? (
           <button className="player-next" type="button" onClick={() => setStepIndex((current) => Math.min(current + 1, lab.steps.length - 1))}>Next step →</button>
-        ) : completed ? (
-          <button className="player-next complete-button" type="button" onClick={() => setStepIndex(0)}>Review from start ↻</button>
         ) : (
           <button className="player-next complete-button" type="button" onClick={markComplete}>Mark lab complete ✓</button>
-        )}
+        )}</>}
       </footer>
-
-      <div className="player-utility-bar">
-        <button type="button" onClick={resetProgress}>Reset progress</button>
-        <a href={issueUrl} target="_blank" rel="noreferrer">Report outdated content ↗</a>
-      </div>
     </div>
   );
 }

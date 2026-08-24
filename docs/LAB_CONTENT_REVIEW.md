@@ -23,6 +23,8 @@ Review each lab through all of these lenses:
 - No setup action is implied or hidden between recorded steps.
 - Every terminal replay has a readable transcript and a verified screenshot fallback.
 - Every terminal replay uses the project-wide asciicast v2 geometry of 120 columns × 34 rows so the player remains stable between steps and across labs.
+- The pre-launch state exposes one Start lab button; active lab mode fits the viewport, keeps navigation fixed, and confines vertical scrolling to instructional content.
+- Separate commands render as visually distinct blocks while multiline commands remain grouped together.
 - Credential entry and other secrets are excluded rather than simulated in the recording.
 - Every step explains what the command does, why it is needed, what success looks like, and what to check when the result differs.
 - Commands are safe to copy and do not expose credentials, local addresses, account identifiers, or destructive shortcuts.

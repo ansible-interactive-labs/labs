@@ -89,6 +89,7 @@ No central registry or route file needs to be edited. The build discovers each `
 Every published lab must include:
 
 - A dedicated, shareable URL and device-local progress tracking
+- A single Start lab action before launch and a viewport-contained lab mode with fixed navigation and independently scrollable guidance
 - Searchable topic, platform, difficulty, tags, duration, and learning outcomes
 - Explicit OS, privilege, connectivity, subscription, and registry prerequisites
 - A tested environment record and visible last-verified date
@@ -98,6 +99,6 @@ Every published lab must include:
 - A functional verification step, completion checklist, and optional cleanup
 - Step-specific and general GitHub issue-reporting links
 
-Before publishing, check the homepage and lab route at desktop, tablet, and phone widths; exercise replay controls, transcripts, step navigation, saved progress, completion, reset, search, filters, screenshot fallbacks, and issue links.
+Before publishing, check the homepage and lab route at desktop, tablet, and phone widths; exercise the Start lab gate, fixed lab frame, independently scrolling guidance, replay controls, transcripts, step navigation, saved progress, completion, reset, search, filters, screenshot fallbacks, and issue links.
 
 Keep secrets, account names, subscription identifiers, IP addresses, passwords, machine IDs, and boot IDs out of recordings, transcripts, screenshots, and source files.
