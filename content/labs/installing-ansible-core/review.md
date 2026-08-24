@@ -16,7 +16,9 @@ Implemented in this review:
 - Documented why the RHEL RPM version can remain on 2.14 while fixes are backported, and why Red Hat advisories—not only the upstream version number—must be used for security assessment.
 - Removed all discussion of the separately distributed community `ansible` package because it is outside this lab's comparison scope.
 - Added a reusable top-of-page “What is ansible-core?” overview covering its CLI tools, automation language, execution runtime, built-in content, and collection extensibility.
+- Refocused the comparison introduction on distribution choices instead of repeating the overview, identified the RHEL AppStream RPM as this lab's path, and renamed the duplicated capabilities row to “Shared foundation.”
 - Added a real VM replay and screenshot that derive the collection namespaces visible in the module documentation index. The clean installation exposes only `ansible.builtin`, producing a namespace count of one.
+- Connected the comparison's additional-content row directly to the collection-inventory step while preserving the distinction between embedded `ansible.builtin` content and separately installed collections.
 - Explained why this derived namespace count is not equivalent to `ansible-galaxy collection list`: `ansible.builtin` is embedded in ansible-core, while that command inventories separately installed collection artifacts in usable collection paths.
 
 - Added an initial environment check for the RHEL release, architecture, hostname, and pre-install package state.

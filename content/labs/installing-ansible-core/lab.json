@@ -75,12 +75,12 @@
   "comparisons": [
     {
       "title": "RHEL 9 AppStream ansible-core vs upstream ansible-core",
-      "introduction": "These are not different automation engines: both provide the ansible-core command-line tools, language, extensible runtime, and ansible.builtin content. The RHEL RPM is Red Hat's downstream build of the upstream project. The important differences are packaging, version policy, update authority, lifecycle, and support scope. Package access through a RHEL subscription must not be confused with blanket support for every ansible-core use case.",
+      "introduction": "Now that you know what ansible-core provides, this section compares two ways of obtaining the same upstream automation engine. The RHEL AppStream RPM and upstream Python release primarily differ in packaging, installation ownership, version cadence, maintenance authority, lifecycle, and support scope. This lab installs the RHEL AppStream RPM. Package access through a RHEL subscription must not be confused with blanket support for every ansible-core use case.",
       "columns": ["RHEL 9 AppStream RPM", "Upstream ansible-core release"],
       "rows": [
         {
-          "aspect": "Core capabilities",
-          "values": ["Provides the ansible-core CLI, playbook language, runtime framework, and built-in ansible.builtin modules and plugins as integrated into RHEL.", "Provides the same categories of core CLI tools, playbook language, runtime framework, and ansible.builtin modules and plugins directly from the upstream project."]
+          "aspect": "Shared foundation",
+          "values": ["Provides the ansible-core command-line tools, automation language, execution runtime, and embedded ansible.builtin content as integrated into RHEL.", "Provides the same command-line tools, automation language, execution runtime, and embedded ansible.builtin content directly from the upstream project. Available versions, fixes, Python environments, and maintenance policies can differ between the two distributions."]
         },
         {
           "aspect": "Artifact and provider",
@@ -120,7 +120,7 @@
         },
         {
           "aspect": "Additional automation content",
-          "values": ["The RPM supplies ansible-core and ansible.builtin. Install any additional collections required by your automation from an appropriate trusted source and manage their own versions and support status.", "The upstream release likewise supplies ansible-core and ansible.builtin. Additional collections are selected, installed, upgraded, and supported separately from the core runtime."]
+          "values": ["The RPM provides the embedded ansible.builtin namespace. Additional collections are installed and managed separately. The collection-inventory step in this lab demonstrates the minimal namespace available on the clean RHEL installation.", "The upstream release also provides the embedded ansible.builtin namespace. Additional collections are selected, installed, upgraded, and supported separately from the core runtime."]
         }
       ],
       "takeaway": "For this RHEL 9 lab, use the AppStream RPM because it is integrated with DNF and the RHEL lifecycle. Choose an upstream ansible-core release when you specifically need a newer core feature or Python compatibility and are prepared to own the Python environment, upgrade cadence, regression testing, and upstream project support path. If you need Red Hat support for general-purpose automation rather than only Red Hat-supplied or generated content, evaluate an Ansible Automation Platform subscription; installing the RHEL RPM alone does not expand the RHEL support scope.",
