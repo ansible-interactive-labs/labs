@@ -51,12 +51,25 @@ The workflow detects whether the repository is a root site (`owner.github.io`) o
 
 1. Copy an existing `content/labs/<demo-slug>/lab.json` into a new directory and update every field. The included `schema.json` provides editor validation.
 2. Create `public/demos/<demo-slug>/assets/`.
-3. Record terminal workflows as asciicast v2 files, generate text transcripts, and retain clean 16:9 screenshots as resilient fallbacks. Use sequential names and reference all media from the lab JSON.
+3. Record every terminal workflow as an asciicast v2 file at exactly 120 columns × 34 rows, generate a text transcript, and retain a clean 16:9 screenshot as a resilient fallback. Use sequential names and reference all media from the lab JSON.
 4. Include a command, plain-language explanation, expected result, and troubleshooting guidance for every meaningful action.
 5. Record the tested OS, architecture, package or image version, and verification date.
 6. Complete the instructional audit in `docs/LAB_CONTENT_REVIEW.md`, save the findings as `content/labs/<demo-slug>/review.md`, and share them even when no gaps are found.
 7. Add a source-backed `comparisons` block whenever learners may confuse related tools, packages, commands, or support models.
 8. Sanitize recordings with `node scripts/sanitize-cast.mjs <file.cast>`, then run `pnpm validate:labs`, `pnpm lint`, and `pnpm build`. Test the exported root and dedicated demo route over local HTTP.
+
+Use this recording command for every terminal step:
+
+```bash
+asciinema record \
+  --output-format asciicast-v2 \
+  --window-size 120x34 \
+  --idle-time-limit 2 \
+  --title "STEP TITLE" \
+  public/demos/DEMO-SLUG/recordings/STEP-NAME.cast
+```
+
+Do not enable `--capture-input`; it can record passwords and other sensitive keyboard input. The lab validator rejects recordings that are not asciicast v2 or do not use the required 120×34 geometry.
 
 No central registry or route file needs to be edited. The build discovers each `lab.json`, validates required content and assets, creates its static route, and adds it to the sitemap automatically.
 
@@ -65,7 +78,7 @@ No central registry or route file needs to be edited. The build discovers each `
 - Each lab is an independent content unit under `content/labs/<slug>/lab.json`, so contributors do not edit a growing monolithic file.
 - The homepage ships compact `LabSummary` records only. Full steps, commands, troubleshooting, and completion content are sent only on that lab's dedicated route.
 - The catalog searches and sorts the summaries, but renders only 12 cards initially and reveals additional groups on demand.
-- Build-time validation rejects duplicate slugs, invalid metadata, missing assets, screenshots above the 2 MiB budget, recordings above the 1 MiB budget, incomplete instructional fields, and likely private data in lab JSON, replays, or transcripts.
+- Build-time validation rejects duplicate slugs, invalid metadata, missing assets, screenshots above the 2 MiB budget, recordings above the 1 MiB budget, terminal recordings that are not asciicast v2 at 120×34, incomplete instructional fields, and likely private data in lab JSON, replays, or transcripts.
 - Every lab directory must contain a review report, preventing a structurally valid but instructionally incomplete lab from entering the build unnoticed.
 - Static routes and `sitemap.xml` are generated from discovered labs. Adding lab 101 follows exactly the same workflow as adding lab 2.
 - Lab JSON follows the versioned schema in `content/labs/schema.json`, allowing future content migrations without coupling content to UI components.

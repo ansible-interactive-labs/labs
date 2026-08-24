@@ -9,6 +9,7 @@ const imagePattern = /^\/demos\/.+\.(png|jpe?g|webp)$/i;
 const maxImageBytes = 2 * 1024 * 1024;
 const maxLabImageBytes = 12 * 1024 * 1024;
 const maxRecordingBytes = 1024 * 1024;
+const requiredRecordingGeometry = "120x34";
 const sensitiveRecordingPattern = /(?:VNC|SSH) Password|192\.168\.\d+\.\d+|password\s*=|\brajat\b|\[sudo\] password|machine-id|boot-id/i;
 const errors = [];
 const warnings = [];
@@ -141,7 +142,6 @@ for (const directory of directories) {
   if (labImageBytes > maxLabImageBytes) fail(directory, `unique screenshots exceed the 12 MiB per-lab asset budget`);
   if (uniqueImages.size < imagePaths.length - 1) warn(directory, "multiple steps reuse the same screenshot");
 
-  let recordingGeometry;
   (lab.steps ?? []).forEach((step, index) => {
     const sourceName = `${directory} step ${index + 1}`;
     ["label", "title", "alt", "explanation", "expected", "troubleshooting"].forEach((key) => {
@@ -176,11 +176,9 @@ for (const directory of directories) {
               fail(sourceName, "terminal source must declare positive integer width and height values");
             } else {
               const geometry = `${header.width}x${header.height}`;
-              if (recordingGeometry && geometry !== recordingGeometry) {
-                fail(sourceName, `terminal geometry ${geometry} does not match this lab's ${recordingGeometry} standard`);
-              }
-              recordingGeometry ??= geometry;
+              if (geometry !== requiredRecordingGeometry) fail(sourceName, `terminal geometry must be ${requiredRecordingGeometry}, found ${geometry}`);
             }
+            if (header.version !== 2) fail(sourceName, `terminal source must use asciicast v2, found version ${header.version ?? "(missing)"}`);
           } catch {
             fail(sourceName, "terminal source must begin with a valid asciicast JSON header");
           }
