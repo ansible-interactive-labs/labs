@@ -141,6 +141,7 @@ for (const directory of directories) {
   if (labImageBytes > maxLabImageBytes) fail(directory, `unique screenshots exceed the 12 MiB per-lab asset budget`);
   if (uniqueImages.size < imagePaths.length - 1) warn(directory, "multiple steps reuse the same screenshot");
 
+  let recordingGeometry;
   (lab.steps ?? []).forEach((step, index) => {
     const sourceName = `${directory} step ${index + 1}`;
     ["label", "title", "alt", "explanation", "expected", "troubleshooting"].forEach((key) => {
@@ -168,6 +169,22 @@ for (const directory of directories) {
         }
         const contents = readFileSync(file, "utf8");
         if (sensitiveRecordingPattern.test(contents)) fail(sourceName, `possible credential, local address, or host identifier found in ${label}`);
+        if (label === "terminal source") {
+          try {
+            const header = JSON.parse(contents.split("\n", 1)[0]);
+            if (!Number.isInteger(header.width) || !Number.isInteger(header.height) || header.width < 1 || header.height < 1) {
+              fail(sourceName, "terminal source must declare positive integer width and height values");
+            } else {
+              const geometry = `${header.width}x${header.height}`;
+              if (recordingGeometry && geometry !== recordingGeometry) {
+                fail(sourceName, `terminal geometry ${geometry} does not match this lab's ${recordingGeometry} standard`);
+              }
+              recordingGeometry ??= geometry;
+            }
+          } catch {
+            fail(sourceName, "terminal source must begin with a valid asciicast JSON header");
+          }
+        }
       });
       totalRecordings += 1;
     }

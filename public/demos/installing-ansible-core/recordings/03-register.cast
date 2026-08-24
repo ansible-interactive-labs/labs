@@ -1,4 +1,4 @@
-{"version":2,"width":120,"height":32,"idle_time_limit":2,"title":"Verify the Red Hat connection","env":{"SHELL":"/bin/zsh"}}
+{"version":2,"width":120,"height":34,"idle_time_limit":2,"title":"Verify the Red Hat connection","env":{"SHELL":"/bin/zsh"}}
 [0,"o","[learner@demo ~]$ "]
 [3.471346,"o","sudo rhc status\r\n"]
 [3.502397,"o","Connection status for demo.ansible.com:\r\n\r\n"]

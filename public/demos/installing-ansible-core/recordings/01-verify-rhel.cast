@@ -1,4 +1,4 @@
-{"version":2,"width":120,"height":32,"idle_time_limit":2,"title":"Verify the RHEL 9 starting environment","env":{"SHELL":"/bin/zsh"}}
+{"version":2,"width":120,"height":34,"idle_time_limit":2,"title":"Verify the RHEL 9 starting environment","env":{"SHELL":"/bin/zsh"}}
 [0,"o","[learner@demo ~]$ "]
 [2.69802,"o","cat /etc/redhat-release\r\n"]
 [2.699549,"o","Red Hat Enterprise Linux release 9.8 (Plow)\r\n"]

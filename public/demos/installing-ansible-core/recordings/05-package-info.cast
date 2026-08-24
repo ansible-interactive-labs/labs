@@ -1,4 +1,4 @@
-{"version":2,"width":120,"height":32,"idle_time_limit":2,"title":"Inspect the available ansible-core package","env":{"SHELL":"/bin/zsh"}}
+{"version":2,"width":120,"height":34,"idle_time_limit":2,"title":"Inspect the available ansible-core package","env":{"SHELL":"/bin/zsh"}}
 [0,"o","[learner@demo ~]$ "]
 [3.188894,"o","sudo dnf list --available ansible-core\r\n"]
 [3.404283,"o","Updating Subscription Management repositories.\r\n"]
