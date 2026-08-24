@@ -20,6 +20,9 @@ Implemented in this review:
 - Replaced static-only evidence with sanitized terminal replays, text transcripts, and screenshot fallbacks.
 - Clarified that an inactive `rhcd` service does not block DNF package installation.
 - Standardized every replay at 120 columns by 34 rows with the `rajat` shell identity and ensured every returned prompt begins on a new line.
+- Re-recorded every command through the returned shell prompt, added a completion hold, and capped idle gaps so network and installation waits do not appear frozen.
+- Expanded the Step 8 explanation of `PAGER=cat`, `ansible-config dump`, and `--only-changed`.
+- Expanded the Step 9 ad hoc command into its target pattern, module-selection, fully qualified collection name, and local-connection components, including why it is not an ICMP ping.
 
 No blocking omissions were found in the install, package inspection, runtime validation, functional smoke test, troubleshooting, or cleanup sequence.
 

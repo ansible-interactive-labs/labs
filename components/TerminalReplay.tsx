@@ -31,7 +31,7 @@ export default function TerminalReplay({ source, transcript, title, fallbackImag
           autoPlay: false,
           controls: true,
           fit: "both",
-          idleTimeLimit: 2,
+          idleTimeLimit: 1.25,
           terminalFontSize: "small",
           theme: "asciinema",
         });

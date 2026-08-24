@@ -10,6 +10,8 @@ const maxImageBytes = 2 * 1024 * 1024;
 const maxLabImageBytes = 12 * 1024 * 1024;
 const maxRecordingBytes = 1024 * 1024;
 const requiredRecordingGeometry = "120x34";
+const maximumRecordingIdleGap = 1.25;
+const minimumCompletionHold = 1;
 const sensitiveRecordingPattern = /(?:VNC|SSH) Password|192\.168\.\d+\.\d+|password\s*=|\[sudo\] password|machine-id|boot-id/i;
 const errors = [];
 const warnings = [];
@@ -180,23 +182,47 @@ for (const directory of directories) {
               if (geometry !== requiredRecordingGeometry) fail(sourceName, `terminal geometry must be ${requiredRecordingGeometry}, found ${geometry}`);
             }
             if (header.version !== 2) fail(sourceName, `terminal source must use asciicast v2, found version ${header.version ?? "(missing)"}`);
+            if (typeof header.idle_time_limit !== "number" || header.idle_time_limit <= 0 || header.idle_time_limit > maximumRecordingIdleGap) {
+              fail(sourceName, `terminal source idle_time_limit must be between 0 and ${maximumRecordingIdleGap} seconds`);
+            }
             let previousOutputEndsWithNewline = true;
+            let joinedOutput = "";
+            let finalOutputTime = 0;
+            let lastPromptTime;
             for (const line of castLines) {
-              const [, type, data] = JSON.parse(line);
+              const [time, type, data] = JSON.parse(line);
               if (type !== "o") continue;
+              joinedOutput += data;
+              finalOutputTime = time;
               for (const match of data.matchAll(/\[(?:rajat|learner)@[^\]\r\n]+\][#$] /g)) {
                 const offset = match.index ?? 0;
                 const followsNewlineInEvent = offset > 0 && /[\r\n]$/.test(data.slice(0, offset));
                 const beginsAfterNewline = offset === 0 && previousOutputEndsWithNewline;
                 if (!followsNewlineInEvent && !beginsAfterNewline) fail(sourceName, "terminal prompt must begin on a new line");
+                lastPromptTime = time;
               }
               previousOutputEndsWithNewline = /[\r\n]$/.test(data);
+            }
+            const visibleEnding = joinedOutput
+              .replace(/\u001b\][^\u0007]*(?:\u0007|\u001b\\)/g, "")
+              .replace(/\u001b\[[0-?]*[ -/]*[@-~]/g, "")
+              .trimEnd();
+            if (!/\[(?:rajat|learner)@[^\]\r\n]+\][#$]$/.test(visibleEnding)) {
+              fail(sourceName, "terminal source must end on a returned shell prompt");
+            }
+            if (lastPromptTime === undefined || finalOutputTime - lastPromptTime < minimumCompletionHold) {
+              fail(sourceName, `terminal source must hold the final prompt for at least ${minimumCompletionHold} second`);
             }
           } catch {
             fail(sourceName, "terminal source must begin with a valid asciicast JSON header");
           }
-        } else if (/[^\r\n]\[(?:rajat|learner)@[^\]\r\n]+\][#$] /.test(contents)) {
-          fail(sourceName, "transcript contains a terminal prompt attached to command output");
+        } else {
+          if (/[^\r\n]\[(?:rajat|learner)@[^\]\r\n]+\][#$] /.test(contents)) {
+            fail(sourceName, "transcript contains a terminal prompt attached to command output");
+          }
+          if (!/\[(?:rajat|learner)@[^\]\r\n]+\][#$]$/.test(contents.trimEnd())) {
+            fail(sourceName, "transcript must end on a returned shell prompt");
+          }
         }
       });
       totalRecordings += 1;

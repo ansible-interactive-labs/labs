@@ -30,6 +30,10 @@ const footerMarker = Buffer.from("\nScript done on ");
 const footerIndex = output.lastIndexOf(footerMarker);
 const visibleStart = firstNewline >= 0 ? firstNewline + 1 : 0;
 const visibleEnd = footerIndex >= 0 ? footerIndex : recordedBytes;
+const visibleOutput = output.subarray(visibleStart, visibleEnd);
+if (recordedBytes > visibleOutput.length) {
+  throw new Error(`${timingSource}: timing references ${recordedBytes} bytes but terminal output contains ${visibleOutput.length}`);
+}
 const decoder = new StringDecoder("utf8");
 const events = [];
 let offset = 0;
@@ -77,10 +81,8 @@ for (const entry of timing) {
   const chunkStart = offset;
   const chunkEnd = offset + entry.bytes;
   offset = chunkEnd;
-  if (chunkEnd <= visibleStart || chunkStart >= visibleEnd) continue;
-  const start = Math.max(chunkStart, visibleStart);
-  const end = Math.min(chunkEnd, visibleEnd);
-  const decoded = decoder.write(output.subarray(start, end));
+  if (chunkStart >= visibleOutput.length) continue;
+  const decoded = decoder.write(visibleOutput.subarray(chunkStart, Math.min(chunkEnd, visibleOutput.length)));
   const clean = stripOsc(decoded).replaceAll("\u001b(B", "");
   if (clean) events.push([Number(elapsed.toFixed(6)), "o", clean]);
 }
@@ -125,17 +127,36 @@ function replaceAcrossEvents(pattern, replacement) {
 replaceAcrossEvents(/\[sudo\] password for [^:\r\n]+: /g, "Authentication completed securely\r\n");
 replaceAcrossEvents(/Username: [^\r\n]*/g, "Username: [entered securely]");
 replaceAcrossEvents(/Password: [^\r\n]*\r?\n/g, "Password: [entered securely]\r\n");
+// `script` records the final `exit` used to close its child shell. Remove only
+// that trailing word so the returned prompt remains visible to the learner.
+replaceAcrossEvents(/exit\r?\n$/g, "");
+// Some CLI tools (notably `ansible-config dump --only-changed`) do not end
+// their output with a newline. Keep the authentic output while ensuring the
+// next prompt always starts on a visually distinct line.
+replaceAcrossEvents(/(?<![\r\n])\[rajat@demo ~\]\$ /g, "\r\n[rajat@demo ~]$ ");
+// GNOME Terminal may redraw the prompt while Ctrl-D closes the recorder.
+// Collapse that redraw so the replay ends on one clear completion prompt.
+replaceAcrossEvents(/\[rajat@demo ~\]\$ \r\u001b\[K\r\n\[rajat@demo ~\]\$ /g, "[rajat@demo ~]$ ");
 
 const visibleEvents = events.filter((event) => event[2]);
 const firstTime = visibleEvents[0]?.[0] ?? 0;
-for (const event of visibleEvents) event[0] = Number(Math.max(0, event[0] - firstTime).toFixed(6));
-if ((visibleEvents.at(-1)?.[0] ?? 0) < 3) visibleEvents.push([3, "o", ""]);
+const maximumIdleGap = 1.25;
+let previousOriginalTime = firstTime;
+let normalizedTime = 0;
+for (const event of visibleEvents) {
+  const originalTime = event[0];
+  normalizedTime += Math.min(Math.max(0, originalTime - previousOriginalTime), maximumIdleGap);
+  event[0] = Number(normalizedTime.toFixed(6));
+  previousOriginalTime = originalTime;
+}
+// Hold on the completed output and returned prompt before playback finishes.
+visibleEvents.push([Number(((visibleEvents.at(-1)?.[0] ?? 0) + maximumIdleGap).toFixed(6)), "o", ""]);
 
 const header = {
   version: 2,
   width: 120,
   height: 34,
-  idle_time_limit: 2,
+  idle_time_limit: maximumIdleGap,
   title: basename(destination, ".cast").replace(/^\d+-/, "").replaceAll("-", " "),
   env: { SHELL: "/bin/bash", TERM: "xterm-256color" },
 };

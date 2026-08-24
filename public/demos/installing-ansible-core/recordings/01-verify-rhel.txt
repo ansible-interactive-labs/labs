@@ -1,11 +1,9 @@
 [rajat@demo ~]$ cat /etc/redhat-release
 Red Hat Enterprise Linux release 9.8 (Plow)
-
 [rajat@demo ~]$ uname -m
 aarch64
-
 [rajat@demo ~]$ hostnamectl --static
 demo.ansible.com
-
 [rajat@demo ~]$ rpm -q ansible-core
 package ansible-core is not installed
+[rajat@demo ~]$

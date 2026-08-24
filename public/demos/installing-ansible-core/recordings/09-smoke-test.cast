@@ -1,4 +1,6 @@
-{"version":2,"width":120,"height":34,"idle_time_limit":2,"title":"smoke test","env":{"SHELL":"/bin/bash","TERM":"xterm-256color"}}
-[0,"o","\u001b[?2004h\r\n[rajat@demo ~]$ ansible localhost -m ansible.builtin.ping -c local\r\n\u001b[?2004l\r\u001b[0;32"]
-[0.026288,"o","mlocalhost | SUCCESS => {\u001b[0m\r\n\u001b[0;32m    \"changed\": false,\u001b[0m\r\n\u001b[0;32m    \"ping\": \"pong\"\u001b[0m\r\n\u001b[0;32m}\u001b[0m\r\n"]
-[3,"o",""]
+{"version":2,"width":120,"height":34,"idle_time_limit":1.25,"title":"smoke test","env":{"SHELL":"/bin/bash","TERM":"xterm-256color"}}
+[0,"o","\r\n[rajat@demo ~]$ "]
+[1.25,"o","ansible localhost -m ansible.builtin.ping -c local\r\n"]
+[1.598523,"o","localhost | SUCCESS => {\r\n    \"changed\": false,\r\n    \"ping\": \"pong\"\r\n}\r\n"]
+[1.623367,"o","[rajat@demo ~]$ "]
+[2.873367,"o",""]

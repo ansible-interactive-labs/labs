@@ -5,3 +5,4 @@ CONFIG_FILE() = /etc/ansible/ansible.cfg
   ping:
       data:                  # Data to return for the `ping' return value. If this parameter is set to `crash', the
                              # module will cause an exception.
+[rajat@demo ~]$

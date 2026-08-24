@@ -14,3 +14,5 @@ Password: [entered securely]
 Successfully connected to Red Hat!
 
 Manage your connected systems: https://red.ht/connector
+
+[rajat@demo ~]$

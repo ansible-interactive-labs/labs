@@ -8,3 +8,4 @@ Connection status for demo.ansible.com:
 ● The Remote Host Configuration daemon is inactive
 
 Manage your connected systems: https://red.ht/connector
+[rajat@demo ~]$

@@ -19,3 +19,4 @@ Updating Subscription Management repositories.
 repo id                                          repo name
 rhel-9-for-aarch64-appstream-rpms                Red Hat Enterprise Linux 9 for ARM 64 - AppStream (RPMs)
 rhel-9-for-aarch64-baseos-rpms                   Red Hat Enterprise Linux 9 for ARM 64 - BaseOS (RPMs)
+[rajat@demo ~]$

@@ -2,7 +2,8 @@
 Authentication completed securely
 
 Updating Subscription Management repositories.
-Last metadata expiration check: 0:12:25 ago on Mon 24 Aug 2026 01:24:34 PM.
+Red Hat Enterprise Linux 9 for ARM 64 - BaseOS (RPMs)                                    41 MB/s | 174 MB     00:04
+Red Hat Enterprise Linux 9 for ARM 64 - AppStream (RPMs)                                 34 MB/s | 119 MB     00:03
 Name         : ansible-core
 Epoch        : 1
 Version      : 2.14.18
@@ -19,3 +20,4 @@ Description  : Ansible is a radically simple model-driven configuration manageme
              : over SSH and does not require any software or daemons to be installed
              : on remote nodes. Extension modules can be written in any language and
              : are transferred to managed machines automatically.
+[rajat@demo ~]$

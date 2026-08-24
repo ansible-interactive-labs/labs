@@ -2,7 +2,7 @@
 Authentication completed securely
 
 Updating Subscription Management repositories.
-Last metadata expiration check: 0:01:12 ago on Mon 24 Aug 2026 01:24:34 PM.
+Last metadata expiration check: 0:00:33 ago on Mon 24 Aug 2026 02:24:38 PM.
 Dependencies resolved.
 ========================================================================================================================
  Package                     Architecture   Version                      Repository                                Size
@@ -28,18 +28,18 @@ Total download size: 9.8 M
 Installed size: 41 M
 Is this ok [y/N]: y
 Downloading Packages:
-(1/10): python3-pyparsing-2.4.7-9.el9.noarch.rpm                                        297 kB/s | 154 kB     00:00
-(2/10): python3-ply-3.11-14.el9.noarch.rpm                                              186 kB/s | 111 kB     00:00
-(3/10): python3-pycparser-2.20-6.el9.noarch.rpm                                         574 kB/s | 139 kB     00:00
-(4/10): python3-cffi-1.14.5-5.el9.aarch64.rpm                                           316 kB/s | 261 kB     00:00
-(5/10): python3-packaging-20.9-5.el9.noarch.rpm                                         157 kB/s |  81 kB     00:00
-(6/10): python3-resolvelib-0.5.4-5.el9.noarch.rpm                                        69 kB/s |  38 kB     00:00
-(7/10): python3-cryptography-36.0.1-5.el9_6.aarch64.rpm                                 1.4 MB/s | 1.2 MB     00:00
-(8/10): sshpass-1.09-4.el9.aarch64.rpm                                                  108 kB/s |  30 kB     00:00
-(9/10): git-core-2.52.0-1.el9.aarch64.rpm                                               9.0 MB/s | 5.1 MB     00:00
-(10/10): ansible-core-2.14.18-3.el9_8.1.aarch64.rpm                                     3.0 MB/s | 2.6 MB     00:00
+(1/10): python3-pyparsing-2.4.7-9.el9.noarch.rpm                                        280 kB/s | 154 kB     00:00
+(2/10): python3-ply-3.11-14.el9.noarch.rpm                                              169 kB/s | 111 kB     00:00
+(3/10): python3-cffi-1.14.5-5.el9.aarch64.rpm                                           344 kB/s | 261 kB     00:00
+(4/10): python3-packaging-20.9-5.el9.noarch.rpm                                         538 kB/s |  81 kB     00:00
+(5/10): python3-cryptography-36.0.1-5.el9_6.aarch64.rpm                                 3.5 MB/s | 1.2 MB     00:00
+(6/10): python3-pycparser-2.20-6.el9.noarch.rpm                                         261 kB/s | 139 kB     00:00
+(7/10): python3-resolvelib-0.5.4-5.el9.noarch.rpm                                       184 kB/s |  38 kB     00:00
+(8/10): sshpass-1.09-4.el9.aarch64.rpm                                                  133 kB/s |  30 kB     00:00
+(9/10): git-core-2.52.0-1.el9.aarch64.rpm                                                12 MB/s | 5.1 MB     00:00
+(10/10): ansible-core-2.14.18-3.el9_8.1.aarch64.rpm                                     6.3 MB/s | 2.6 MB     00:00
 ------------------------------------------------------------------------------------------------------------------------
-Total                                                                                   4.2 MB/s | 9.8 MB     00:02
+Total                                                                                   6.3 MB/s | 9.8 MB     00:01
 Running transaction check
 Transaction check succeeded.
 Running transaction test
@@ -77,3 +77,4 @@ Installed:
   python3-resolvelib-0.5.4-5.el9.noarch                     sshpass-1.09-4.el9.aarch64
 
 Complete!
+[rajat@demo ~]$

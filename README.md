@@ -64,7 +64,7 @@ Use this recording command for every terminal step:
 asciinema record \
   --output-format asciicast-v2 \
   --window-size 120x34 \
-  --idle-time-limit 2 \
+  --idle-time-limit 1.25 \
   --title "STEP TITLE" \
   public/demos/DEMO-SLUG/recordings/STEP-NAME.cast
 ```
@@ -76,13 +76,13 @@ When `asciinema` is unavailable on the demonstration VM, capture output and timi
 ```bash
 stty cols 120 rows 34
 script -q -m advanced -O /tmp/STEP.out -T /tmp/STEP.time
-# Run the commands, then type exit.
+# After each command, wait for the returned prompt and hold it briefly. Type exit only after the final hold.
 node scripts/script-to-cast.mjs /tmp/STEP.out /tmp/STEP.time public/demos/DEMO-SLUG/recordings/STEP.cast
 node scripts/sanitize-cast.mjs public/demos/DEMO-SLUG/recordings/STEP.cast
 node scripts/cast-to-transcript.mjs public/demos/DEMO-SLUG/recordings/STEP.cast public/demos/DEMO-SLUG/recordings/STEP.txt
 ```
 
-Never add `--log-in` or `--log-io`; either option can retain credential input. The converter removes terminal wrapper metadata and macOS/GNOME control sequences, replaces interactive credential fields with neutral placeholders, and retains the real output timing.
+Never add `--log-in` or `--log-io`; either option can retain credential input. The converter removes terminal wrapper metadata and macOS/GNOME control sequences, replaces interactive credential fields with neutral placeholders, preserves command/output ordering, caps silent gaps at 1.25 seconds, and holds on the final returned prompt before playback ends.
 
 Record every published terminal session while signed in as the public demonstration user `rajat`. Preserve `[rajat@HOSTNAME]` prompts and `/home/rajat` paths as intentional creator branding. Continue removing passwords, private IP addresses, account and subscription identifiers, machine IDs, boot IDs, and credential prompts.
 
