@@ -4,7 +4,7 @@
   "slug": "installing-ansible-core",
   "title": "Installing ansible-core",
   "shortDescription": "Build and verify an Ansible control node on RHEL 9.",
-  "description": "Register RHEL, inspect subscribed repositories, install the supported package, and prove that Ansible can execute a module.",
+  "description": "Register RHEL, inspect subscribed repositories, install the RHEL-provided ansible-core RPM, and prove that Ansible can execute a module.",
   "coverImage": "/demos/installing-ansible-core/assets/06-package-and-version.png",
   "coverAlt": "RHEL terminal showing the installed ansible-core package and Ansible version",
   "duration": "12 min",
@@ -18,7 +18,7 @@
   "outcomes": [
     "Connect RHEL to Red Hat services",
     "Understand BaseOS and AppStream",
-    "Install and inspect the supported package",
+    "Install and inspect the RHEL-provided ansible-core RPM",
     "Validate a working Ansible control node"
   ],
   "prerequisites": [
@@ -40,46 +40,90 @@
     {
       "label": "Subscription",
       "value": "RHEL entitlement",
-      "detail": "BaseOS and AppStream access is sufficient; an Ansible Automation Platform subscription is not required.",
+      "detail": "A RHEL entitlement provides the BaseOS and AppStream access needed to install this RPM. An Ansible Automation Platform subscription is not required for the lab, but a RHEL subscription does not provide broad support for arbitrary ansible-core automation.",
       "href": "https://developers.redhat.com/articles/faqs-no-cost-red-hat-enterprise-linux"
     }
   ],
   "comparisons": [
     {
-      "title": "RHEL-provided ansible-core vs upstream community ansible-core",
-      "introduction": "The command-line experience is intentionally familiar in both cases, but the delivery channel determines who packages it, how updates arrive, and where support comes from.",
-      "columns": ["RHEL-provided package", "Upstream community release"],
+      "title": "RHEL 9 AppStream ansible-core vs upstream ansible-core",
+      "introduction": "These are not different automation engines: both provide the ansible-core command-line tools, language, extensible runtime, and ansible.builtin content. The RHEL RPM is Red Hat's downstream build of the upstream project. The important differences are packaging, version policy, update authority, lifecycle, and support scope. Package access through a RHEL subscription must not be confused with blanket support for every ansible-core use case.",
+      "columns": ["RHEL 9 AppStream RPM", "Upstream ansible-core release"],
       "rows": [
         {
-          "aspect": "Source and installation",
-          "values": ["Installed from the RHEL AppStream repository with DNF.", "Usually installed from Python Package Index with pip or another Python packaging tool."]
+          "aspect": "Core capabilities",
+          "values": ["Provides the ansible-core CLI, playbook language, runtime framework, and built-in ansible.builtin modules and plugins as integrated into RHEL.", "Provides the same categories of core CLI tools, playbook language, runtime framework, and ansible.builtin modules and plugins directly from the upstream project."]
         },
         {
-          "aspect": "Maintenance model",
-          "values": ["Built, tested, patched, and delivered according to the RHEL package lifecycle.", "Released by the Ansible community on the upstream project's release schedule."]
+          "aspect": "Artifact and provider",
+          "values": ["A Red Hat-built, signed, and tested RPM derived from upstream source and delivered through the RHEL AppStream repository.", "A release produced from the ansible/ansible stable branch, published as an upstream Python distribution and identified by its X.Y.Z version."]
         },
         {
-          "aspect": "Version cadence",
-          "values": ["May remain on an older core version while receiving selected fixes through RHEL updates.", "New upstream features and releases generally become available sooner."]
+          "aspect": "Install and update path",
+          "values": ["Install and update with DNF. RPM tracks ownership, dependencies, signatures, and errata with the rest of the operating system.", "Install into a selected Python environment with pip or into an isolated application environment with pipx. That environment's Python packaging workflow owns upgrades and dependencies."]
         },
         {
-          "aspect": "Support path",
-          "values": ["Covered through the applicable RHEL subscription and Red Hat support policy.", "Help comes from upstream documentation and community channels unless another vendor support agreement applies."]
+          "aspect": "Runtime integration",
+          "values": ["Uses the RHEL filesystem layout and platform Python dependencies; commands are installed system-wide under RPM control.", "Location and Python runtime depend on the interpreter, user site, virtual environment, or pipx environment selected during installation."]
         },
         {
-          "aspect": "Not the same as the ansible package",
-          "values": ["This lab installs the minimal ansible-core runtime supplied by RHEL.", "The community package named ansible combines ansible-core with a curated set of community collections; ansible-core alone is the smaller runtime."]
+          "aspect": "Version strategy",
+          "values": ["RHEL 9 stays on the ansible-core 2.14 stream and advances the RPM release when Red Hat delivers fixes. A lower upstream version number does not by itself mean the RPM is unpatched.", "A new X.Y feature release normally arrives about every six months, with X.Y.Z servicing releases on an approximately four-week schedule."]
+        },
+        {
+          "aspect": "Maintenance window",
+          "values": ["The RHEL product lifecycle and AppStream policy govern maintenance; upstream end-of-life alone does not determine the status of the RHEL RPM.", "The project maintains three feature releases at graduated levels: the newest receives general bug and security fixes, the next receives critical and security fixes, and the oldest receives security fixes."]
+        },
+        {
+          "aspect": "Security and backports",
+          "values": ["Red Hat can backport selected fixes to the retained version to reduce compatibility risk. Use Red Hat advisories and security data—not only the upstream version string—to assess the RPM.", "Fixes are backported among maintained stable branches according to severity and appear in new upstream servicing releases; unmaintained releases generally stop receiving fixes."]
+        },
+        {
+          "aspect": "Published lifecycle",
+          "values": ["Red Hat lists ansible-core 2.14 as a Full Life Application Stream for RHEL 9, aligning the stream with the underlying RHEL major-release lifecycle and applicable errata policy.", "Lifecycle follows the upstream support matrix and changes as each new feature release moves the previous releases into narrower maintenance phases and eventually end of life."]
+        },
+        {
+          "aspect": "Support scope",
+          "values": ["RHEL support is deliberately limited to playbooks, roles, or modules supplied by or generated by Red Hat products, including RHEL System Roles and Red Hat Insights-generated automation. Broader support for the core platform and core-maintained modules requires Ansible Automation Platform.", "The upstream project provides documentation, maintenance releases, issue tracking, and community collaboration, but installing its release does not create a Red Hat product-support entitlement."]
+        },
+        {
+          "aspect": "Change and compatibility tradeoff",
+          "values": ["Prioritizes RHEL integration, predictable package management, and a stable feature baseline while selected fixes arrive as RPM updates.", "Makes newer core behavior, Python support, and features available sooner; feature-release upgrades can require porting work because ansible-core does not promise complete compatibility between X.Y releases."]
+        },
+        {
+          "aspect": "Additional automation content",
+          "values": ["The RPM supplies ansible-core and ansible.builtin. Install any additional collections required by your automation from an appropriate trusted source and manage their own versions and support status.", "The upstream release likewise supplies ansible-core and ansible.builtin. Additional collections are selected, installed, upgraded, and supported separately from the core runtime."]
         }
       ],
-      "takeaway": "Use the RHEL package when you want RHEL-managed installation and lifecycle alignment. Choose an upstream installation when you specifically need a newer community release and can manage its Python environment and support model.",
+      "takeaway": "For this RHEL 9 lab, use the AppStream RPM because it is integrated with DNF and the RHEL lifecycle. Choose an upstream ansible-core release when you specifically need a newer core feature or Python compatibility and are prepared to own the Python environment, upgrade cadence, regression testing, and upstream project support path. If you need Red Hat support for general-purpose automation rather than only Red Hat-supplied or generated content, evaluate an Ansible Automation Platform subscription; installing the RHEL RPM alone does not expand the RHEL support scope.",
       "sources": [
         {
-          "label": "Ansible installation guide",
-          "href": "https://docs.ansible.com/projects/ansible/latest/installation_guide/intro_installation.html"
+          "label": "ansible-core overview",
+          "href": "https://docs.ansible.com/projects/ansible-core/devel/"
         },
         {
-          "label": "RHEL 9 package manifest",
-          "href": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/package_manifest/index"
+          "label": "Upstream installation guide",
+          "href": "https://docs.ansible.com/projects/ansible-core/devel/installation_guide/intro_installation.html"
+        },
+        {
+          "label": "ansible-core releases and maintenance",
+          "href": "https://docs.ansible.com/projects/ansible/latest/reference_appendices/release_and_maintenance.html#ansible-core-release-cycle"
+        },
+        {
+          "label": "ansible-core branches and tags",
+          "href": "https://docs.ansible.com/projects/ansible/latest/dev_guide/core_branches_and_tags.html"
+        },
+        {
+          "label": "Red Hat ansible-core support scope",
+          "href": "https://access.redhat.com/articles/6325611"
+        },
+        {
+          "label": "RHEL Application Streams lifecycle",
+          "href": "https://access.redhat.com/support/policy/updates/rhel-app-streams-life-cycle"
+        },
+        {
+          "label": "Red Hat security backporting",
+          "href": "https://access.redhat.com/security/updates/backporting"
         }
       ]
     }
@@ -158,7 +202,7 @@
     },
     {
       "label": "Inspect",
-      "title": "Inspect the supported package",
+      "title": "Inspect the RHEL-provided package",
       "image": "/demos/installing-ansible-core/assets/04-package-information.png",
       "alt": "DNF repoquery output showing ansible-core package information",
       "command": "sudo dnf repoquery --latest-limit 1 --info ansible-core",
