@@ -30,7 +30,7 @@ export default function TerminalReplay({ source, transcript, title, fallbackImag
         player = AsciinemaPlayer.create(`${basePath}${source}`, mountRef.current, {
           autoPlay: false,
           controls: true,
-          fit: "both",
+          fit: "width",
           idleTimeLimit: 2,
           terminalFontSize: "small",
           theme: "asciinema",

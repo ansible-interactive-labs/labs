@@ -71,6 +71,8 @@ asciinema record \
 
 Do not enable `--capture-input`; it can record passwords and other sensitive keyboard input. The lab validator rejects recordings that are not asciicast v2 or do not use the required 120×34 geometry.
 
+Record every published terminal session while signed in as the public demonstration user `rajat`. Preserve `[rajat@HOSTNAME]` prompts and `/home/rajat` paths as intentional creator branding. Continue removing passwords, private IP addresses, account and subscription identifiers, machine IDs, boot IDs, and credential prompts.
+
 No central registry or route file needs to be edited. The build discovers each `lab.json`, validates required content and assets, creates its static route, and adds it to the sitemap automatically.
 
 ## Architecture for a large lab library
@@ -93,7 +95,7 @@ Every published lab must include:
 - Searchable topic, platform, difficulty, tags, duration, and learning outcomes
 - Explicit OS, privilege, connectivity, subscription, and registry prerequisites
 - A tested environment record and visible last-verified date
-- Sanitized terminal replays with text transcripts, screenshot fallbacks, meaningful alternative text, and no private data
+- Sanitized terminal replays branded with the `rajat` demonstration user, with text transcripts, screenshot fallbacks, meaningful alternative text, and no private infrastructure or credential data
 - Copyable commands, expected results, and per-step troubleshooting
 - Keyboard, touch, mobile, reduced-motion, and screen-reader support
 - A functional verification step, completion checklist, and optional cleanup

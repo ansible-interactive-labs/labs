@@ -20,7 +20,7 @@ const firstTime = trimmedEvents[0]?.[0] ?? 0;
 const rebasedEvents = trimmedEvents.map(([time, type, data]) => [
   Math.max(0, Number((time - firstTime).toFixed(6))),
   type,
-  data.replaceAll("rajat", "learner")
+  data
 ]);
 
 const output = [JSON.stringify(header), ...rebasedEvents.map((event) => JSON.stringify(event))].join("\n") + "\n";
@@ -29,8 +29,7 @@ const sensitivePatterns = [
   /password\s+for/i,
   /\/tmp\/ansible-lab/i,
   /machine id/i,
-  /boot id/i,
-  /rajat/i
+  /boot id/i
 ];
 const match = sensitivePatterns.find((pattern) => pattern.test(output));
 if (match) {

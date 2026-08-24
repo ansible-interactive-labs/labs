@@ -10,7 +10,7 @@ const maxImageBytes = 2 * 1024 * 1024;
 const maxLabImageBytes = 12 * 1024 * 1024;
 const maxRecordingBytes = 1024 * 1024;
 const requiredRecordingGeometry = "120x34";
-const sensitiveRecordingPattern = /(?:VNC|SSH) Password|192\.168\.\d+\.\d+|password\s*=|\brajat\b|\[sudo\] password|machine-id|boot-id/i;
+const sensitiveRecordingPattern = /(?:VNC|SSH) Password|192\.168\.\d+\.\d+|password\s*=|\[sudo\] password|machine-id|boot-id/i;
 const errors = [];
 const warnings = [];
 

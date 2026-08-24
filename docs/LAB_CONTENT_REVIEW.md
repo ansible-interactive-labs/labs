@@ -26,6 +26,7 @@ Review each lab through all of these lenses:
 - The pre-launch state exposes one Start lab button; active lab mode fits the viewport, keeps navigation fixed, and confines vertical scrolling to instructional content.
 - Separate commands render as visually distinct blocks while multiline commands remain grouped together.
 - Credential entry and other secrets are excluded rather than simulated in the recording.
+- Terminal prompts intentionally preserve the public demonstration username `rajat`; private infrastructure, credentials, and subscription identifiers remain prohibited.
 - Every step explains what the command does, why it is needed, what success looks like, and what to check when the result differs.
 - Commands are safe to copy and do not expose credentials, local addresses, account identifiers, or destructive shortcuts.
 - Version-dependent output is identified so learners do not expect an exact match unnecessarily.
