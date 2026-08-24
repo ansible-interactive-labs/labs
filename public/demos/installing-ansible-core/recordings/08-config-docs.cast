@@ -1,8 +1,6 @@
-{"version":2,"width":120,"height":34,"idle_time_limit":2,"title":"Inspect Ansible configuration and module documentation","env":{"SHELL":"/bin/zsh"}}
-[0,"o","[learner@demo ~]$ "]
-[4.615545,"o","PAGER=cat ansible-config dump --only-changed\r\n"]
-[4.827274,"o","CONFIG_FILE() = /etc/ansible/ansible.cfg"]
-[4.846334,"o","\r\n[learner@demo ~]$ "]
-[8.818657,"o","PAGER=cat ansible-doc -s ansible.builtin.ping\r\n"]
-[9.046062,"o","- name: Try to connect to host, verify a usable python and return `pong' on success\r\n  ping:\r\n      data:                  # Data to return for the `ping' return value. If this parameter is set to `crash', the\r\n                             # module will cause an exception.\r\n"]
-[9.067945,"o","[learner@demo ~]$ "]
+{"version":2,"width":120,"height":34,"idle_time_limit":2,"title":"config docs","env":{"SHELL":"/bin/bash","TERM":"xterm-256color"}}
+[0,"o","\u001b[?2004h\r\n[rajat@demo ~]$ PAGER=cat a"]
+[0.017587,"o","nsible-config dump --only-changed\r\n\u001b[?2004l\r\u001b[0;33mCONFIG_FILE() = /etc/ansible/ansible.cfg\u001b[0"]
+[0.018028,"o","m"]
+[4.861809,"o","\u001b[?2004h\r\n[rajat@demo ~]$ PAGER=cat ansible-doc -s ansible.builtin.ping\r\n\u001b[?2004l\r- name: Try to connect to host, verify a usable python and return `pong' on success\r\n  ping:\r\n      data:                  # Data to return for the `ping' return val"]
+[4.88357,"o","ue. If this parameter is set to `crash', the\r\n                             # module will cause an exception.\r\n"]

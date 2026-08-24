@@ -1,0 +1,16 @@
+[rajat@demo ~]$ sudo rhc connect
+Authentication completed securely
+
+Connecting demo.ansible.com to Red Hat.
+This might take a few seconds.
+
+Username: [entered securely]
+Password: [entered securely]
+
+● Connected to Red Hat Subscription Management
+● Connected to Red Hat Insights
+● Activated the Remote Host Configuration daemon
+
+Successfully connected to Red Hat!
+
+Manage your connected systems: https://red.ht/connector

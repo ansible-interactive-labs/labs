@@ -1,20 +1,21 @@
-[learner@demo ~]$ sudo subscription-manager repos --list-enabled
+[rajat@demo ~]$ sudo subscription-manager repos --list-enabled
+Authentication completed securely
+
 +----------------------------------------------------------+
     Available Repositories in /etc/yum.repos.d/redhat.repo
 +----------------------------------------------------------+
-Repo ID:   rhel-9-for-aarch64-baseos-rpms
-Repo Name: Red Hat Enterprise Linux 9 for ARM 64 - BaseOS (RPMs)
-Repo URL:  https://cdn.redhat.com/content/dist/rhel9/$releasever/aarch64/baseos/os
-Enabled:   1
-
 Repo ID:   rhel-9-for-aarch64-appstream-rpms
 Repo Name: Red Hat Enterprise Linux 9 for ARM 64 - AppStream (RPMs)
 Repo URL:  https://cdn.redhat.com/content/dist/rhel9/$releasever/aarch64/appstream/os
 Enabled:   1
 
-[learner@demo ~]$ sudo dnf repolist --enabled
+Repo ID:   rhel-9-for-aarch64-baseos-rpms
+Repo Name: Red Hat Enterprise Linux 9 for ARM 64 - BaseOS (RPMs)
+Repo URL:  https://cdn.redhat.com/content/dist/rhel9/$releasever/aarch64/baseos/os
+Enabled:   1
+
+[rajat@demo ~]$ sudo dnf repolist --enabled
 Updating Subscription Management repositories.
 repo id                                          repo name
 rhel-9-for-aarch64-appstream-rpms                Red Hat Enterprise Linux 9 for ARM 64 - AppStream (RPMs)
 rhel-9-for-aarch64-baseos-rpms                   Red Hat Enterprise Linux 9 for ARM 64 - BaseOS (RPMs)
-[learner@demo ~]$

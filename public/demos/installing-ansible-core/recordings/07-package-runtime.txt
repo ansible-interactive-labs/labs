@@ -1,23 +1,27 @@
-[learner@demo ~]$ rpm -q ansible-core
+[rajat@demo ~]$ rpm -q ansible-core
 ansible-core-2.14.18-3.el9_8.1.aarch64
-[learner@demo ~]$ rpm -V ansible-core && echo "Package verification: passed"
+
+[rajat@demo ~]$ rpm -V ansible-core && echo 'Package verification: passed'
 Package verification: passed
-[learner@demo ~]$ sudo dnf list --installed ansible-core
-Updating Subscription Management repositories.
+
+[rajat@demo ~]$ dnf list --installed ansible-core
+Not root, Subscription Management repositories not updated
 Installed Packages
 ansible-core.aarch64                       1:2.14.18-3.el9_8.1                        @rhel-9-for-aarch64-appstream-rpms
-[learner@demo ~]$ command -v ansible
+
+[rajat@demo ~]$ command -v ansible
 /usr/bin/ansible
-[learner@demo ~]$ command -v ansible-playbook
+
+[rajat@demo ~]$ command -v ansible-playbook
 /usr/bin/ansible-playbook
-[learner@demo ~]$ ansible --version
+
+[rajat@demo ~]$ ansible --version
 ansible [core 2.14.18]
   config file = /etc/ansible/ansible.cfg
-  configured module search path = ['/home/learner/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  configured module search path = ['/home/rajat/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
   ansible python module location = /usr/lib/python3.9/site-packages/ansible
-  ansible collection location = /home/learner/.ansible/collections:/usr/share/ansible/collections
+  ansible collection location = /home/rajat/.ansible/collections:/usr/share/ansible/collections
   executable location = /usr/bin/ansible
   python version = 3.9.25 (main, Aug  6 2026, 00:00:00) [GCC 11.5.0 20240719 (Red Hat 11.5.0-14)] (/usr/bin/python3)
   jinja version = 3.1.2
   libyaml = True
-[learner@demo ~]$

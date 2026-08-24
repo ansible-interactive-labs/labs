@@ -144,13 +144,10 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
   };
 
   const startLab = () => {
-    const startingStep = completed ? 0 : stepIndex;
-    if (completed) {
-      setStepIndex(0);
-      setCompleted(false);
-    }
+    setStepIndex(0);
+    setCompleted(false);
     setStarted(true);
-    setAnnouncement(`Lab started. Step ${startingStep + 1} of ${lab.steps.length}.`);
+    setAnnouncement(`Lab started. Step 1 of ${lab.steps.length}.`);
   };
 
   const resetProgress = () => {

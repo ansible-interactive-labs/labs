@@ -1,5 +1,4 @@
-{"version":2,"width":120,"height":34,"idle_time_limit":2,"title":"Run the localhost Ansible smoke test","env":{"SHELL":"/bin/zsh"}}
-[0,"o","[learner@demo ~]$ "]
-[3.110179,"o","ansible localhost -m ansible.builtin.ping -c local\r\n"]
-[3.471949,"o","localhost | SUCCESS => {\r\n    \"changed\": false,\r\n    \"ping\": \"pong\"\r\n}\r\n"]
-[3.499454,"o","[learner@demo ~]$ "]
+{"version":2,"width":120,"height":34,"idle_time_limit":2,"title":"smoke test","env":{"SHELL":"/bin/bash","TERM":"xterm-256color"}}
+[0,"o","\u001b[?2004h\r\n[rajat@demo ~]$ ansible localhost -m ansible.builtin.ping -c local\r\n\u001b[?2004l\r\u001b[0;32"]
+[0.026288,"o","mlocalhost | SUCCESS => {\u001b[0m\r\n\u001b[0;32m    \"changed\": false,\u001b[0m\r\n\u001b[0;32m    \"ping\": \"pong\"\u001b[0m\r\n\u001b[0;32m}\u001b[0m\r\n"]
+[3,"o",""]

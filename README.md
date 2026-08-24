@@ -71,6 +71,19 @@ asciinema record \
 
 Do not enable `--capture-input`; it can record passwords and other sensitive keyboard input. The lab validator rejects recordings that are not asciicast v2 or do not use the required 120×34 geometry.
 
+When `asciinema` is unavailable on the demonstration VM, capture output and timing with the RHEL `script` utility, without input logging, and convert the pair locally:
+
+```bash
+stty cols 120 rows 34
+script -q -m advanced -O /tmp/STEP.out -T /tmp/STEP.time
+# Run the commands, then type exit.
+node scripts/script-to-cast.mjs /tmp/STEP.out /tmp/STEP.time public/demos/DEMO-SLUG/recordings/STEP.cast
+node scripts/sanitize-cast.mjs public/demos/DEMO-SLUG/recordings/STEP.cast
+node scripts/cast-to-transcript.mjs public/demos/DEMO-SLUG/recordings/STEP.cast public/demos/DEMO-SLUG/recordings/STEP.txt
+```
+
+Never add `--log-in` or `--log-io`; either option can retain credential input. The converter removes terminal wrapper metadata and macOS/GNOME control sequences, replaces interactive credential fields with neutral placeholders, and retains the real output timing.
+
 Record every published terminal session while signed in as the public demonstration user `rajat`. Preserve `[rajat@HOSTNAME]` prompts and `/home/rajat` paths as intentional creator branding. Continue removing passwords, private IP addresses, account and subscription identifiers, machine IDs, boot IDs, and credential prompts.
 
 Before recording, configure the demonstration shell with `export PROMPT_COMMAND='printf "\\n"'`. This ensures every prompt starts on a fresh line even when a command omits its trailing newline. Sanitization repairs attached prompts as a fallback, and validation rejects any cast or transcript where command output and the next prompt share a line.
