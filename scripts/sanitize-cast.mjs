@@ -17,11 +17,20 @@ const visibleEvents = clearIndex >= 0 ? events.slice(clearIndex + 1) : events;
 const exitIndex = visibleEvents.findIndex((event) => event[1] === "o" && event[2].startsWith("exit\r\n"));
 const trimmedEvents = exitIndex >= 0 ? visibleEvents.slice(0, exitIndex) : visibleEvents;
 const firstTime = trimmedEvents[0]?.[0] ?? 0;
-const rebasedEvents = trimmedEvents.map(([time, type, data]) => [
-  Math.max(0, Number((time - firstTime).toFixed(6))),
-  type,
-  data
-]);
+const promptPattern = /\[(?:rajat|learner)@[^\]\r\n]+\][#$] /g;
+let previousOutputEndsWithNewline = true;
+const rebasedEvents = trimmedEvents.map(([time, type, data]) => {
+  let normalizedData = data;
+  if (type === "o") {
+    normalizedData = data.replace(promptPattern, (prompt, offset) => {
+      const followsNewlineInEvent = offset > 0 && /[\r\n]$/.test(data.slice(0, offset));
+      const beginsAfterNewline = offset === 0 && previousOutputEndsWithNewline;
+      return followsNewlineInEvent || beginsAfterNewline ? prompt : `\r\n${prompt}`;
+    });
+    previousOutputEndsWithNewline = /[\r\n]$/.test(normalizedData);
+  }
+  return [Math.max(0, Number((time - firstTime).toFixed(6))), type, normalizedData];
+});
 
 const output = [JSON.stringify(header), ...rebasedEvents.map((event) => JSON.stringify(event))].join("\n") + "\n";
 const sensitivePatterns = [

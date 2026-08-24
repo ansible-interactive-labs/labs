@@ -171,7 +171,8 @@ for (const directory of directories) {
         if (sensitiveRecordingPattern.test(contents)) fail(sourceName, `possible credential, local address, or host identifier found in ${label}`);
         if (label === "terminal source") {
           try {
-            const header = JSON.parse(contents.split("\n", 1)[0]);
+            const castLines = contents.trimEnd().split("\n");
+            const header = JSON.parse(castLines.shift());
             if (!Number.isInteger(header.width) || !Number.isInteger(header.height) || header.width < 1 || header.height < 1) {
               fail(sourceName, "terminal source must declare positive integer width and height values");
             } else {
@@ -179,9 +180,23 @@ for (const directory of directories) {
               if (geometry !== requiredRecordingGeometry) fail(sourceName, `terminal geometry must be ${requiredRecordingGeometry}, found ${geometry}`);
             }
             if (header.version !== 2) fail(sourceName, `terminal source must use asciicast v2, found version ${header.version ?? "(missing)"}`);
+            let previousOutputEndsWithNewline = true;
+            for (const line of castLines) {
+              const [, type, data] = JSON.parse(line);
+              if (type !== "o") continue;
+              for (const match of data.matchAll(/\[(?:rajat|learner)@[^\]\r\n]+\][#$] /g)) {
+                const offset = match.index ?? 0;
+                const followsNewlineInEvent = offset > 0 && /[\r\n]$/.test(data.slice(0, offset));
+                const beginsAfterNewline = offset === 0 && previousOutputEndsWithNewline;
+                if (!followsNewlineInEvent && !beginsAfterNewline) fail(sourceName, "terminal prompt must begin on a new line");
+              }
+              previousOutputEndsWithNewline = /[\r\n]$/.test(data);
+            }
           } catch {
             fail(sourceName, "terminal source must begin with a valid asciicast JSON header");
           }
+        } else if (/[^\r\n]\[(?:rajat|learner)@[^\]\r\n]+\][#$] /.test(contents)) {
+          fail(sourceName, "transcript contains a terminal prompt attached to command output");
         }
       });
       totalRecordings += 1;
