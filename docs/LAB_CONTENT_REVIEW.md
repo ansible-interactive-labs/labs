@@ -19,12 +19,14 @@ If no gaps are found, say so explicitly rather than omitting the review.
 Review each lab through all of these lenses:
 
 - The title, objective, outcomes, and final verification describe the same skill.
+- Each HOD may contain one or more demo modules. Every module has its own objective, duration, steps, verification checks, recovery guide, and optional cleanup.
 - Prerequisites state the operating system, privileges, access, accounts or subscriptions, connectivity, and starting state.
 - No setup action is implied or hidden between recorded steps.
 - Every terminal replay has a readable transcript and a verified screenshot fallback.
 - Every terminal replay uses the project-wide asciicast v2 geometry of 120 columns × 34 rows so the player remains stable between steps and across labs.
 - The terminal canvas fills the fixed media pane; recordings must not appear as a smaller inset video inside the player.
-- The pre-launch state exposes one Start Demo button; active lab mode fits the viewport, keeps navigation fixed, and confines vertical scrolling to instructional content.
+- Each demo module exposes one Start Demo button; active demo mode fits the viewport, keeps navigation fixed, and confines vertical scrolling to instructional content.
+- Verification appears in the player after the final functional step, and troubleshooting remains contextual to the current step or available through the in-player recovery guide instead of duplicating large page sections.
 - Separate commands render as visually distinct blocks while multiline commands remain grouped together.
 - Credential entry and other secrets are excluded rather than simulated in the recording.
 - Terminal prompts intentionally preserve the public demonstration username `rajat`; private infrastructure, credentials, and subscription identifiers remain prohibited.

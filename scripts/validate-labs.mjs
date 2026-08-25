@@ -54,7 +54,7 @@ for (const directory of directories) {
     continue;
   }
 
-  if (lab.schemaVersion !== 1) fail(directory, "schemaVersion must be 1");
+  if (lab.schemaVersion !== 2) fail(directory, "schemaVersion must be 2");
   if (!slugPattern.test(lab.slug ?? "")) fail(directory, "slug must contain lowercase words separated by hyphens");
   if (lab.slug !== directory) fail(directory, `directory name must match slug ${lab.slug ?? "(missing)"}`);
   if (slugs.has(lab.slug)) fail(directory, `duplicate slug ${lab.slug}`);
@@ -76,16 +76,15 @@ for (const directory of directories) {
   if (!["Beginner", "Intermediate", "Advanced"].includes(lab.difficulty)) fail(directory, "difficulty is invalid");
   if (!["Available", "Coming soon"].includes(lab.status)) fail(directory, "status is invalid");
 
-  ["tags", "outcomes", "prerequisites", "steps", "troubleshooting", "completion"].forEach((key) => {
+  ["tags", "outcomes", "prerequisites", "demos"].forEach((key) => {
     if (!Array.isArray(lab[key]) || lab[key].length === 0) fail(directory, `${key} must contain at least one item`);
   });
-  if (!lab.cleanup || !nonEmptyString(lab.cleanup.explanation) || !nonEmptyString(lab.cleanup.command)) fail(directory, "cleanup explanation and command are required");
   if (!lab.verified || !nonEmptyString(lab.verified.dateISO) || Number.isNaN(Date.parse(lab.verified.dateISO))) fail(directory, "verified.dateISO must be a valid date");
   ["date", "os", "architecture", "package"].forEach((key) => {
     if (!nonEmptyString(lab.verified?.[key])) fail(directory, `verified.${key} is required`);
   });
 
-  ["tags", "outcomes", "completion"].forEach((key) => {
+  ["tags", "outcomes"].forEach((key) => {
     (lab[key] ?? []).forEach((item, index) => {
       if (!nonEmptyString(item)) fail(directory, `${key}[${index}] must be a non-empty string`);
     });
@@ -114,11 +113,6 @@ for (const directory of directories) {
       try { new URL(item.href); } catch { fail(directory, `prerequisites[${index}].href must be a valid URL`); }
     }
   });
-  (lab.troubleshooting ?? []).forEach((item, index) => {
-    ["title", "command", "detail"].forEach((key) => {
-      if (!nonEmptyString(item?.[key])) fail(directory, `troubleshooting[${index}].${key} is required`);
-    });
-  });
   (lab.comparisons ?? []).forEach((comparison, index) => {
     const sourceName = `${directory} comparison ${index + 1}`;
     ["title", "introduction", "takeaway"].forEach((key) => {
@@ -141,7 +135,35 @@ for (const directory of directories) {
     });
   });
 
-  const imagePaths = [lab.coverImage, ...(lab.steps ?? []).map((step) => step.image)];
+  const demoIds = new Set();
+  const demoSteps = [];
+  (lab.demos ?? []).forEach((demo, demoIndex) => {
+    const sourceName = `${directory} demo ${demoIndex + 1}`;
+    ["id", "title", "objective", "duration"].forEach((key) => {
+      if (!nonEmptyString(demo?.[key])) fail(sourceName, `${key} is required`);
+    });
+    if (!slugPattern.test(demo?.id ?? "")) fail(sourceName, "id must contain lowercase words separated by hyphens");
+    if (demoIds.has(demo?.id)) fail(sourceName, `duplicate demo id ${demo.id}`);
+    demoIds.add(demo?.id);
+    if (!Number.isInteger(demo?.durationMinutes) || demo.durationMinutes < 1) fail(sourceName, "durationMinutes must be a positive integer");
+    if (!Array.isArray(demo?.steps) || demo.steps.length === 0) fail(sourceName, "steps must contain at least one item");
+    if (!Array.isArray(demo?.verification) || demo.verification.length === 0) fail(sourceName, "verification must contain at least one item");
+    if (!Array.isArray(demo?.troubleshooting) || demo.troubleshooting.length === 0) fail(sourceName, "troubleshooting must contain at least one item");
+    (demo?.verification ?? []).forEach((item, index) => {
+      if (!nonEmptyString(item)) fail(sourceName, `verification[${index}] must be a non-empty string`);
+    });
+    (demo?.troubleshooting ?? []).forEach((item, index) => {
+      ["title", "command", "detail"].forEach((key) => {
+        if (!nonEmptyString(item?.[key])) fail(sourceName, `troubleshooting[${index}].${key} is required`);
+      });
+    });
+    if (demo.cleanup && (!nonEmptyString(demo.cleanup.explanation) || !nonEmptyString(demo.cleanup.command))) {
+      fail(sourceName, "cleanup must include an explanation and command when supplied");
+    }
+    (demo?.steps ?? []).forEach((step, stepIndex) => demoSteps.push({ demo, step, stepIndex }));
+  });
+
+  const imagePaths = [lab.coverImage, ...demoSteps.map(({ step }) => step.image)];
   const uniqueImages = new Set();
   let labImageBytes = 0;
   imagePaths.forEach((image, index) => {
@@ -164,8 +186,8 @@ for (const directory of directories) {
   if (labImageBytes > maxLabImageBytes) fail(directory, `unique screenshots exceed the 12 MiB per-lab asset budget`);
   if (uniqueImages.size < imagePaths.length - 1) warn(directory, "multiple steps reuse the same screenshot");
 
-  (lab.steps ?? []).forEach((step, index) => {
-    const sourceName = `${directory} step ${index + 1}`;
+  demoSteps.forEach(({ demo, step, stepIndex }) => {
+    const sourceName = `${directory} demo ${demo.id} step ${stepIndex + 1}`;
     ["label", "title", "alt", "explanation", "expected", "troubleshooting"].forEach((key) => {
       if (!nonEmptyString(step[key])) fail(sourceName, `${key} is required`);
     });
@@ -248,7 +270,7 @@ for (const directory of directories) {
       totalRecordings += 1;
     }
   });
-  totalSteps += lab.steps?.length ?? 0;
+  totalSteps += demoSteps.length;
 
   const raw = JSON.stringify(lab);
   if (/VNC Password|SSH Password|192\.168\.\d+\.\d+|password\s*=/i.test(raw)) fail(directory, "possible credential or local address found in lab data");

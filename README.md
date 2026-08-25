@@ -106,7 +106,7 @@ No central registry or route file needs to be edited. The build discovers each `
 ## Architecture for a large lab library
 
 - Each lab is an independent content unit under `content/labs/<slug>/lab.json`, so contributors do not edit a growing monolithic file.
-- The homepage ships compact `LabSummary` records only. Full steps, commands, troubleshooting, and completion content are sent only on that lab's dedicated route.
+- The homepage ships compact `LabSummary` records only. Each dedicated HOD route can contain one or more independent `demos[]`, and each demo owns its steps, verification, troubleshooting, and optional cleanup.
 - The catalog searches and sorts the summaries, but renders only 12 cards initially and reveals additional groups on demand.
 - Build-time validation rejects duplicate slugs, invalid metadata, missing assets, screenshots above the 2 MiB budget, recordings above the 1 MiB budget, terminal recordings that are not asciicast v2 at 120×34, incomplete instructional fields, and likely private data in lab JSON, replays, or transcripts.
 - Every lab directory must contain a review report, preventing a structurally valid but instructionally incomplete lab from entering the build unnoticed.
@@ -119,7 +119,7 @@ No central registry or route file needs to be edited. The build discovers each `
 Every published lab must include:
 
 - A dedicated, shareable URL and stateless anonymous sessions that always begin at step 1
-- A single Start Demo action before launch and a viewport-contained lab mode with fixed navigation and independently scrollable guidance
+- One or more independently playable demo modules, each with a single Start Demo action and a viewport-contained player with fixed navigation and independently scrollable guidance
 - Searchable topic, platform, difficulty, tags, duration, and learning outcomes
 - Explicit OS, privilege, connectivity, subscription, and registry prerequisites
 - A tested environment record and visible last-verified date
@@ -127,7 +127,7 @@ Every published lab must include:
 - A fixed 120×34 terminal canvas that fills the available media pane at desktop, tablet, and phone sizes without decorative inset padding
 - Copyable commands, expected results, and per-step troubleshooting
 - Keyboard, touch, mobile, reduced-motion, and screen-reader support
-- A functional verification step, completion checklist, and optional cleanup
+- A functional final step, an integrated completion summary, contextual recovery guidance, and optional in-player cleanup
 - Step-specific and general GitHub issue-reporting links
 
 Before publishing, check the homepage and lab route at desktop, tablet, and phone widths; exercise the Start Demo gate, fixed lab frame, independently scrolling guidance, replay controls, transcripts, step navigation, completion, fresh-start behavior after exit or refresh, search, filters, screenshot fallbacks, and issue links.

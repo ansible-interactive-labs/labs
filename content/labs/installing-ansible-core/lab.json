@@ -1,6 +1,6 @@
 {
   "$schema": "../schema.json",
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "slug": "installing-ansible-core",
   "title": "Installing ansible-core",
   "shortDescription": "Build and verify an Ansible control node on RHEL 9.",
@@ -164,7 +164,14 @@
     "architecture": "aarch64",
     "package": "ansible-core 2.14.18-3.el9_8.1"
   },
-  "steps": [
+  "demos": [
+    {
+      "id": "install-and-validate",
+      "title": "Install and validate ansible-core on RHEL 9",
+      "objective": "Register a RHEL 9 system, install the AppStream ansible-core RPM, inspect its content boundary, and prove that the runtime can execute a module locally.",
+      "duration": "13 min",
+      "durationMinutes": 13,
+      "steps": [
     {
       "label": "Verify",
       "title": "Verify the RHEL 9 starting environment",
@@ -322,8 +329,8 @@
         "transcript": "/demos/installing-ansible-core/recordings/09-smoke-test.txt"
       }
     }
-  ],
-  "troubleshooting": [
+      ],
+      "troubleshooting": [
     {
       "title": "rhc connect cannot register the system",
       "command": "sudo subscription-manager status",
@@ -350,7 +357,7 @@
       "detail": "Additional collection namespaces mean this environment is not limited to the clean ansible-core content shown in the demonstration. Use the collection paths from ansible --version to locate separately installed content. A missing collection directory on a clean system is not an ansible-core installation failure."
     }
   ],
-  "completion": [
+      "verification": [
     "rhc status reports active Subscription Management and Insights connections",
     "BaseOS and AppStream are enabled",
     "rpm -q ansible-core returns the installed package",
@@ -360,8 +367,10 @@
     "ansible --version starts successfully",
     "The localhost ping test returns SUCCESS and ping: pong"
   ],
-  "cleanup": {
-    "explanation": "Cleanup is optional. Remove the package only if this VM will not be used for later Ansible labs. Unregistering also removes access to subscribed RHEL content.",
-    "command": "sudo dnf remove ansible-core\n# Optional: disconnect this disposable lab VM\nsudo rhc disconnect"
-  }
+      "cleanup": {
+        "explanation": "Cleanup is optional. Remove the package only if this VM will not be used for later Ansible labs. Unregistering also removes access to subscribed RHEL content.",
+        "command": "sudo dnf remove ansible-core\n# Optional: disconnect this disposable lab VM\nsudo rhc disconnect"
+      }
+    }
+  ]
 }

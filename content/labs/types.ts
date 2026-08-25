@@ -53,8 +53,23 @@ export type LabComparison = {
   }>;
 };
 
+export type LabDemo = {
+  id: string;
+  title: string;
+  objective: string;
+  duration: string;
+  durationMinutes: number;
+  steps: LabStep[];
+  verification: string[];
+  troubleshooting: LabTroubleshooting[];
+  cleanup?: {
+    explanation: string;
+    command: string;
+  };
+};
+
 export type Lab = {
-  schemaVersion: 1;
+  schemaVersion: 2;
   slug: string;
   title: string;
   shortDescription: string;
@@ -81,13 +96,7 @@ export type Lab = {
     architecture: string;
     package: string;
   };
-  steps: LabStep[];
-  troubleshooting: LabTroubleshooting[];
-  completion: string[];
-  cleanup: {
-    explanation: string;
-    command: string;
-  };
+  demos: LabDemo[];
 };
 
 export type LabSummary = Pick<Lab,

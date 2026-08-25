@@ -5,7 +5,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import type { Lab } from "@/content/labs/types";
+import type { Lab, LabDemo } from "@/content/labs/types";
 import TerminalReplay from "@/components/TerminalReplay";
 import { brand, formatHodNumber } from "@/lib/brand";
 
@@ -25,7 +25,7 @@ const splitCommands = (value: string) => {
   return commands;
 };
 
-export default function DemoPlayer({ lab }: { lab: Lab }) {
+export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
   const [stepIndex, setStepIndex] = useState(0);
   const [copied, setCopied] = useState(false);
   const [completed, setCompleted] = useState(false);
@@ -35,24 +35,24 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
   const [announcement, setAnnouncement] = useState("");
   const playerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const step = lab.steps[stepIndex];
+  const step = demo.steps[stepIndex];
 
   useEffect(() => {
     if (started) {
       const announceTimer = window.setTimeout(() => {
-        setAnnouncement(`Step ${stepIndex + 1} of ${lab.steps.length}: ${step.title}`);
+        setAnnouncement(`Step ${stepIndex + 1} of ${demo.steps.length}: ${step.title}`);
         titleRef.current?.focus({ preventScroll: true });
       }, 0);
       return () => window.clearTimeout(announceTimer);
     }
-  }, [lab.steps.length, started, step.title, stepIndex]);
+  }, [demo.steps.length, started, step.title, stepIndex]);
 
   useEffect(() => {
-    if (!started) return;
+    if (!started && !completed) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = previousOverflow; };
-  }, [started]);
+  }, [completed, started]);
 
   useEffect(() => {
     setFullscreenSupported(Boolean(playerRef.current?.requestFullscreen && document.exitFullscreen));
@@ -64,7 +64,7 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (!started) return;
-      if (event.key === "ArrowRight") setStepIndex((current) => Math.min(current + 1, lab.steps.length - 1));
+      if (event.key === "ArrowRight") setStepIndex((current) => Math.min(current + 1, demo.steps.length - 1));
       if (event.key === "ArrowLeft") setStepIndex((current) => Math.max(current - 1, 0));
       if (event.key === "Escape" && document.fullscreenElement) document.exitFullscreen().catch(() => undefined);
       if (event.key === "Tab" && fullscreen && playerRef.current) {
@@ -85,7 +85,7 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [fullscreen, lab.steps.length, started]);
+  }, [demo.steps.length, fullscreen, started]);
 
   const copyCommand = async (value: string) => {
     try {
@@ -115,7 +115,7 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
     setStepIndex(0);
     setCompleted(false);
     setStarted(true);
-    setAnnouncement(`Lab started. Step 1 of ${lab.steps.length}.`);
+    setAnnouncement(`Demo started. Step 1 of ${demo.steps.length}.`);
   };
 
   const resetProgress = () => {
@@ -130,12 +130,12 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
   const issueUrl = `https://github.com/ansible-interactive-labs/labs/issues/new?title=${issueTitle}&body=${issueBody}`;
 
   return (
-    <div className={`demo-player route-player${started ? " is-running" : ""}`} ref={playerRef} aria-label={`${lab.title} interactive demonstration`}>
+    <div className={`demo-player route-player${started || completed ? " is-running" : ""}`} ref={playerRef} aria-label={`${demo.title} interactive demonstration`}>
       <p className="sr-only" aria-live="polite">{announcement}</p>
       <header className="player-header">
         <div>
-          <span className="player-kicker">{formatHodNumber(lab.hodNumber)} · Hands-On Demo</span>
-          <strong>{lab.title}</strong>
+          <span className="player-kicker">{formatHodNumber(lab.hodNumber)} · Demo module</span>
+          <strong>{demo.title}</strong>
         </div>
         <div className="player-tools">
           {started && fullscreenSupported && <button type="button" onClick={openFullscreen} aria-label="Open demo in fullscreen">↗ <span>Fullscreen</span></button>}
@@ -143,8 +143,8 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
         </div>
       </header>
 
-      <div className="player-progress" style={{ gridTemplateColumns: `repeat(${lab.steps.length}, 1fr)` }} aria-label={`Step ${stepIndex + 1} of ${lab.steps.length}`}>
-        {lab.steps.map((item, index) => (
+      <div className="player-progress" style={{ gridTemplateColumns: `repeat(${demo.steps.length}, 1fr)` }} aria-label={`Step ${stepIndex + 1} of ${demo.steps.length}`}>
+        {demo.steps.map((item, index) => (
           started ? (
             <button className={index === stepIndex ? "current" : index < stepIndex || completed ? "complete" : ""} type="button" key={item.label} onClick={() => setStepIndex(index)} aria-current={index === stepIndex ? "step" : undefined} aria-label={`Go to step ${index + 1}: ${item.label}`}>
               <span>{index < stepIndex || completed ? "✓" : index + 1}</span><small>{item.label}</small>
@@ -173,7 +173,7 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
           {step.media?.type !== "terminal" && <a className="image-link" href={`${basePath}${step.image}`} target="_blank" rel="noreferrer">Open full-size screenshot ↗</a>}
         </div>
         <aside className="stage-guide">
-          <p className="step-label">Step {stepIndex + 1} of {lab.steps.length} · {step.label}</p>
+          <p className="step-label">Step {stepIndex + 1} of {demo.steps.length} · {step.label}</p>
           <h2 ref={titleRef} tabIndex={-1}>{step.title}</h2>
           <p className="explanation">{step.explanation}</p>
           {step.command && (
@@ -188,24 +188,53 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
             <summary>Result looks different?</summary>
             <p>{step.troubleshooting}</p>
           </details>
+          <details className="demo-help">
+            <summary>Demo troubleshooting guide</summary>
+            <div>
+              {demo.troubleshooting.map((item) => (
+                <article key={item.title}>
+                  <strong>{item.title}</strong>
+                  <p>{item.detail}</p>
+                  <pre tabIndex={0}><code>{item.command}</code></pre>
+                </article>
+              ))}
+            </div>
+          </details>
           <a className="step-feedback" href={issueUrl} target="_blank" rel="noreferrer">This step didn’t work? Report it ↗</a>
           <div className="stage-guide-utilities"><button type="button" onClick={resetProgress}>Restart demo</button><a href={issueUrl} target="_blank" rel="noreferrer">Report outdated content ↗</a></div>
         </aside>
-      </div> : (
+      </div> : completed ? (
+        <div className="player-complete">
+          <div className="completion-mark" aria-hidden="true">✓</div>
+          <aside>
+            <p className="step-label">Outcome verified</p>
+            <h2>Demo completed successfully</h2>
+            <p>{demo.objective}</p>
+            <ul>{demo.verification.map((item) => <li key={item}><span>✓</span>{item}</li>)}</ul>
+            {demo.cleanup && (
+              <details className="demo-cleanup">
+                <summary>Optional cleanup</summary>
+                <p>{demo.cleanup.explanation}</p>
+                <pre tabIndex={0}><code>{demo.cleanup.command}</code></pre>
+              </details>
+            )}
+          </aside>
+        </div>
+      ) : (
         <div className="player-ready">
           <div className="player-ready-visual"><img src={`${basePath}${lab.coverImage}`} alt={lab.coverAlt} /></div>
-          <aside><p className="step-label">{formatHodNumber(lab.hodNumber)} · Ready when you are</p><h2>{lab.title}</h2><p>{lab.description}</p><p className="player-creator">Created and verified by <a href={brand.linkedin} target="_blank" rel="noreferrer">{brand.creator} ↗</a></p><ul>{lab.outcomes.map((outcome) => <li key={outcome}>{outcome}</li>)}</ul></aside>
+          <aside><p className="step-label">{formatHodNumber(lab.hodNumber)} · Ready when you are</p><h2>{demo.title}</h2><p>{demo.objective}</p><p className="player-creator">Created and verified by <a href={brand.linkedin} target="_blank" rel="noreferrer">{brand.creator} ↗</a></p><ul>{lab.outcomes.map((outcome) => <li key={outcome}>{outcome}</li>)}</ul></aside>
         </div>
       )}
 
       <footer className={`player-footer${started ? "" : " ready-footer"}`}>
-        {!started ? <><span>{brand.demoTagline} Every session begins fresh at step 1.</span><button className="player-next start-lab-button" type="button" onClick={startLab}>Start Demo</button></> : <>
+        {!started ? <><span>{completed ? "Verification complete. Run it again whenever you want." : `${brand.demoTagline} Every session begins fresh at step 1.`}</span><button className="player-next start-lab-button" type="button" onClick={startLab}>Start Demo</button></> : <>
           <button className="player-back" type="button" onClick={() => setStepIndex((current) => Math.max(current - 1, 0))} disabled={stepIndex === 0}>← Back</button>
           <span>Use ← → arrow keys to navigate</span>
-          {stepIndex < lab.steps.length - 1 ? (
-          <button className="player-next" type="button" onClick={() => setStepIndex((current) => Math.min(current + 1, lab.steps.length - 1))}>Next step →</button>
+          {stepIndex < demo.steps.length - 1 ? (
+          <button className="player-next" type="button" onClick={() => setStepIndex((current) => Math.min(current + 1, demo.steps.length - 1))}>Next step →</button>
         ) : (
-          <button className="player-next complete-button" type="button" onClick={markComplete}>Mark lab complete ✓</button>
+          <button className="player-next complete-button" type="button" onClick={markComplete}>Complete demo ✓</button>
         )}</>}
       </footer>
     </div>

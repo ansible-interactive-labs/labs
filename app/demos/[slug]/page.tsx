@@ -44,6 +44,7 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
 
   const genericIssueTitle = encodeURIComponent(`[Lab feedback] ${lab.title}`);
   const genericIssueUrl = `https://github.com/ansible-interactive-labs/labs/issues/new?title=${genericIssueTitle}`;
+  const totalSteps = lab.demos.reduce((count, demo) => count + demo.steps.length, 0);
 
   return (
     <main className="lab-page" id="main-content">
@@ -58,7 +59,8 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
           <div className="lab-facts" aria-label="Lab facts">
             <span><small>Duration</small>{lab.duration}</span>
             <span><small>Platform</small>{lab.platform}</span>
-            <span><small>Steps</small>{lab.steps.length}</span>
+            <span><small>Demonstrations</small>{lab.demos.length}</span>
+            <span><small>Total steps</small>{totalSteps}</span>
             <span><small>Last verified</small>{lab.verified.date}</span>
           </div>
         </div>
@@ -119,21 +121,24 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
               <h2 id={headingId}>{comparison.title}</h2>
               <p>{comparison.introduction}</p>
             </div>
-            <div className="comparison-table-wrap" tabIndex={0} aria-label={`${comparison.title} comparison table`}>
-              <table>
-                <thead>
-                  <tr><th scope="col">Compare</th>{comparison.columns.map((column) => <th scope="col" key={column}>{column}</th>)}</tr>
-                </thead>
-                <tbody>
-                  {comparison.rows.map((row) => (
-                    <tr key={row.aspect}>
-                      <th scope="row">{row.aspect}</th>
-                      {row.values.map((value, index) => <td key={`${row.aspect}-${index}`}>{value}</td>)}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <details className="comparison-deep-dive">
+              <summary>Read the detailed comparison</summary>
+              <div className="comparison-table-wrap" tabIndex={0} aria-label={`${comparison.title} comparison table`}>
+                <table>
+                  <thead>
+                    <tr><th scope="col">Compare</th>{comparison.columns.map((column) => <th scope="col" key={column}>{column}</th>)}</tr>
+                  </thead>
+                  <tbody>
+                    {comparison.rows.map((row) => (
+                      <tr key={row.aspect}>
+                        <th scope="row">{row.aspect}</th>
+                        {row.values.map((value, index) => <td key={`${row.aspect}-${index}`}>{value}</td>)}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </details>
             <div className="comparison-takeaway">
               <strong>Which should you choose?</strong>
               <p>{comparison.takeaway}</p>
@@ -145,44 +150,24 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
         );
       })}
 
-      <section className="player-shell" aria-label="Interactive lab player">
-        <DemoPlayer lab={lab} />
-      </section>
-
-      <section className="completion-section" id="completion" aria-labelledby="completion-title">
-        <div>
-          <p className="eyebrow"><span /> Verify your work</p>
-          <h2 id="completion-title">Completion checklist</h2>
-          <p>Confirm every outcome before moving to the next lab.</p>
+      <section className="demo-modules" aria-labelledby="demonstrations-title">
+        <div className="demo-modules-heading">
+          <p className="eyebrow"><span /> Watch it. Run it. Verify it.</p>
+          <h2 id="demonstrations-title">{lab.demos.length === 1 ? "Demonstration" : "Demonstrations"}</h2>
+          <p>Each demonstration is an independent workflow with contextual explanations, expected results, recovery guidance, and a final verification.</p>
         </div>
-        <ul>
-          {lab.completion.map((item) => <li key={item}><span>✓</span>{item}</li>)}
-        </ul>
-      </section>
-
-      <section className="lab-troubleshooting" id="troubleshooting" aria-labelledby="troubleshooting-title">
-        <div className="troubleshooting-intro">
-          <p className="eyebrow"><span /> Troubleshooting</p>
-          <h2 id="troubleshooting-title">Common issues,<br />clear next checks.</h2>
-          <p>Use these checks when your result differs from the demonstration. Never work around repository problems by disabling signature verification.</p>
-        </div>
-        <div className="troubleshooting-list">
-          {lab.troubleshooting.map((item, index) => (
-            <details key={item.title} open={index === 0}>
-              <summary><span>{String(index + 1).padStart(2, "0")}</span>{item.title}</summary>
-              <div><p>{item.detail}</p><pre><code>{item.command}</code></pre></div>
-            </details>
-          ))}
-        </div>
-      </section>
-
-      <section className="cleanup-section" aria-labelledby="cleanup-title">
-        <div>
-          <p className="eyebrow"><span /> Optional</p>
-          <h2 id="cleanup-title">Cleanup and reset</h2>
-          <p>{lab.cleanup.explanation}</p>
-        </div>
-        <pre tabIndex={0}><code>{lab.cleanup.command}</code></pre>
+        {lab.demos.map((demo, index) => (
+          <article className="demo-module" id={`demo-${demo.id}`} key={demo.id}>
+            <header className="demo-module-heading">
+              <div><span>Demo {String(index + 1).padStart(2, "0")}</span><h3>{demo.title}</h3></div>
+              <p>{demo.objective}</p>
+              <dl><div><dt>Duration</dt><dd>{demo.duration}</dd></div><div><dt>Steps</dt><dd>{demo.steps.length}</dd></div></dl>
+            </header>
+            <div className="player-shell" aria-label={`${demo.title} player`}>
+              <DemoPlayer lab={lab} demo={demo} />
+            </div>
+          </article>
+        ))}
       </section>
 
       <section className="feedback-band">

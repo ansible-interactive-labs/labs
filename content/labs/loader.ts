@@ -15,12 +15,15 @@ const assertLab = (value: unknown, source: string): Lab => {
   requiredStrings.forEach((key) => {
     if (typeof lab[key] !== "string" || !(lab[key] as string).trim()) throw new Error(`${source}: ${String(key)} is required`);
   });
-  if (lab.schemaVersion !== 1) throw new Error(`${source}: unsupported schemaVersion`);
+  if (lab.schemaVersion !== 2) throw new Error(`${source}: unsupported schemaVersion`);
   if (!slugPattern.test(lab.slug ?? "")) throw new Error(`${source}: slug must use lowercase words separated by hyphens`);
-  if (!Array.isArray(lab.steps) || lab.steps.length === 0) throw new Error(`${source}: at least one step is required`);
-  if (!Array.isArray(lab.troubleshooting) || lab.troubleshooting.length === 0) throw new Error(`${source}: troubleshooting is required`);
+  if (!Array.isArray(lab.demos) || lab.demos.length === 0) throw new Error(`${source}: at least one demo is required`);
+  lab.demos.forEach((demo, index) => {
+    if (!Array.isArray(demo.steps) || demo.steps.length === 0) throw new Error(`${source}: demo ${index + 1} requires at least one step`);
+    if (!Array.isArray(demo.verification) || demo.verification.length === 0) throw new Error(`${source}: demo ${index + 1} requires verification checks`);
+    if (!Array.isArray(demo.troubleshooting) || demo.troubleshooting.length === 0) throw new Error(`${source}: demo ${index + 1} requires troubleshooting guidance`);
+  });
   if (!Array.isArray(lab.prerequisites) || lab.prerequisites.length === 0) throw new Error(`${source}: prerequisites are required`);
-  if (!Array.isArray(lab.completion) || lab.completion.length === 0) throw new Error(`${source}: completion checks are required`);
   return lab as Lab;
 };
 
@@ -56,7 +59,7 @@ export const getLabSummaries = cache((): LabSummary[] => getLabSlugs()
     publishedOrder: lab.publishedOrder,
     tags: lab.tags,
     outcomes: lab.outcomes,
-    stepCount: lab.steps.length,
+    stepCount: lab.demos.reduce((count, demo) => count + demo.steps.length, 0),
     verifiedDate: lab.verified.date,
     verifiedDateISO: lab.verified.dateISO
   }))

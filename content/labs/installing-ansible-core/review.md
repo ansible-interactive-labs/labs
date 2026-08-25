@@ -30,6 +30,7 @@ Implemented in this review:
 - Clarified that an inactive `rhcd` service does not block DNF package installation.
 - Standardized every replay at 120 columns by 34 rows with the `rajat` shell identity and ensured every returned prompt begins on a new line.
 - Re-recorded every command through the returned shell prompt, added a completion hold, and capped idle gaps so network and installation waits do not appear frozen.
+- Migrated HOD 001 to the multi-demo content model. Verification, cross-step troubleshooting, and optional cleanup now belong to the demo module and appear contextually inside the player rather than as duplicated page sections.
 - Expanded the configuration-inspection explanation of `PAGER=cat`, `ansible-config dump`, and `--only-changed`.
 - Expanded the final ad hoc command into its target pattern, module-selection, fully qualified collection name, and local-connection components, including why it is not an ICMP ping.
 
