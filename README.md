@@ -1,6 +1,6 @@
 # Rajat’s Applied Technology Lab
 
-A static technology learning and solution library created by Rajat Agrawal. The platform begins with verified Ansible Hands-On Demos and is designed to expand across automation, infrastructure as code, Kubernetes, developer platforms, cloud, security, and applied AI.
+A static professional technology portfolio, learning platform, and solution library created by Rajat Agrawal. The platform begins with verified Ansible Hands-On Demos and is designed to expand across automation, infrastructure as code, Kubernetes, developer platforms, cloud, security, and applied AI.
 
 **Master brand promise:** Learn it. Build it. Apply it.
 
@@ -38,6 +38,7 @@ Open <http://localhost:3000>.
 
 ```bash
 pnpm validate:labs
+pnpm validate:browsers
 pnpm build
 ```
 
@@ -54,6 +55,10 @@ python3 -m http.server 8080 --directory out
 3. The included `deploy-pages.yml` workflow builds and publishes the site automatically.
 
 The workflow detects whether the repository is a root site (`owner.github.io`) or a project site and configures the asset path accordingly.
+
+## Browser and mobile support
+
+The project explicitly targets Chrome 111+, Edge 111+, Firefox 111+, Safari 16.4+, and iOS Safari 16.4+. Responsive release checks cover narrow phones, current phones, tablets, compact laptops, and desktops. See [`docs/BROWSER_SUPPORT.md`](docs/BROWSER_SUPPORT.md) for the support contract, progressive-enhancement behavior, and QA checklist.
 
 ## Add another demo
 

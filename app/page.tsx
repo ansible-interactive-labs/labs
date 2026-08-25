@@ -17,14 +17,14 @@ export default function Home() {
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <p className="eyebrow"><span /> Practical technology. Demonstrated clearly.</p>
+          <p className="eyebrow"><span /> Rajat Agrawal’s applied technology portfolio</p>
           <h1>Learn it. Build it.<br /><em>Apply it.</em></h1>
-          <p className="hero-intro">A growing library of verified demonstrations, solution blueprints, and consulting cases across automation, infrastructure, developer platforms, cloud-native engineering, and applied AI.</p>
+          <p className="hero-intro">An evidence-backed professional portfolio of verified demonstrations, solution blueprints, and consulting cases across automation, infrastructure, developer platforms, cloud-native engineering, and applied AI.</p>
           <div className="hero-actions">
             <Link className="button button-primary" href={`/demos/${firstLab.slug}/`}>Start HOD 001 <span>→</span></Link>
             <Link className="creator-link" href={brand.creatorPath}>Created by {brand.creator} <span>→</span></Link>
           </div>
-          <p className="hero-note">Hands-On Demos available now · Solutions and consulting cases expanding next</p>
+          <p className="hero-note">Published work you can inspect · Hands-On Demos available now · Solutions and consulting cases expanding next</p>
         </div>
 
         <div className="hero-console" aria-label="Example Ansible terminal output">
@@ -61,9 +61,9 @@ export default function Home() {
       <section className="creator-section" id="creator" aria-labelledby="creator-title">
         <div className="creator-monogram" aria-hidden="true">RA<span>_</span></div>
         <div className="creator-copy">
-          <p className="eyebrow"><span /> The creator</p>
+          <p className="eyebrow"><span /> Portfolio creator</p>
           <h2 id="creator-title">Built and verified<br />by Rajat Agrawal.</h2>
-          <p>Rajat creates practical automation learning experiences for people who want to see the complete workflow—not only the final command. Every published demo combines real execution, clear reasoning, expected results, and recovery guidance.</p>
+          <p>Rajat uses this portfolio to publish inspectable evidence of how he approaches technology: complete execution, clear reasoning, architecture context, expected results, and recovery guidance—not unsupported claims.</p>
           <div className="creator-actions">
             <Link className="button button-dark" href={brand.creatorPath}>View Rajat’s profile <span>→</span></Link>
             <a className="text-link" href={brand.linkedin} target="_blank" rel="noreferrer">Connect on LinkedIn ↗</a>
@@ -77,6 +77,29 @@ export default function Home() {
             <li><strong>Independent practice</strong><small>Learners reproduce the workflow safely in their own environment.</small></li>
           </ul>
         </aside>
+      </section>
+
+      <section className="portfolio-evidence" id="portfolio" aria-labelledby="portfolio-title">
+        <div className="portfolio-heading">
+          <p className="eyebrow light"><span /> Published portfolio evidence</p>
+          <h2 id="portfolio-title">Work you can inspect,<br />reproduce, and evaluate.</h2>
+          <p>The portfolio grows through complete artifacts. Each publication identifies its environment, decisions, implementation evidence, verification, and authorship.</p>
+          <div className="portfolio-links"><Link className="button button-primary" href={`/demos/${firstLab.slug}/`}>Inspect HOD 001 <span>→</span></Link><Link className="text-link light-link" href={brand.creatorPath}>View Rajat’s profile →</Link></div>
+        </div>
+        <article className="portfolio-project">
+          <div className="portfolio-project-top"><span>HOD 001</span><small>Published · Verified</small></div>
+          <p className="portfolio-project-type">Ansible · RHEL 9 · Hands-On Demo</p>
+          <h3>{firstLab.title}</h3>
+          <p>{firstLab.description}</p>
+          <dl>
+            <div><dt>Evidence</dt><dd>{firstLab.stepCount} replay-led steps</dd></div>
+            <div><dt>Environment</dt><dd>{firstLab.platform}</dd></div>
+            <div><dt>Level</dt><dd>{firstLab.difficulty}</dd></div>
+            <div><dt>Last verified</dt><dd>{firstLab.verifiedDateISO}</dd></div>
+          </dl>
+          <strong>Capabilities demonstrated</strong>
+          <ul><li>Environment and subscription validation</li><li>Package discovery and lifecycle</li><li>Ansible CLI configuration and documentation</li><li>Functional verification and troubleshooting</li></ul>
+        </article>
       </section>
 
       <section className="catalog" id="demos">

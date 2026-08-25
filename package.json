@@ -8,10 +8,19 @@
   "scripts": {
     "dev": "next dev",
     "validate:labs": "node scripts/validate-labs.mjs",
-    "build": "pnpm validate:labs && next build",
+    "validate:browsers": "node scripts/check-browser-support.mjs",
+    "validate:site": "pnpm validate:labs && pnpm validate:browsers",
+    "build": "pnpm validate:site && next build",
     "start": "next start",
     "lint": "eslint . --ignore-pattern out --ignore-pattern .next"
   },
+  "browserslist": [
+    "chrome 111",
+    "edge 111",
+    "firefox 111",
+    "safari 16.4",
+    "ios_saf 16.4"
+  ],
   "dependencies": {
     "asciinema-player": "^3.17.0",
     "next": "16.2.6",

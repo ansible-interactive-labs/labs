@@ -7,7 +7,7 @@ export default function SiteFooter() {
     <footer className="site-footer">
       <div className="footer-primary">
         <SiteBrand />
-        <p>{brand.tagline}</p>
+        <div className="footer-promise"><p>{brand.tagline}</p><small>Responsive · Chrome · Firefox · Safari</small></div>
         <div className="footer-author-links">
           <Link href={brand.creatorPath}>About {brand.creator} →</Link>
           <a href={brand.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>

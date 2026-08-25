@@ -31,6 +31,7 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
   const [completed, setCompleted] = useState(false);
   const [started, setStarted] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
+  const [fullscreenSupported, setFullscreenSupported] = useState(false);
   const [announcement, setAnnouncement] = useState("");
   const playerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -89,6 +90,7 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
   }, [started]);
 
   useEffect(() => {
+    setFullscreenSupported(Boolean(playerRef.current?.requestFullscreen && document.exitFullscreen));
     const onFullscreenChange = () => setFullscreen(document.fullscreenElement === playerRef.current);
     document.addEventListener("fullscreenchange", onFullscreenChange);
     return () => document.removeEventListener("fullscreenchange", onFullscreenChange);
@@ -172,7 +174,7 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
           <strong>{lab.title}</strong>
         </div>
         <div className="player-tools">
-          {started && <button type="button" onClick={openFullscreen} aria-label="Open demo in fullscreen">↗ <span>Fullscreen</span></button>}
+          {started && fullscreenSupported && <button type="button" onClick={openFullscreen} aria-label="Open demo in fullscreen">↗ <span>Fullscreen</span></button>}
           <Link href="/" aria-label="Return to demo library">×</Link>
         </div>
       </header>

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import 'asciinema-player/dist/bundle/asciinema-player.css';
 import './globals.css';
 import { brand } from '@/lib/brand';
@@ -7,17 +7,27 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
 const socialImage = `${siteUrl}/og.png`;
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#f6f3ef',
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  applicationName: brand.siteName,
   title: {
     default: brand.siteName,
     template: `%s | ${brand.siteName}`,
   },
   description:
-    'Hands-On Demos, solution blueprints, and consulting cases across automation, infrastructure, developer platforms, cloud-native engineering, and applied AI.',
+    'Rajat Agrawal’s professional technology portfolio: Hands-On Demos, solution blueprints, and consulting cases across automation, infrastructure, developer platforms, cloud-native engineering, and applied AI.',
   authors: [{ name: brand.creator, url: brand.linkedin }],
   creator: brand.creator,
   publisher: brand.siteName,
+  category: 'technology',
+  keywords: ['Rajat Agrawal', 'technology portfolio', 'hands-on demos', 'automation', 'Ansible', 'infrastructure', 'cloud native', 'applied AI'],
   icons: { icon: `${basePath}/favicon.svg` },
   openGraph: {
     title: brand.siteName,

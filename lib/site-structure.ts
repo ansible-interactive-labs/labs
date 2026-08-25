@@ -3,7 +3,7 @@ export const primaryNavigation = [
   { key: "solutions", label: "Solutions", href: "/solutions/" },
   { key: "consulting", label: "Consulting Cases", href: "/consulting/" },
   { key: "technologies", label: "Technologies", href: "/technologies/" },
-  { key: "author", label: "About Rajat", href: "/author/rajat-agrawal/" },
+  { key: "author", label: "Rajat’s Profile", href: "/author/rajat-agrawal/" },
 ] as const;
 
 export type NavigationKey = (typeof primaryNavigation)[number]["key"];

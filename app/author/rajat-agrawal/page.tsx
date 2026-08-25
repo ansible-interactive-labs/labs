@@ -62,7 +62,7 @@ export default function AuthorPage() {
       <header className="author-hero">
         <div className="author-identity">
           <div className="author-monogram" aria-hidden="true">RA<span>_</span></div>
-          <div className="author-status"><i /> Creator · Automation practitioner · Educator</div>
+          <div className="author-status"><i /> Portfolio creator · Automation practitioner · Educator</div>
         </div>
         <div className="author-introduction">
           <p className="eyebrow"><span /> About the author</p>
