@@ -105,7 +105,7 @@ export default function Home() {
       <section className="catalog" id="demos">
         <div className="section-heading">
           <div><p className="eyebrow"><span /> Featured Hands-On Demo</p><h2>Build practical skills</h2></div>
-          <p>{brand.demoTagline} Every demonstration has its own shareable URL, verified environment, progress tracking, and recovery guidance.</p>
+          <p>{brand.demoTagline} Every demonstration has its own shareable URL, verified environment, fresh anonymous session, and recovery guidance.</p>
         </div>
 
         <aside className="prerequisite-callout">

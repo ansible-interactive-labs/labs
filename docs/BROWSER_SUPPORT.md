@@ -37,7 +37,7 @@ For each viewport, verify:
 
 - Fullscreen is shown only when the browser exposes the standard Fullscreen API. The player remains fully usable without it, including on mobile Safari configurations that restrict element fullscreen.
 - Clipboard failures produce a manual-copy instruction instead of blocking the lab.
-- Local storage is optional. Labs remain usable when private browsing or policy blocks storage.
+- Demo progress exists only in memory for the active page. Refreshing, leaving, or reopening a demo intentionally starts a new anonymous session at step 1.
 - Terminal recordings always include a static screenshot and text transcript fallback.
 - `100vh` precedes `100svh` so browsers without small-viewport units retain a usable player height.
 - Safe-area insets protect controls on notched phones and tablets.
@@ -50,6 +50,6 @@ Run the source-level compatibility gate with:
 pnpm validate:browsers
 ```
 
-`pnpm build` runs this gate automatically. It confirms the declared browser baseline and guards against removing required Safari, mobile viewport, touch, storage, clipboard, and fullscreen fallbacks.
+`pnpm build` runs this gate automatically. It confirms the declared browser baseline and guards against removing required Safari, mobile viewport, touch, stateless-session, clipboard, and fullscreen safeguards.
 
 Visual checks still matter. Browser engines can differ in font metrics, native controls, fullscreen policy, and viewport behavior even when compilation succeeds.

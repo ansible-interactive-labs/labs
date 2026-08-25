@@ -30,7 +30,7 @@ export default function DemosPage() {
       <section className="hub-library" aria-labelledby="demo-library-title">
         <div className="section-heading">
           <div><p className="eyebrow"><span /> Demo library</p><h2 id="demo-library-title">Choose a workflow.</h2></div>
-          <p>Search by technology, topic, or difficulty. Progress is stored locally on your device so you can return at your own pace.</p>
+          <p>Search by technology, topic, or difficulty. Every anonymous demo session starts fresh at step 1—no login or saved progress.</p>
         </div>
         <DemoCatalog labs={labs} />
       </section>

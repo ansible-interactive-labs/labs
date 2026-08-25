@@ -6,6 +6,7 @@ const read = (file) => readFileSync(resolve(root, file), "utf8");
 const packageJson = JSON.parse(read("package.json"));
 const css = read("app/globals.css");
 const player = read("components/DemoPlayer.tsx");
+const catalog = read("components/DemoCatalog.tsx");
 const layout = read("app/layout.tsx");
 
 const requiredTargets = ["chrome 111", "edge 111", "firefox 111", "safari 16.4", "ios_saf 16.4"];
@@ -20,7 +21,7 @@ const requirements = [
   [css.includes("touch-action: manipulation"), "touch interaction optimization"],
   [player.includes("fullscreenSupported"), "progressive fullscreen detection"],
   [player.includes("navigator.clipboard") && player.includes("Copy failed"), "clipboard failure fallback"],
-  [player.includes("localStorage") && player.includes("progressive enhancement"), "storage progressive enhancement"],
+  [!player.includes("localStorage") && !catalog.includes("localStorage"), "stateless anonymous demo sessions"],
   [layout.includes("viewportFit: 'cover'"), "mobile viewport safe-area metadata"],
 ];
 

@@ -35,44 +35,9 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
   const [announcement, setAnnouncement] = useState("");
   const playerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const hydratedRef = useRef(false);
   const step = lab.steps[stepIndex];
-  const storageKey = `ansible-lab-progress:${lab.slug}`;
 
   useEffect(() => {
-    let initialStep = 0;
-    let savedCompleted = false;
-    try {
-      const queryStep = Number(new URLSearchParams(window.location.search).get("step"));
-      const saved = window.localStorage.getItem(storageKey);
-      if (Number.isInteger(queryStep) && queryStep >= 1 && queryStep <= lab.steps.length) {
-        initialStep = queryStep - 1;
-      } else if (saved) {
-        const parsed = JSON.parse(saved) as { stepIndex?: number; completed?: boolean };
-        if (typeof parsed.stepIndex === "number") initialStep = Math.min(Math.max(parsed.stepIndex, 0), lab.steps.length - 1);
-        savedCompleted = Boolean(parsed.completed);
-      }
-    } catch {
-      // Storage and query parsing are progressive enhancements.
-    }
-    const timer = window.setTimeout(() => {
-      setStepIndex(initialStep);
-      setCompleted(savedCompleted);
-      hydratedRef.current = true;
-    }, 0);
-    return () => window.clearTimeout(timer);
-  }, [lab.steps.length, storageKey]);
-
-  useEffect(() => {
-    if (!hydratedRef.current) return;
-    try {
-      window.localStorage.setItem(storageKey, JSON.stringify({ stepIndex, completed }));
-      const url = new URL(window.location.href);
-      url.searchParams.set("step", String(stepIndex + 1));
-      window.history.replaceState({}, "", url);
-    } catch {
-      // The lab remains usable when storage is unavailable.
-    }
     if (started) {
       const announceTimer = window.setTimeout(() => {
         setAnnouncement(`Step ${stepIndex + 1} of ${lab.steps.length}: ${step.title}`);
@@ -80,7 +45,7 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
       }, 0);
       return () => window.clearTimeout(announceTimer);
     }
-  }, [completed, lab.steps.length, started, step.title, stepIndex, storageKey]);
+  }, [lab.steps.length, started, step.title, stepIndex]);
 
   useEffect(() => {
     if (!started) return;
@@ -143,7 +108,7 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
   const markComplete = () => {
     setCompleted(true);
     setStarted(false);
-    setAnnouncement("Lab marked complete. Your progress is saved on this device.");
+    setAnnouncement("Demo complete. This session will reset when you leave or refresh the page.");
   };
 
   const startLab = () => {
@@ -154,11 +119,10 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
   };
 
   const resetProgress = () => {
-    if (!window.confirm("Reset your saved progress for this lab?")) return;
+    if (!window.confirm("Restart this demo from step 1?")) return;
     setStepIndex(0);
     setCompleted(false);
-    try { window.localStorage.removeItem(storageKey); } catch { /* no-op */ }
-    setAnnouncement("Progress reset.");
+    setAnnouncement("Demo restarted at step 1.");
   };
 
   const issueTitle = encodeURIComponent(`[Lab feedback] ${lab.title} — step ${stepIndex + 1}`);
@@ -225,7 +189,7 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
             <p>{step.troubleshooting}</p>
           </details>
           <a className="step-feedback" href={issueUrl} target="_blank" rel="noreferrer">This step didn’t work? Report it ↗</a>
-          <div className="stage-guide-utilities"><button type="button" onClick={resetProgress}>Reset progress</button><a href={issueUrl} target="_blank" rel="noreferrer">Report outdated content ↗</a></div>
+          <div className="stage-guide-utilities"><button type="button" onClick={resetProgress}>Restart demo</button><a href={issueUrl} target="_blank" rel="noreferrer">Report outdated content ↗</a></div>
         </aside>
       </div> : (
         <div className="player-ready">
@@ -235,7 +199,7 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
       )}
 
       <footer className={`player-footer${started ? "" : " ready-footer"}`}>
-        {!started ? <><span>{brand.demoTagline} Begin with step 1 and work at your own pace.</span><button className="player-next start-lab-button" type="button" onClick={startLab}>Start lab →</button></> : <>
+        {!started ? <><span>{brand.demoTagline} Every session begins fresh at step 1.</span><button className="player-next start-lab-button" type="button" onClick={startLab}>Start Demo</button></> : <>
           <button className="player-back" type="button" onClick={() => setStepIndex((current) => Math.max(current - 1, 0))} disabled={stepIndex === 0}>← Back</button>
           <span>Use ← → arrow keys to navigate</span>
           {stepIndex < lab.steps.length - 1 ? (

@@ -4,11 +4,9 @@
 /* eslint-disable @next/next/no-img-element */
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { LabSummary } from "@/content/labs/types";
 import { formatHodNumber } from "@/lib/brand";
-
-type StoredProgress = { stepIndex: number; completed: boolean };
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -20,21 +18,6 @@ export default function DemoCatalog({ labs }: { labs: LabSummary[] }) {
   const [topic, setTopic] = useState("All topics");
   const [sort, setSort] = useState("Recommended");
   const [visibleCount, setVisibleCount] = useState(pageSize);
-  const [progress, setProgress] = useState<Record<string, StoredProgress>>({});
-
-  useEffect(() => {
-    const saved: Record<string, StoredProgress> = {};
-    labs.forEach((lab) => {
-      try {
-        const value = window.localStorage.getItem(`ansible-lab-progress:${lab.slug}`);
-        if (value) saved[lab.slug] = JSON.parse(value) as StoredProgress;
-      } catch {
-        // A blocked storage API should never prevent access to a lab.
-      }
-    });
-    const timer = window.setTimeout(() => setProgress(saved), 0);
-    return () => window.clearTimeout(timer);
-  }, [labs]);
 
   const difficulties = ["All levels", ...new Set(labs.map((lab) => lab.difficulty))];
   const topics = ["All topics", ...new Set(labs.map((lab) => lab.topic))];
@@ -93,8 +76,6 @@ export default function DemoCatalog({ labs }: { labs: LabSummary[] }) {
 
       <div className={`demo-grid${labs.length > 1 ? " compact-grid" : ""}`}>
         {visibleLabs.map((lab) => {
-          const saved = progress[lab.slug];
-          const progressPercent = saved?.completed ? 100 : saved ? Math.round(((saved.stepIndex + 1) / lab.stepCount) * 100) : 0;
           return (
             <article className="demo-card" key={lab.slug}>
               <Link className="demo-visual" href={`/demos/${lab.slug}/`} aria-label={`Open ${lab.title} interactive demo`}>
@@ -110,14 +91,8 @@ export default function DemoCatalog({ labs }: { labs: LabSummary[] }) {
                 <ul className="outcomes">
                   {lab.outcomes.slice(0, 3).map((outcome) => <li key={outcome}>{outcome}</li>)}
                 </ul>
-                {saved && (
-                  <div className="saved-progress" aria-label={`${progressPercent}% complete`}>
-                    <div><span>{saved.completed ? "Completed" : `Step ${saved.stepIndex + 1} of ${lab.stepCount}`}</span><strong>{progressPercent}%</strong></div>
-                    <i><span style={{ width: `${progressPercent}%` }} /></i>
-                  </div>
-                )}
                 <Link className="button button-dark" href={`/demos/${lab.slug}/`}>
-                  {saved?.completed ? "Review demo" : saved ? "Resume demo" : "Open interactive demo"} <span>→</span>
+                  Start Demo
                 </Link>
               </div>
             </article>

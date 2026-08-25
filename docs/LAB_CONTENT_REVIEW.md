@@ -24,7 +24,7 @@ Review each lab through all of these lenses:
 - Every terminal replay has a readable transcript and a verified screenshot fallback.
 - Every terminal replay uses the project-wide asciicast v2 geometry of 120 columns × 34 rows so the player remains stable between steps and across labs.
 - The terminal canvas fills the fixed media pane; recordings must not appear as a smaller inset video inside the player.
-- The pre-launch state exposes one Start lab button; active lab mode fits the viewport, keeps navigation fixed, and confines vertical scrolling to instructional content.
+- The pre-launch state exposes one Start Demo button; active lab mode fits the viewport, keeps navigation fixed, and confines vertical scrolling to instructional content.
 - Separate commands render as visually distinct blocks while multiline commands remain grouped together.
 - Credential entry and other secrets are excluded rather than simulated in the recording.
 - Terminal prompts intentionally preserve the public demonstration username `rajat`; private infrastructure, credentials, and subscription identifiers remain prohibited.

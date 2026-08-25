@@ -120,10 +120,6 @@ h3 { font-size: clamp(34px, 3vw, 50px); line-height: 1; letter-spacing: -.045em;
 .demo-content p { color: var(--muted); line-height: 1.7; margin: 0; }
 .outcomes { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 10px; font-size: 14px; }
 .outcomes li::before { content: "✓"; color: var(--red); font-weight: 900; margin-right: 10px; }
-.saved-progress { width: 100%; margin-top: 24px; }
-.saved-progress > div { display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; }
-.saved-progress i { display: block; height: 5px; margin-top: 8px; overflow: hidden; background: #ddd7d1; }
-.saved-progress i span { display: block; height: 100%; background: #23945a; }
 .empty-results { max-width: 1400px; margin: 0 auto; padding: 70px 24px; text-align: center; border: 1px dashed #cfc8c1; }
 .empty-results p { color: var(--muted); }
 .empty-results button { padding: 11px 15px; border: 1px solid var(--ink); background: transparent; cursor: pointer; }
