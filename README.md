@@ -1,6 +1,10 @@
-# Ansible Automation Lab
+# Rajat’s Automation Lab
 
-A static, replay-led learning site for Ansible demonstrations. Learners watch each verified workflow, read an accessible transcript, copy the commands, and complete the hands-on activity in their own RHEL environment.
+A static, replay-led library of verified Ansible Hands-On Demos created by Rajat Agrawal. Learners watch each real workflow, read an accessible transcript, copy the commands, and complete the activity in their own environment.
+
+**Brand promise:** Watch it. Run it. Verify it.
+
+Each published lab receives a stable `HOD NNN` identifier. Public website attribution uses the exact creator name **Rajat Agrawal** and links to [Rajat on LinkedIn](https://www.linkedin.com/in/connectwithrajat/). The project is independent and is not affiliated with or endorsed by Red Hat.
 
 The first demo covers installing `ansible-core` on RHEL 9:
 

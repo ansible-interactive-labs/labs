@@ -67,6 +67,7 @@ export type Lab = {
   topic: string;
   platform: string;
   status: "Available" | "Coming soon";
+  hodNumber: number;
   publishedOrder: number;
   tags: string[];
   outcomes: string[];
@@ -102,6 +103,7 @@ export type LabSummary = Pick<Lab,
   | "topic"
   | "platform"
   | "status"
+  | "hodNumber"
   | "publishedOrder"
   | "tags"
   | "outcomes"

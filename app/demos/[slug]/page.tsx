@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import DemoPlayer from "@/components/DemoPlayer";
+import SiteBrand from "@/components/SiteBrand";
+import SiteFooter from "@/components/SiteFooter";
 import { getLab, getLabSlugs } from "@/content/labs/loader";
+import { brand, formatHodNumber } from "@/lib/brand";
 
 export const dynamicParams = false;
 
@@ -17,18 +20,18 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
   const image = new URL(lab.coverImage.replace(/^\//, ""), `${siteUrl.replace(/\/$/, "")}/`).toString();
   return {
-    title: `${lab.title} | Ansible Automation Lab`,
+    title: `${lab.title} | ${brand.siteName}`,
     description: lab.shortDescription,
     openGraph: {
-      title: lab.title,
-      description: lab.shortDescription,
+      title: `${formatHodNumber(lab.hodNumber)} · ${lab.title}`,
+      description: `${lab.shortDescription} Created by ${brand.creator}.`,
       type: "article",
       images: [{ url: image, alt: lab.coverAlt }]
     },
     twitter: {
       card: "summary_large_image",
-      title: lab.title,
-      description: lab.shortDescription,
+      title: `${formatHodNumber(lab.hodNumber)} · ${lab.title}`,
+      description: `${lab.shortDescription} Created by ${brand.creator}.`,
       images: [image]
     }
   };
@@ -45,10 +48,7 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
   return (
     <main className="lab-page" id="main-content">
       <nav className="topbar lab-topbar" aria-label="Lab navigation">
-        <Link className="brand" href="/" aria-label="Ansible Automation Lab home">
-          <span className="brand-mark">A</span>
-          <span>Ansible Automation Lab</span>
-        </Link>
+        <SiteBrand />
         <div className="nav-items">
           <Link className="nav-link subtle" href="/">← Demo library</Link>
           <a className="nav-link subtle" href="#troubleshooting">Troubleshooting</a>
@@ -58,9 +58,10 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
 
       <header className="lab-hero">
         <div>
-          <p className="eyebrow"><span /> {lab.topic} · {lab.difficulty}</p>
+          <p className="eyebrow"><span /> {formatHodNumber(lab.hodNumber)} · {lab.topic} · {lab.difficulty}</p>
           <h1>{lab.title}</h1>
-          <p>{lab.description}</p>
+          <p className="lab-description">{lab.description}</p>
+          <p className="lab-byline">Created, demonstrated, and verified by <a href={brand.linkedin} target="_blank" rel="noreferrer">{brand.creator} ↗</a></p>
           <div className="lab-facts" aria-label="Lab facts">
             <span><small>Duration</small>{lab.duration}</span>
             <span><small>Platform</small>{lab.platform}</span>
@@ -192,14 +193,11 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
       </section>
 
       <section className="feedback-band">
-        <div><strong>Found something outdated?</strong><p>Tell us which result differed so the lab can stay accurate.</p></div>
-        <a href={genericIssueUrl} target="_blank" rel="noreferrer">Report a lab issue ↗</a>
+        <div><strong>Keep this HOD accurate.</strong><p>Tell Rajat which result differed so the demonstration can stay current.</p></div>
+        <div className="feedback-actions"><a href={genericIssueUrl} target="_blank" rel="noreferrer">Report a lab issue ↗</a><a href={brand.linkedin} target="_blank" rel="noreferrer">Follow Rajat ↗</a></div>
       </section>
 
-      <footer>
-        <div className="brand"><span className="brand-mark">A</span><span>Ansible Automation Lab</span></div>
-        <Link href="/">Return to all demos →</Link>
-      </footer>
+      <SiteFooter />
     </main>
   );
 }

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { Lab } from "@/content/labs/types";
 import TerminalReplay from "@/components/TerminalReplay";
+import { brand, formatHodNumber } from "@/lib/brand";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -167,7 +168,7 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
       <p className="sr-only" aria-live="polite">{announcement}</p>
       <header className="player-header">
         <div>
-          <span className="player-kicker">Interactive demo</span>
+          <span className="player-kicker">{formatHodNumber(lab.hodNumber)} · Hands-On Demo</span>
           <strong>{lab.title}</strong>
         </div>
         <div className="player-tools">
@@ -227,12 +228,12 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
       </div> : (
         <div className="player-ready">
           <div className="player-ready-visual"><img src={`${basePath}${lab.coverImage}`} alt={lab.coverAlt} /></div>
-          <aside><p className="step-label">Ready when you are</p><h2>{lab.title}</h2><p>{lab.description}</p><ul>{lab.outcomes.map((outcome) => <li key={outcome}>{outcome}</li>)}</ul></aside>
+          <aside><p className="step-label">{formatHodNumber(lab.hodNumber)} · Ready when you are</p><h2>{lab.title}</h2><p>{lab.description}</p><p className="player-creator">Created and verified by <a href={brand.linkedin} target="_blank" rel="noreferrer">{brand.creator} ↗</a></p><ul>{lab.outcomes.map((outcome) => <li key={outcome}>{outcome}</li>)}</ul></aside>
         </div>
       )}
 
       <footer className={`player-footer${started ? "" : " ready-footer"}`}>
-        {!started ? <><span>Begin with step 1 and work at your own pace.</span><button className="player-next start-lab-button" type="button" onClick={startLab}>Start lab →</button></> : <>
+        {!started ? <><span>{brand.tagline} Begin with step 1 and work at your own pace.</span><button className="player-next start-lab-button" type="button" onClick={startLab}>Start lab →</button></> : <>
           <button className="player-back" type="button" onClick={() => setStepIndex((current) => Math.max(current - 1, 0))} disabled={stepIndex === 0}>← Back</button>
           <span>Use ← → arrow keys to navigate</span>
           {stepIndex < lab.steps.length - 1 ? (

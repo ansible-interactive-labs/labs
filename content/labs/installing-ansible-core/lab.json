@@ -13,6 +13,7 @@
   "topic": "Foundation",
   "platform": "RHEL 9",
   "status": "Available",
+  "hodNumber": 1,
   "publishedOrder": 10,
   "tags": ["Getting started", "RHEL 9", "Installation"],
   "outcomes": [

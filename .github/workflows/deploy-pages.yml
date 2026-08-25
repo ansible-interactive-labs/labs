@@ -1,4 +1,4 @@
-name: Deploy Ansible Automation Lab to Pages
+name: Deploy Rajat’s Automation Lab to Pages
 
 on:
   push:

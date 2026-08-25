@@ -52,6 +52,7 @@ export const getLabSummaries = cache((): LabSummary[] => getLabSlugs()
     topic: lab.topic,
     platform: lab.platform,
     status: lab.status,
+    hodNumber: lab.hodNumber,
     publishedOrder: lab.publishedOrder,
     tags: lab.tags,
     outcomes: lab.outcomes,

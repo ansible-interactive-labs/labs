@@ -30,6 +30,7 @@ if (!directories.length) fail("content/labs", "at least one lab directory is req
 const slugs = new Set();
 const titles = new Set();
 const orders = new Set();
+const hodNumbers = new Set();
 let totalSteps = 0;
 let totalImages = 0;
 let totalRecordings = 0;
@@ -67,6 +68,9 @@ for (const directory of directories) {
 
   if (!Number.isInteger(lab.durationMinutes) || lab.durationMinutes < 1) fail(directory, "durationMinutes must be a positive integer");
   if (!Number.isInteger(lab.publishedOrder) || lab.publishedOrder < 0) fail(directory, "publishedOrder must be a non-negative integer");
+  if (!Number.isInteger(lab.hodNumber) || lab.hodNumber < 1) fail(directory, "hodNumber must be a positive integer");
+  if (hodNumbers.has(lab.hodNumber)) fail(directory, `duplicate hodNumber ${lab.hodNumber}`);
+  hodNumbers.add(lab.hodNumber);
   if (orders.has(lab.publishedOrder)) warn(directory, `publishedOrder ${lab.publishedOrder} is shared with another lab`);
   orders.add(lab.publishedOrder);
   if (!["Beginner", "Intermediate", "Advanced"].includes(lab.difficulty)) fail(directory, "difficulty is invalid");

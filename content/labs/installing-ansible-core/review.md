@@ -19,6 +19,7 @@ Implemented in this review:
 - Refocused the comparison introduction on distribution choices instead of repeating the overview, identified the RHEL AppStream RPM as this lab's path, and renamed the duplicated capabilities row to “Shared foundation.”
 - Added a real VM replay and screenshot that derive the collection namespaces visible in the module documentation index. The clean installation exposes only `ansible.builtin`, producing a namespace count of one.
 - Connected the comparison's additional-content row directly to the collection-inventory step while preserving the distinction between embedded `ansible.builtin` content and separately installed collections.
+- Assigned the stable `HOD 001` identifier and applied the Rajat’s Automation Lab creator attribution without altering terminal identity, technical evidence, or the independent-project boundary.
 - Explained why this derived namespace count is not equivalent to `ansible-galaxy collection list`: `ansible.builtin` is embedded in ansible-core, while that command inventories separately installed collection artifacts in usable collection paths.
 
 - Added an initial environment check for the RHEL release, architecture, hostname, and pre-install package state.

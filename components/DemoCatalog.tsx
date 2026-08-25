@@ -6,6 +6,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { LabSummary } from "@/content/labs/types";
+import { formatHodNumber } from "@/lib/brand";
 
 type StoredProgress = { stepIndex: number; completed: boolean };
 
@@ -98,6 +99,7 @@ export default function DemoCatalog({ labs }: { labs: LabSummary[] }) {
             <article className="demo-card" key={lab.slug}>
               <Link className="demo-visual" href={`/demos/${lab.slug}/`} aria-label={`Open ${lab.title} interactive demo`}>
                 <img src={`${basePath}${lab.coverImage}`} alt={lab.coverAlt} loading="lazy" decoding="async" />
+                <span className="hod-badge">{formatHodNumber(lab.hodNumber)}</span>
                 <span className="play-button" aria-hidden="true">▶</span>
                 <span className="duration">{lab.duration}</span>
               </Link>

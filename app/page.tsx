@@ -1,6 +1,9 @@
 import Link from "next/link";
 import DemoCatalog from "@/components/DemoCatalog";
+import SiteBrand from "@/components/SiteBrand";
+import SiteFooter from "@/components/SiteFooter";
 import { getLabSummaries } from "@/content/labs/loader";
+import { brand } from "@/lib/brand";
 
 export default function Home() {
   const labs = getLabSummaries();
@@ -10,26 +13,25 @@ export default function Home() {
   return (
     <main id="main-content">
       <nav className="topbar">
-        <a className="brand" href="#top" aria-label="Ansible Automation Lab home">
-          <span className="brand-mark">A</span>
-          <span>Ansible Automation Lab</span>
-        </a>
+        <SiteBrand href="#top" />
         <div className="nav-items">
           <a className="nav-link" href="#demos">Demos</a>
           <a className="nav-link subtle" href="#learning-path">Learning path</a>
           <a className="nav-link subtle" href="#lab-standard">Lab standard</a>
+          <a className="nav-link subtle" href="#creator">About Rajat</a>
         </div>
       </nav>
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <p className="eyebrow"><span /> Learn by watching. Build by doing.</p>
-          <h1>Automation skills,<br /><em>made visible.</em></h1>
-          <p className="hero-intro">Guided, interactive Ansible demonstrations built from real RHEL workflows—then reproduced safely in your own environment.</p>
+          <p className="eyebrow"><span /> {brand.descriptor}</p>
+          <h1>Watch it. Run it.<br /><em>Verify it.</em></h1>
+          <p className="hero-intro">Real Ansible workflows captured on real systems—with every command, result, explanation, and troubleshooting step needed to reproduce the outcome in your own environment.</p>
           <div className="hero-actions">
             <Link className="button button-primary" href={`/demos/${firstLab.slug}/`}>Start first demo <span>→</span></Link>
-            <span className="hero-note">No lab timer · Progress saved · Self-paced</span>
+            <a className="creator-link" href={brand.linkedin} target="_blank" rel="noreferrer">Created by {brand.creator} <span>↗</span></a>
           </div>
+          <p className="hero-note">No lab timer · Progress saved · Self-paced · Independent educational project</p>
         </div>
 
         <div className="hero-console" aria-label="Example Ansible terminal output">
@@ -43,6 +45,24 @@ export default function Home() {
             <span className="console-cursor" />
           </div>
         </div>
+      </section>
+
+      <section className="creator-section" id="creator" aria-labelledby="creator-title">
+        <div className="creator-monogram" aria-hidden="true">RA<span>_</span></div>
+        <div className="creator-copy">
+          <p className="eyebrow"><span /> The creator</p>
+          <h2 id="creator-title">Built and verified<br />by Rajat Agrawal.</h2>
+          <p>Rajat creates practical automation learning experiences for people who want to see the complete workflow—not only the final command. Every published demo combines real execution, clear reasoning, expected results, and recovery guidance.</p>
+          <a className="button button-dark" href={brand.linkedin} target="_blank" rel="noreferrer">Connect with Rajat on LinkedIn <span>↗</span></a>
+        </div>
+        <aside className="creator-principles" aria-label="Rajat’s Automation Lab principles">
+          <span>Creator’s standard</span>
+          <ul>
+            <li><strong>Real environment</strong><small>Commands are demonstrated on an identified, versioned system.</small></li>
+            <li><strong>Complete evidence</strong><small>Execution, output, and the returned prompt remain visible.</small></li>
+            <li><strong>Independent practice</strong><small>Learners reproduce the workflow safely in their own environment.</small></li>
+          </ul>
+        </aside>
       </section>
 
       <section className="catalog" id="demos">
@@ -99,10 +119,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer>
-        <div className="brand"><span className="brand-mark">A</span><span>Ansible Automation Lab</span></div>
-        <p>Watch the workflow. Practice in your environment. Verify the outcome.</p>
-      </footer>
+      <SiteFooter />
     </main>
   );
 }
