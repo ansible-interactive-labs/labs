@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import DemoPlayer from "@/components/DemoPlayer";
-import SiteBrand from "@/components/SiteBrand";
 import SiteFooter from "@/components/SiteFooter";
+import PrimaryNav from "@/components/PrimaryNav";
 import { getLab, getLabSlugs } from "@/content/labs/loader";
 import { brand, formatHodNumber } from "@/lib/brand";
 
@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
   const image = new URL(lab.coverImage.replace(/^\//, ""), `${siteUrl.replace(/\/$/, "")}/`).toString();
   return {
-    title: `${lab.title} | ${brand.siteName}`,
+    title: lab.title,
     description: lab.shortDescription,
     openGraph: {
       title: `${formatHodNumber(lab.hodNumber)} · ${lab.title}`,
@@ -47,21 +47,14 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
 
   return (
     <main className="lab-page" id="main-content">
-      <nav className="topbar lab-topbar" aria-label="Lab navigation">
-        <SiteBrand />
-        <div className="nav-items">
-          <Link className="nav-link subtle" href="/">← Demo library</Link>
-          <a className="nav-link subtle" href="#troubleshooting">Troubleshooting</a>
-          <a className="nav-link subtle" href="#completion">Completion</a>
-        </div>
-      </nav>
+      <PrimaryNav active="demos" className="lab-topbar" />
 
       <header className="lab-hero">
         <div>
           <p className="eyebrow"><span /> {formatHodNumber(lab.hodNumber)} · {lab.topic} · {lab.difficulty}</p>
           <h1>{lab.title}</h1>
           <p className="lab-description">{lab.description}</p>
-          <p className="lab-byline">Created, demonstrated, and verified by <Link href={brand.creatorPath}>{brand.creator} →</Link></p>
+          <p className="lab-byline">Created, demonstrated, and verified by <Link href={brand.creatorPath}>{brand.creator} →</Link> · <Link href="/demos/">All Hands-On Demos →</Link></p>
           <div className="lab-facts" aria-label="Lab facts">
             <span><small>Duration</small>{lab.duration}</span>
             <span><small>Platform</small>{lab.platform}</span>

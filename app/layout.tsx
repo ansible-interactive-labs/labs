@@ -9,9 +9,12 @@ const socialImage = `${siteUrl}/og.png`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: brand.siteName,
+  title: {
+    default: brand.siteName,
+    template: `%s | ${brand.siteName}`,
+  },
   description:
-    'Verified Ansible hands-on demonstrations created by Rajat Agrawal, with real workflows, complete output, explanations, and troubleshooting.',
+    'Hands-On Demos, solution blueprints, and consulting cases across automation, infrastructure, developer platforms, cloud-native engineering, and applied AI.',
   authors: [{ name: brand.creator, url: brand.linkedin }],
   creator: brand.creator,
   publisher: brand.siteName,

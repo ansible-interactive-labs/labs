@@ -1,12 +1,14 @@
-# Rajat’s Automation Lab
+# Rajat’s Applied Technology Lab
 
-A static, replay-led library of verified Ansible Hands-On Demos created by Rajat Agrawal. Learners watch each real workflow, read an accessible transcript, copy the commands, and complete the activity in their own environment.
+A static technology learning and solution library created by Rajat Agrawal. The platform begins with verified Ansible Hands-On Demos and is designed to expand across automation, infrastructure as code, Kubernetes, developer platforms, cloud, security, and applied AI.
 
-**Brand promise:** Watch it. Run it. Verify it.
+**Master brand promise:** Learn it. Build it. Apply it.
+
+**Hands-On Demo promise:** Watch it. Run it. Verify it.
 
 Each published lab receives a stable `HOD NNN` identifier. Public website attribution uses the exact creator name **Rajat Agrawal** and links to [Rajat on LinkedIn](https://www.linkedin.com/in/connectwithrajat/). The project is independent and is not affiliated with or endorsed by Red Hat.
 
-The dedicated author profile at `/author/rajat-agrawal/` connects Rajat’s professional focus, teaching approach, and public LinkedIn profile to every Hands-On Demo.
+The information architecture separates three content families—`HOD` Hands-On Demos, `SOL` Solutions, and `CASE` Consulting Cases—and connects each family through a shared technology directory. The dedicated author profile at `/author/rajat-agrawal/` connects Rajat’s professional focus, teaching approach, and public LinkedIn profile to the complete platform.
 
 The first demo covers installing `ansible-core` on RHEL 9:
 

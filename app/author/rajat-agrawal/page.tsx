@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import SiteBrand from "@/components/SiteBrand";
 import SiteFooter from "@/components/SiteFooter";
+import PrimaryNav from "@/components/PrimaryNav";
 import { brand } from "@/lib/brand";
 
 const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
@@ -57,15 +57,7 @@ export default function AuthorPage() {
     <main className="author-page" id="main-content">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(profileSchema) }} />
 
-      <nav className="topbar" aria-label="Author page navigation">
-        <SiteBrand />
-        <div className="nav-items">
-          <Link className="nav-link subtle" href="/">← Demo library</Link>
-          <a className="nav-link subtle" href="#expertise">Expertise</a>
-          <a className="nav-link subtle" href="#approach">Teaching approach</a>
-          <a className="nav-link" href={brand.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>
-        </div>
-      </nav>
+      <PrimaryNav active="author" />
 
       <header className="author-hero">
         <div className="author-identity">
@@ -94,7 +86,7 @@ export default function AuthorPage() {
         </div>
         <div className="author-story">
           <p>Rajat’s work spans secure automation and hybrid infrastructure. His professional background includes IT automation, application modernization, and communicating complex technical ideas in a way that helps teams act on them.</p>
-          <p>Rajat’s Automation Lab brings those disciplines together. Instead of presenting isolated commands, each Hands-On Demo shows the environment, execution, output, explanation, completion checks, and troubleshooting path.</p>
+          <p>Rajat’s Applied Technology Lab brings those disciplines together across Hands-On Demos, solution blueprints, and consulting cases. Each format connects technical context to an observable, reusable outcome.</p>
           <p className="source-note">This profile is based on Rajat’s public professional information. Current employment history, recommendations, and the complete certification record remain available on LinkedIn.</p>
         </div>
       </section>

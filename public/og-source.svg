@@ -1,6 +1,6 @@
 <svg width="1731" height="909" viewBox="0 0 1731 909" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <title>Rajat’s Automation Lab</title>
-  <desc>Verified Ansible Hands-On Demos. Watch it. Run it. Verify it. Created by Rajat Agrawal.</desc>
+  <title>Rajat’s Applied Technology Lab</title>
+  <desc>Hands-On Demos, Solutions, and Consulting Cases. Learn it. Build it. Apply it. Created by Rajat Agrawal.</desc>
   <defs>
     <linearGradient id="panel" x1="980" y1="154" x2="1540" y2="745" gradientUnits="userSpaceOnUse">
       <stop stop-color="#211F23"/>
@@ -21,18 +21,18 @@
     <circle cx="36" cy="36" r="36" fill="#F6F3EF"/>
     <text x="36" y="43" fill="#121113" font-family="Arial, sans-serif" font-size="21" font-weight="800" text-anchor="middle">RA</text>
     <circle cx="65" cy="12" r="7" fill="#E00000"/>
-    <text x="94" y="27" fill="#F6F3EF" font-family="Arial, sans-serif" font-size="25" font-weight="800">Rajat’s Automation Lab</text>
-    <text x="94" y="55" fill="#9C969F" font-family="Arial, sans-serif" font-size="15" font-weight="600" letter-spacing="1.2">VERIFIED ANSIBLE HANDS-ON DEMOS</text>
+    <text x="94" y="27" fill="#F6F3EF" font-family="Arial, sans-serif" font-size="25" font-weight="800">Rajat’s Applied Technology Lab</text>
+    <text x="94" y="55" fill="#9C969F" font-family="Arial, sans-serif" font-size="14" font-weight="600" letter-spacing="1.1">DEMOS · SOLUTIONS · CONSULTING CASES</text>
   </g>
   <g transform="translate(84 244)" font-family="Arial, sans-serif" font-weight="800">
-    <text x="0" y="0" fill="#F6F3EF" font-size="102">Watch it.</text>
-    <text x="0" y="112" fill="#F6F3EF" font-size="102">Run it.</text>
-    <text x="0" y="224" fill="#F02A25" font-size="102">Verify it.</text>
+    <text x="0" y="0" fill="#F6F3EF" font-size="102">Learn it.</text>
+    <text x="0" y="112" fill="#F6F3EF" font-size="102">Build it.</text>
+    <text x="0" y="224" fill="#F02A25" font-size="102">Apply it.</text>
   </g>
   <rect x="84" y="551" width="92" height="6" fill="#E00000"/>
-  <text x="84" y="610" fill="#D6D0D8" font-family="Arial, sans-serif" font-size="27" font-weight="600">Real workflows. Complete output. Clear explanations.</text>
-  <text x="84" y="653" fill="#8E8891" font-family="Arial, sans-serif" font-size="22">Reproduce every demonstration safely in your own environment.</text>
-  <text x="84" y="784" fill="#F6F3EF" font-family="Arial, sans-serif" font-size="22" font-weight="700">Created, demonstrated, and verified by Rajat Agrawal</text>
+  <text x="84" y="610" fill="#D6D0D8" font-family="Arial, sans-serif" font-size="27" font-weight="600">Practical technology. Real decisions. Reusable outcomes.</text>
+  <text x="84" y="653" fill="#8E8891" font-family="Arial, sans-serif" font-size="22">From verified workflows to production solutions and consulting cases.</text>
+  <text x="84" y="784" fill="#F6F3EF" font-family="Arial, sans-serif" font-size="22" font-weight="700">Created and verified by Rajat Agrawal</text>
   <text x="84" y="824" fill="#E04A45" font-family="Arial, sans-serif" font-size="18" font-weight="700">linkedin.com/in/connectwithrajat</text>
   <g transform="translate(944 154)">
     <rect x="16" y="18" width="657" height="590" rx="26" stroke="#78717B" stroke-width="2"/>

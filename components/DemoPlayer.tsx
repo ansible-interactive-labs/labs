@@ -233,7 +233,7 @@ export default function DemoPlayer({ lab }: { lab: Lab }) {
       )}
 
       <footer className={`player-footer${started ? "" : " ready-footer"}`}>
-        {!started ? <><span>{brand.tagline} Begin with step 1 and work at your own pace.</span><button className="player-next start-lab-button" type="button" onClick={startLab}>Start lab →</button></> : <>
+        {!started ? <><span>{brand.demoTagline} Begin with step 1 and work at your own pace.</span><button className="player-next start-lab-button" type="button" onClick={startLab}>Start lab →</button></> : <>
           <button className="player-back" type="button" onClick={() => setStepIndex((current) => Math.max(current - 1, 0))} disabled={stepIndex === 0}>← Back</button>
           <span>Use ← → arrow keys to navigate</span>
           {stepIndex < lab.steps.length - 1 ? (

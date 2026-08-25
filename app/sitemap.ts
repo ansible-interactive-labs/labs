@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getLabSummaries } from "@/content/labs/loader";
-import { brand } from "@/lib/brand";
+import { primaryNavigation } from "@/lib/site-structure";
 
 export const dynamic = "force-static";
 
@@ -13,11 +13,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 1
     },
-    {
-      url: `${siteUrl}${brand.creatorPath}`,
+    ...primaryNavigation.map((item) => ({
+      url: `${siteUrl}${item.href}`,
       changeFrequency: "monthly",
-      priority: 0.7
-    },
+      priority: item.key === "demos" ? 0.9 : 0.7
+    } as const)),
     ...getLabSummaries().map((lab) => ({
       url: `${siteUrl}/demos/${lab.slug}/`,
       lastModified: lab.verifiedDateISO,

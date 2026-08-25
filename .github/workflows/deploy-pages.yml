@@ -1,4 +1,4 @@
-name: Deploy Rajat’s Automation Lab to Pages
+name: Deploy Rajat’s Applied Technology Lab to Pages
 
 on:
   push:

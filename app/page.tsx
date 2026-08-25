@@ -1,9 +1,10 @@
 import Link from "next/link";
 import DemoCatalog from "@/components/DemoCatalog";
-import SiteBrand from "@/components/SiteBrand";
 import SiteFooter from "@/components/SiteFooter";
+import PrimaryNav from "@/components/PrimaryNav";
 import { getLabSummaries } from "@/content/labs/loader";
 import { brand } from "@/lib/brand";
+import { contentFamilies } from "@/lib/site-structure";
 
 export default function Home() {
   const labs = getLabSummaries();
@@ -12,26 +13,18 @@ export default function Home() {
 
   return (
     <main id="main-content">
-      <nav className="topbar">
-        <SiteBrand href="#top" />
-        <div className="nav-items">
-          <a className="nav-link" href="#demos">Demos</a>
-          <a className="nav-link subtle" href="#learning-path">Learning path</a>
-          <a className="nav-link subtle" href="#lab-standard">Lab standard</a>
-          <Link className="nav-link subtle" href={brand.creatorPath}>About Rajat</Link>
-        </div>
-      </nav>
+      <PrimaryNav />
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <p className="eyebrow"><span /> {brand.descriptor}</p>
-          <h1>Watch it. Run it.<br /><em>Verify it.</em></h1>
-          <p className="hero-intro">Real Ansible workflows captured on real systems—with every command, result, explanation, and troubleshooting step needed to reproduce the outcome in your own environment.</p>
+          <p className="eyebrow"><span /> Practical technology. Demonstrated clearly.</p>
+          <h1>Learn it. Build it.<br /><em>Apply it.</em></h1>
+          <p className="hero-intro">A growing library of verified demonstrations, solution blueprints, and consulting cases across automation, infrastructure, developer platforms, cloud-native engineering, and applied AI.</p>
           <div className="hero-actions">
-            <Link className="button button-primary" href={`/demos/${firstLab.slug}/`}>Start first demo <span>→</span></Link>
+            <Link className="button button-primary" href={`/demos/${firstLab.slug}/`}>Start HOD 001 <span>→</span></Link>
             <Link className="creator-link" href={brand.creatorPath}>Created by {brand.creator} <span>→</span></Link>
           </div>
-          <p className="hero-note">No lab timer · Progress saved · Self-paced · Independent educational project</p>
+          <p className="hero-note">Hands-On Demos available now · Solutions and consulting cases expanding next</p>
         </div>
 
         <div className="hero-console" aria-label="Example Ansible terminal output">
@@ -47,6 +40,24 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="content-families" aria-labelledby="content-families-title">
+        <div className="section-heading">
+          <div><p className="eyebrow"><span /> One lab, three ways to learn</p><h2 id="content-families-title">From first command<br />to architecture decision.</h2></div>
+          <p>Choose the depth that matches your goal. Every content family uses a stable identifier, clear evidence, and a consistent path from context to outcome.</p>
+        </div>
+        <div className="content-family-grid">
+          {contentFamilies.map((family) => (
+            <Link href={family.href} key={family.code}>
+              <span className="family-code">{family.code}</span>
+              <small>{family.status}</small>
+              <h3>{family.title}</h3>
+              <p>{family.description}</p>
+              <strong>{family.promise} <i>→</i></strong>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       <section className="creator-section" id="creator" aria-labelledby="creator-title">
         <div className="creator-monogram" aria-hidden="true">RA<span>_</span></div>
         <div className="creator-copy">
@@ -58,7 +69,7 @@ export default function Home() {
             <a className="text-link" href={brand.linkedin} target="_blank" rel="noreferrer">Connect on LinkedIn ↗</a>
           </div>
         </div>
-        <aside className="creator-principles" aria-label="Rajat’s Automation Lab principles">
+        <aside className="creator-principles" aria-label="Rajat’s Applied Technology Lab principles">
           <span>Creator’s standard</span>
           <ul>
             <li><strong>Real environment</strong><small>Commands are demonstrated on an identified, versioned system.</small></li>
@@ -70,8 +81,8 @@ export default function Home() {
 
       <section className="catalog" id="demos">
         <div className="section-heading">
-          <div><p className="eyebrow"><span /> Demo library</p><h2>Build practical skills</h2></div>
-          <p>Search the growing library by topic or difficulty. Every demonstration has its own shareable URL, verified environment, progress tracking, and recovery guidance.</p>
+          <div><p className="eyebrow"><span /> Featured Hands-On Demo</p><h2>Build practical skills</h2></div>
+          <p>{brand.demoTagline} Every demonstration has its own shareable URL, verified environment, progress tracking, and recovery guidance.</p>
         </div>
 
         <aside className="prerequisite-callout">
@@ -84,6 +95,7 @@ export default function Home() {
         </aside>
 
         <DemoCatalog labs={labs} />
+        <div className="section-link-row"><Link className="button button-dark" href="/demos/">Browse all Hands-On Demos <span>→</span></Link></div>
       </section>
 
       <section className="lab-standard" id="lab-standard">
@@ -105,8 +117,8 @@ export default function Home() {
 
       <section className="path-section" id="learning-path">
         <div className="section-heading path-heading">
-          <div><p className="eyebrow light"><span /> Ansible learning path</p><h2>From first command<br />to enterprise automation.</h2></div>
-          <p>One visual workflow at a time. New demonstrations use the same repeatable player, prerequisites, verification, and troubleshooting format.</p>
+          <div><p className="eyebrow light"><span /> Current Ansible path</p><h2>From first command<br />to enterprise automation.</h2></div>
+          <p>Ansible is the first technology collection inside the broader Applied Technology Lab. Future collections use the same evidence-led content standard.</p>
         </div>
         <div className="path-grid">
           {[

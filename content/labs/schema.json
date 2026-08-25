@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://ansible-interactive-labs.github.io/labs/lab.schema.json",
-  "title": "Rajat’s Automation Lab",
+  "title": "Rajat’s Applied Technology Lab Hands-On Demo",
   "type": "object",
   "additionalProperties": false,
   "required": [
