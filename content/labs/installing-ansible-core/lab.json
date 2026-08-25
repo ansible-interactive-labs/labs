@@ -190,44 +190,60 @@
     },
     {
       "title": "Upstream ansible-core and Python compatibility",
-      "introduction": "The Python requirement depends on where Python runs. The control node is the machine that runs ansible-core; a managed node is a target that executes transferred Ansible modules. Before installing from PyPI, select an ansible-core release whose control-node range includes your chosen interpreter. This matrix reproduces the upstream project ranges most relevant to current RHEL and Ubuntu installations; lifecycle status is shown because a technically installable but unmaintained release is not a sound choice for a new control node.",
+      "introduction": "The Python requirement depends on where Python runs. The control node is the machine that runs ansible-core; a managed host is a target that executes transferred Ansible modules. Before installing from PyPI, select an ansible-core release whose control-node range includes your chosen interpreter. This matrix reproduces the upstream project's complete published history from ansible-base 2.10 through the latest release. Lifecycle status is included because a technically installable but unmaintained release is not a sound choice for a new control node.",
       "eyebrow": "Choose a supported runtime",
       "summaryLabel": "View the upstream Python support matrix",
       "rowHeader": "ansible-core",
       "takeawayLabel": "How to use this matrix",
-      "columns": ["Lifecycle as of August 2026", "Control-node Python", "Managed-node Python / PowerShell"],
+      "columns": ["Lifecycle as of August 2026", "Control-node Python", "Managed-host Python / PowerShell"],
       "rows": [
         {
           "aspect": "2.21",
-          "values": ["GA May 2026; critical fixes from November 2026; security fixes from May 2027; EOL November 2027", "Python 3.12–3.14", "Python 3.9–3.14; PowerShell 5.1–7"]
+          "values": ["GA: May 2026\nCritical fixes: November 2026\nSecurity fixes: May 2027\nEOL: November 2027", "Python 3.12–3.14", "Python 3.9–3.14\nPowerShell 5.1–7"]
         },
         {
           "aspect": "2.20",
-          "values": ["GA 3 November 2025; critical fixes from 18 May 2026; security fixes from 2 November 2026; EOL May 2027", "Python 3.12–3.14", "Python 3.9–3.14; PowerShell 5.1"]
+          "values": ["GA: 3 November 2025\nCritical fixes: 18 May 2026\nSecurity fixes: 2 November 2026\nEOL: May 2027", "Python 3.12–3.14", "Python 3.9–3.14\nPowerShell 5.1"]
         },
         {
           "aspect": "2.19",
-          "values": ["GA 21 July 2025; security-only from 18 May 2026; EOL November 2026", "Python 3.11–3.13", "Python 3.8–3.13; PowerShell 5.1"]
+          "values": ["GA: 21 July 2025\nCritical fixes: 3 November 2025\nSecurity fixes: 18 May 2026\nEOL: November 2026", "Python 3.11–3.13", "Python 3.8–3.13\nPowerShell 5.1"]
         },
         {
           "aspect": "2.18",
-          "values": ["EOL May 2026", "Python 3.11–3.13", "Python 3.8–3.13; PowerShell 5.1"]
+          "values": ["GA: 4 November 2024\nCritical fixes: 19 May 2025\nSecurity fixes: 3 November 2025\nEOL: May 2026", "Python 3.11–3.13", "Python 3.8–3.13\nPowerShell 5.1"]
         },
         {
           "aspect": "2.17",
-          "values": ["EOL November 2025", "Python 3.10–3.12", "Python 3.7–3.12; PowerShell 5.1"]
+          "values": ["GA: 20 May 2024\nCritical fixes: 4 November 2024\nSecurity fixes: 19 May 2025\nEOL: November 2025", "Python 3.10–3.12", "Python 3.7–3.12\nPowerShell 5.1"]
         },
         {
           "aspect": "2.16",
-          "values": ["EOL July 2025", "Python 3.10–3.12", "Python 2.7 and 3.6–3.12; PowerShell 5.1"]
+          "values": ["GA: 6 November 2023\nCritical fixes: 20 May 2024\nSecurity fixes: November 2024\nEOL: July 2025", "Python 3.10–3.12", "Python 2.7\nPython 3.6–3.12\nPowerShell 5.1"]
         },
         {
           "aspect": "2.15",
-          "values": ["EOL November 2024", "Python 3.9–3.11", "Python 2.7 and 3.5–3.11; PowerShell 3–5.1"]
+          "values": ["GA: 22 May 2023\nCritical fixes: 6 November 2023\nSecurity fixes: 20 May 2024\nEOL: November 2024", "Python 3.9–3.11", "Python 2.7\nPython 3.5–3.11\nPowerShell 3–5.1"]
         },
         {
           "aspect": "2.14",
-          "values": ["EOL 20 May 2024 upstream; the separately maintained RHEL 9 RPM follows Red Hat's lifecycle", "Python 3.9–3.11", "Python 2.7 and 3.5–3.11; PowerShell 3–5.1"]
+          "values": ["GA: 7 November 2022\nCritical fixes: 22 May 2023\nSecurity fixes: 6 November 2023\nUpstream EOL: 20 May 2024\nRHEL AppStream RPM: separate Red Hat lifecycle", "Python 3.9–3.11", "Python 2.7\nPython 3.5–3.11\nPowerShell 3–5.1"]
+        },
+        {
+          "aspect": "2.13",
+          "values": ["GA: 23 May 2022\nCritical fixes: 7 November 2022\nSecurity fixes: 22 May 2023\nEOL: 6 November 2023", "Python 3.8–3.10", "Python 2.7\nPython 3.5–3.10\nPowerShell 3–5.1"]
+        },
+        {
+          "aspect": "2.12",
+          "values": ["GA: 8 November 2021\nCritical fixes: 23 May 2022\nSecurity fixes: 7 November 2022\nEOL: 22 May 2023", "Python 3.8–3.10", "Python 2.6–2.7\nPython 3.5–3.10\nPowerShell 3–5.1"]
+        },
+        {
+          "aspect": "2.11",
+          "values": ["GA: 26 April 2021\nCritical fixes: 8 November 2021\nSecurity fixes: 23 May 2022\nEOL: 7 November 2022", "Python 2.7\nPython 3.5–3.9", "Python 2.6–2.7\nPython 3.5–3.9\nPowerShell 3–5.1"]
+        },
+        {
+          "aspect": "ansible-base 2.10",
+          "values": ["GA: 13 August 2020\nCritical fixes: 26 April 2021\nSecurity fixes: 8 November 2021\nEOL: 23 May 2022", "Python 2.7\nPython 3.5–3.9", "Python 2.6–2.7\nPython 3.5–3.9\nPowerShell 3–5.1"]
         }
       ],
       "takeaway": "For this PyPI demonstration, RHEL 9's default Python 3.9 is too old for maintained upstream releases. Install RHEL's Python 3.12 packages first, create a virtual environment with that interpreter, and then install upstream ansible-core 2.21 from PyPI. Do not choose ansible-core 2.15 merely because pip can resolve it on Python 3.9: that release has been unmaintained since November 2024.",
@@ -248,31 +264,71 @@
     },
     {
       "title": "Red Hat Ansible Automation Platform ansible-core compatibility",
-      "introduction": "This is Red Hat's support matrix for ansible-core inside published Ansible Automation Platform execution environment images. It is not a matrix for the RHEL 9 AppStream RPM used in Demo 01. The AppStream RPM remains ansible-core 2.14 and has the narrower RHEL support scope described above; AAP execution environments provide separately supported combinations of ansible-core, container base OS, control-node Python, managed-node Python, and managed RHEL releases.",
+      "introduction": "This table focuses only on ansible-core's control-node and managed-host Python coverage. Red Hat's current Ansible Automation Platform lifecycle table explicitly lists 2.15, 2.16, 2.17, 2.18, and 2.20; those rows reproduce Red Hat's published values. The current table does not list 2.11–2.14 or 2.19 as supported combinations, so those requested historical rows use the upstream project's published compatibility ranges and must not be read as current Red Hat support. Red Hat delivers supported ansible-core versions in AAP through execution environment images, but image and base-OS selection is intentionally deferred to the ansible-navigator demonstration. The separately maintained RHEL 9 AppStream 2.14 RPM remains documented in the preceding RHEL matrix.",
       "eyebrow": "Red Hat supported combinations",
       "summaryLabel": "View the Red Hat AAP compatibility matrix",
       "rowHeader": "ansible-core",
       "takeawayLabel": "Keep the distribution paths separate",
-      "columns": ["Execution environment and base OS", "Control-node Python", "Managed-node Python", "Supported managed RHEL"],
+      "columns": ["Control-node Python", "Managed-host Python"],
       "rows": [
         {
-          "aspect": "2.20",
-          "values": ["ee-minimal-rhel9; RHEL 9 base", "Python 3.12–3.14", "Python 3.9–3.14", "RHEL 9–10"]
+          "aspect": "2.20\nRed Hat-listed",
+          "values": ["Python 3.12–3.14", "Python 3.9–3.14"]
         },
         {
-          "aspect": "2.18",
-          "values": ["ee-minimal-rhel8 and ee-minimal-rhel9; RHEL 8 or 9 base", "Python 3.11–3.13", "Python 3.8–3.13", "RHEL 9–10"]
+          "aspect": "2.19\nHistorical upstream range",
+          "values": ["Python 3.11–3.13", "Python 3.8–3.13"]
         },
         {
-          "aspect": "2.16",
-          "values": ["ee-minimal-rhel8, ee-minimal-rhel9, ee-supported-rhel8 and ee-supported-rhel9; RHEL 8 or 9 base", "Python 3.10–3.12", "Python 2.7 and 3.6–3.12", "RHEL 7–10"]
+          "aspect": "2.18\nRed Hat-listed",
+          "values": ["Python 3.11–3.13", "Python 3.8–3.13"]
+        },
+        {
+          "aspect": "2.17\nRed Hat-listed · no longer supported",
+          "values": ["Python 3.10–3.12", "Python 3.7–3.12"]
+        },
+        {
+          "aspect": "2.16\nRed Hat-listed",
+          "values": ["Python 3.10–3.12", "Python 2.7\nPython 3.6–3.12"]
+        },
+        {
+          "aspect": "2.15\nRed Hat-listed · support ended June 2026",
+          "values": ["Python 3.12+", "Python 2.7\nPython 3.5–3.11"]
+        },
+        {
+          "aspect": "2.14\nHistorical upstream range",
+          "values": ["Python 3.9–3.11", "Python 2.7\nPython 3.5–3.11"]
+        },
+        {
+          "aspect": "2.13\nHistorical upstream range",
+          "values": ["Python 3.8–3.10", "Python 2.7\nPython 3.5–3.10"]
+        },
+        {
+          "aspect": "2.12\nHistorical upstream range",
+          "values": ["Python 3.8–3.10", "Python 2.6–2.7\nPython 3.5–3.10"]
+        },
+        {
+          "aspect": "2.11\nHistorical upstream range",
+          "values": ["Python 2.7\nPython 3.5–3.9", "Python 2.6–2.7\nPython 3.5–3.9"]
         }
       ],
-      "takeaway": "Use the upstream matrix when you install ansible-core yourself from PyPI. Use the Red Hat AAP matrix when selecting a supported execution environment for Ansible Automation Platform. For the RHEL-provided AppStream RPM, use the RHEL Application Streams lifecycle and Red Hat's limited-support-scope document instead. Matching a Python number alone does not move an installation from one support model to another.",
+      "takeaway": "For current Red Hat support decisions, rely only on combinations explicitly present in Red Hat's current lifecycle table and observe its support notes: 2.17 is no longer supported, and 2.15 support ended in June 2026. Rows labeled historical are included to explain older compatibility, not to extend Red Hat support. For the RHEL-provided AppStream 2.14 RPM, use the separate RHEL matrix above. Matching a Python version alone never moves an installation from upstream or RHEL AppStream into the AAP support model.",
       "sources": [
         {
           "label": "Red Hat Ansible Automation Platform lifecycle and compatibility matrix",
           "href": "https://access.redhat.com/support/policy/updates/ansible-automation-platform"
+        },
+        {
+          "label": "Upstream historical ansible-core support matrix",
+          "href": "https://docs.ansible.com/projects/ansible/latest/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix"
+        },
+        {
+          "label": "AAP 2.2 historical execution environment requirements",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.2/html-single/creating_and_consuming_execution_environments/creating_and_consuming_execution_environments"
+        },
+        {
+          "label": "AAP 2.4 historical execution environment requirements",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.4/html/red_hat_ansible_automation_platform_upgrade_and_migration_guide/upgrading-to-ees"
         },
         {
           "label": "RHEL Application Streams lifecycle",

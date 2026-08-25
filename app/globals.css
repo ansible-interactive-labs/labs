@@ -472,7 +472,7 @@ body > main > footer .brand-copy small { color: #8f8992; }
 .comparison-deep-dive .comparison-table-wrap { margin: 0; border: 0; }
 .comparison-table-wrap table { width: 100%; min-width: 760px; border-collapse: collapse; table-layout: fixed; }
 .comparison-table-wide table { min-width: 1120px; }
-.comparison-table-wrap th, .comparison-table-wrap td { padding: 18px 20px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; font-size: 13px; line-height: 1.6; }
+.comparison-table-wrap th, .comparison-table-wrap td { padding: 18px 20px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; white-space: pre-line; font-size: 13px; line-height: 1.6; }
 .comparison-table-wrap tr > *:last-child { border-right: 0; }
 .comparison-table-wrap tbody tr:last-child > * { border-bottom: 0; }
 .comparison-table-wrap thead th { color: #fff; background: var(--ink); font-size: 12px; }
