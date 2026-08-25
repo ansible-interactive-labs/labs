@@ -1,0 +1,9 @@
+{"version":2,"width":120,"height":34,"idle_time_limit":1.25,"title":"upstream rhel 08 smoke test","env":{"SHELL":"/bin/bash","TERM":"xterm-256color"}}
+[0,"o","\r\n"]
+[0.00012,"o","(ansible-core-2.21) [rajat@demo ~]$ "]
+[1.25012,"o","ansible localhost -m ansible.builtin.ping -c local\r\n"]
+[1.481279,"o","[WARNING]: No inventory was parsed, only implicit localhost is available\r\n"]
+[1.673651,"o","localhost | SUCCESS => {\r\n    \"changed\": false,\r\n    \"ping\": \"pong\"\r\n}\r\n"]
+[1.705098,"o","\r\n"]
+[1.705112,"o","(ansible-core-2.21) [rajat@demo ~]$ "]
+[2.955112,"o",""]

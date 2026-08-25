@@ -1,14 +1,25 @@
 # Installing ansible-core content review
 
-Reviewed: August 24, 2026
+Reviewed: August 25, 2026
 
 ## Readiness
 
-Ready. The complete sequence was recorded on a reset RHEL 9 VM and reaches the stated outcome safely with a concept overview, prerequisites, installation, package inspection, collection-boundary inspection, functional verification, troubleshooting, transcripts, and cleanup.
+Ready. Two complete installation paths were recorded on reset RHEL 9 environments: the Red Hat-provided AppStream RPM and upstream ansible-core from PyPI in an isolated Python 3.12 virtual environment. Both reach their stated outcomes with compatibility guidance, provenance checks, content-boundary inspection, functional verification, troubleshooting, transcripts, screenshots, and cleanup.
 
 ## Findings
 
 Implemented in this review:
+
+- Added Demo 02 for upstream ansible-core from PyPI. The RHEL subscription supplies only the supported Python 3.12 prerequisite; ansible-core itself is installed from PyPI into `/home/rajat/.venvs/ansible-core-2.21`.
+- Added a source-backed upstream ansible-core/Python matrix covering 2.14 through 2.21, with distinct control-node and managed-node ranges plus lifecycle status. This prevents pip from silently selecting an obsolete core release merely to fit RHEL 9's default Python 3.9.
+- Added a separate RHEL 9 AppStream runtime matrix for the Red Hat-provided RPM. It distinguishes the documented 2.14/Python 3.9 Full Life streams from the exact HOD 001 servicing builds verified on RHEL 9.8.
+- Added a separately labeled Ansible Automation Platform execution-environment matrix. It is explicitly not presented as the compatibility matrix for the RHEL AppStream RPM or the upstream PyPI installation.
+- Used the distribution terms “Red Hat-provided ansible-core RPM,” “upstream ansible-core from PyPI,” and “community-maintained upstream release.” Avoided the ambiguous phrase “community Ansible,” which can be mistaken for the separate `ansible` Python package.
+- Recorded installation of `python3.12` and `python3.12-pip` with DNF, creation of a Python 3.12 virtual environment, installation of upstream `ansible-core==2.21.2`, and activation/deactivation behavior.
+- Proved package provenance: no `ansible-core` RPM is installed in Demo 02, both Python and Ansible resolve inside the virtual environment, pip reports no broken requirements, and `ansible --version` reports core 2.21.2 on Python 3.12.14.
+- Verified the upstream content boundary, `ansible.builtin` documentation namespace, localhost `ping: pong` smoke test, and shell-scoped virtual-environment activation.
+- Added demo-specific learning outcomes so each independent Start Demo screen describes only the workflow the learner is about to run.
+- Replaced all nine Demo 02 screenshot fallbacks with terminal-player end states and confirmed that each replay returns to a fresh `[rajat@demo]` prompt on its own line.
 
 - Replaced the introductory comparison with a source-backed deep dive limited to the RHEL 9 AppStream and upstream `ansible-core` distributions.
 - Explained their shared core capabilities and their different artifact formats, installation ownership, runtime integration, version strategies, maintenance windows, security practices, lifecycles, and compatibility tradeoffs.
@@ -35,7 +46,7 @@ Implemented in this review:
 - Expanded the configuration-inspection explanation of `PAGER=cat`, `ansible-config dump`, and `--only-changed`.
 - Expanded the final ad hoc command into its target pattern, module-selection, fully qualified collection name, and local-connection components, including why it is not an ICMP ping.
 
-No blocking omissions were found in the install, package inspection, runtime validation, functional smoke test, troubleshooting, or cleanup sequence.
+No blocking omissions were found in either install path, Python selection, package provenance, runtime validation, content-boundary inspection, functional smoke test, activation guidance, troubleshooting, or cleanup sequence.
 
 ## Comparison review
 
@@ -46,9 +57,12 @@ The most consequential finding is that installation entitlement and support scop
 Official sources reviewed:
 
 - Ansible Core documentation and installation guidance.
+- The upstream ansible-core support matrix for control-node and managed-node Python versions.
 - The upstream `ansible-core` release, maintenance, branch, and tag policies.
 - Red Hat's published support scope for the RHEL AppStream RPM.
 - The RHEL Application Streams lifecycle, which lists ansible-core 2.14 as a RHEL 9 Full Life stream.
+- Red Hat's versioned-Python and virtual-environment guidance for RHEL 9.
+- The Red Hat Ansible Automation Platform lifecycle and control/managed-node coverage matrix, kept separate from the RHEL RPM path.
 - Red Hat's security-backporting policy.
 
 ## Learner experience
@@ -58,5 +72,7 @@ Official sources reviewed:
 - Version-sensitive output is identified.
 - Replays show command execution and output while screenshot fallbacks preserve access when playback is unavailable.
 - The new collection step sets up later labs to demonstrate how separately installed content changes the environment without conflating a namespace count with module or plugin counts.
+- The upstream workflow teaches learners to choose a maintained core/Python pair before installing, and explains why a virtual environment is safer than modifying RHEL's platform Python.
+- Each demonstration now has its own outcome list, avoiding RPM registration goals appearing on the PyPI demo's start screen.
 - Every replay has a plain-text transcript, remains paused until the learner starts it, and contains no credentials.
 - The comparison table supports keyboard focus and horizontal scrolling on narrow screens.

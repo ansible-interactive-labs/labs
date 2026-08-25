@@ -1,0 +1,14 @@
+[rajat@demo ~]$ command -v ansible || echo "ansible is not on PATH outside the virtual environment"
+ansible is not on PATH outside the virtual environment
+
+[rajat@demo ~]$ source ~/.venvs/ansible-core-2.21/bin/activate
+
+(ansible-core-2.21) [rajat@demo ~]$ ansible --version | head -1
+ansible [core 2.21.2]
+
+(ansible-core-2.21) [rajat@demo ~]$ deactivate
+
+[rajat@demo ~]$ command -v ansible || echo "ansible is not on PATH outside the virtual environment"
+ansible is not on PATH outside the virtual environment
+
+[rajat@demo ~]$

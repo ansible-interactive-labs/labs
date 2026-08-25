@@ -118,14 +118,14 @@ for (const directory of directories) {
     ["title", "introduction", "takeaway"].forEach((key) => {
       if (!nonEmptyString(comparison?.[key])) fail(sourceName, `${key} is required`);
     });
-    if (!Array.isArray(comparison?.columns) || comparison.columns.length !== 2 || comparison.columns.some((item) => !nonEmptyString(item))) {
-      fail(sourceName, "columns must contain exactly two labels");
+    if (!Array.isArray(comparison?.columns) || comparison.columns.length < 1 || comparison.columns.length > 6 || comparison.columns.some((item) => !nonEmptyString(item))) {
+      fail(sourceName, "columns must contain between one and six labels");
     }
     if (!Array.isArray(comparison?.rows) || comparison.rows.length < 2) fail(sourceName, "at least two comparison rows are required");
     (comparison?.rows ?? []).forEach((row, rowIndex) => {
       if (!nonEmptyString(row?.aspect)) fail(sourceName, `rows[${rowIndex}].aspect is required`);
-      if (!Array.isArray(row?.values) || row.values.length !== 2 || row.values.some((item) => !nonEmptyString(item))) {
-        fail(sourceName, `rows[${rowIndex}].values must contain exactly two explanations`);
+      if (!Array.isArray(row?.values) || row.values.length !== comparison.columns.length || row.values.some((item) => !nonEmptyString(item))) {
+        fail(sourceName, `rows[${rowIndex}].values must match the number of column labels`);
       }
     });
     if (!Array.isArray(comparison?.sources) || comparison.sources.length === 0) fail(sourceName, "at least one official source is required");
@@ -228,6 +228,7 @@ for (const directory of directories) {
               fail(sourceName, `terminal source idle_time_limit must be between 0 and ${maximumRecordingIdleGap} seconds`);
             }
             let previousOutputEndsWithNewline = true;
+            let previousOutputEndsWithVenvPrefix = false;
             let joinedOutput = "";
             let finalOutputTime = 0;
             let lastPromptTime;
@@ -240,19 +241,22 @@ for (const directory of directories) {
               for (const match of data.matchAll(/\[(?:rajat|learner)@[^\]\r\n]+\][#$] /g)) {
                 const offset = match.index ?? 0;
                 const followsNewlineInEvent = offset > 0 && /[\r\n]$/.test(data.slice(0, offset));
+                const followsVenvPrefix = offset > 0 && /\([^)\r\n]+\) $/.test(data.slice(0, offset));
                 const beginsAfterNewline = offset === 0 && previousOutputEndsWithNewline;
-                if (!followsNewlineInEvent && !beginsAfterNewline) fail(sourceName, "terminal prompt must begin on a new line");
+                const beginsAfterVenvPrefix = offset === 0 && previousOutputEndsWithVenvPrefix;
+                if (!followsNewlineInEvent && !followsVenvPrefix && !beginsAfterNewline && !beginsAfterVenvPrefix) fail(sourceName, "terminal prompt must begin on a new line");
                 lastPromptTime = time;
                 lastPromptEnd = eventStart + offset + match[0].length;
               }
               joinedOutput += data;
               previousOutputEndsWithNewline = /[\r\n]$/.test(data);
+              previousOutputEndsWithVenvPrefix = /\([^)\r\n]+\) $/.test(data);
             }
             const visibleEnding = joinedOutput
               .replace(/\u001b\][^\u0007]*(?:\u0007|\u001b\\)/g, "")
               .replace(/\u001b\[[0-?]*[ -/]*[@-~]/g, "")
               .trimEnd();
-            if (!/\[(?:rajat|learner)@[^\]\r\n]+\][#$]$/.test(visibleEnding)) {
+            if (!/(?:\([^)\r\n]+\) )?\[(?:rajat|learner)@[^\]\r\n]+\][#$]$/.test(visibleEnding)) {
               fail(sourceName, "terminal source must end on a returned shell prompt");
             }
             if (lastPromptEnd !== undefined && joinedOutput.slice(lastPromptEnd).length > 0) {
@@ -265,10 +269,14 @@ for (const directory of directories) {
             fail(sourceName, "terminal source must begin with a valid asciicast JSON header");
           }
         } else {
-          if (/[^\r\n]\[(?:rajat|learner)@[^\]\r\n]+\][#$] /.test(contents)) {
-            fail(sourceName, "transcript contains a terminal prompt attached to command output");
+          for (const match of contents.matchAll(/\[(?:rajat|learner)@[^\]\r\n]+\][#$] /g)) {
+            const offset = match.index ?? 0;
+            const prefix = contents.slice(0, offset);
+            const beginsLine = offset === 0 || /[\r\n]$/.test(prefix);
+            const followsVenvPrefix = /(?:^|[\r\n])\([^)\r\n]+\) $/.test(prefix);
+            if (!beginsLine && !followsVenvPrefix) fail(sourceName, "transcript contains a terminal prompt attached to command output");
           }
-          if (!/\[(?:rajat|learner)@[^\]\r\n]+\][#$]$/.test(contents.trimEnd())) {
+          if (!/(?:\([^)\r\n]+\) )?\[(?:rajat|learner)@[^\]\r\n]+\][#$]$/.test(contents.trimEnd())) {
             fail(sourceName, "transcript must end on a returned shell prompt");
           }
         }

@@ -1,0 +1,19 @@
+[rajat@demo ~]$ cat /etc/redhat-release
+Red Hat Enterprise Linux release 9.8 (Plow)
+
+[rajat@demo ~]$ uname -m
+aarch64
+
+[rajat@demo ~]$ rpm -q ansible-core
+package ansible-core is not installed
+
+[rajat@demo ~]$ python3 --version
+Python 3.9.25
+
+[rajat@demo ~]$ command -v python3.12 || echo "Python 3.12 is not installed"
+Python 3.12 is not installed
+
+[rajat@demo ~]$ python3 -m pip --version
+/usr/bin/python3: No module named pip
+
+[rajat@demo ~]$

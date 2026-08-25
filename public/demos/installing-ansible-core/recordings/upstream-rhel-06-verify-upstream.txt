@@ -1,0 +1,36 @@
+(ansible-core-2.21) [rajat@demo ~]$ rpm -q ansible-core
+package ansible-core is not installed
+
+(ansible-core-2.21) [rajat@demo ~]$ command -v python
+/home/rajat/.venvs/ansible-core-2.21/bin/python
+
+(ansible-core-2.21) [rajat@demo ~]$ command -v ansible
+/home/rajat/.venvs/ansible-core-2.21/bin/ansible
+
+(ansible-core-2.21) [rajat@demo ~]$ python -m pip show ansible-core
+Name: ansible-core
+Version: 2.21.2
+Summary: Radically simple IT automation
+Home-page: https://ansible.com/
+Author: Ansible Project
+Author-email:
+License-Expression: GPL-3.0-or-later
+Location: /home/rajat/.venvs/ansible-core-2.21/lib64/python3.12/site-packages
+Requires: cryptography, jinja2, packaging, PyYAML, resolvelib
+Required-by:
+
+(ansible-core-2.21) [rajat@demo ~]$ python -m pip check
+No broken requirements found.
+
+(ansible-core-2.21) [rajat@demo ~]$ ansible --version
+ansible [core 2.21.2]
+  config file = None
+  configured module search path = ['/home/rajat/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /home/rajat/.venvs/ansible-core-2.21/lib64/python3.12/site-packages/ansible
+  ansible collection location = /home/rajat/.ansible/collections:/usr/share/ansible/collections
+  executable location = /home/rajat/.venvs/ansible-core-2.21/bin/ansible
+  python version = 3.12.14 (main, Aug 13 2026, 00:00:00) [GCC 11.5.0 20240719 (Red Hat 11.5.0-14)] (/home/rajat/.venvs/ansible-core-2.21/bin/python)
+  jinja version = 3.1.6
+  pyyaml version = 6.0.3 (with libyaml v0.2.5)
+
+(ansible-core-2.21) [rajat@demo ~]$

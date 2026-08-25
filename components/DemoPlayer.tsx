@@ -223,7 +223,7 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
       ) : (
         <div className="player-ready">
           <div className="player-ready-visual"><img src={`${basePath}${lab.coverImage}`} alt={lab.coverAlt} /></div>
-          <aside><p className="step-label">{formatHodNumber(lab.hodNumber)} · Ready when you are</p><h2>{demo.title}</h2><p>{demo.objective}</p><p className="player-creator">Created and verified by <a href={brand.linkedin} target="_blank" rel="noreferrer">{brand.creator} ↗</a></p><ul>{lab.outcomes.map((outcome) => <li key={outcome}>{outcome}</li>)}</ul></aside>
+          <aside><p className="step-label">{formatHodNumber(lab.hodNumber)} · Ready when you are</p><h2>{demo.title}</h2><p>{demo.objective}</p><p className="player-creator">Created and verified by <a href={brand.linkedin} target="_blank" rel="noreferrer">{brand.creator} ↗</a></p><ul>{(demo.outcomes ?? lab.outcomes).map((outcome) => <li key={outcome}>{outcome}</li>)}</ul></aside>
         </div>
       )}
 

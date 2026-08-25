@@ -19,15 +19,25 @@ const trimmedEvents = exitIndex >= 0 ? visibleEvents.slice(0, exitIndex) : visib
 const firstTime = trimmedEvents[0]?.[0] ?? 0;
 const promptPattern = /\[(?:rajat|learner)@[^\]\r\n]+\][#$] /g;
 let previousOutputEndsWithNewline = true;
+let previousOutputEndsWithVenvPrefix = false;
 const rebasedEvents = trimmedEvents.map(([time, type, data]) => {
   let normalizedData = data;
   if (type === "o") {
-    normalizedData = data.replace(promptPattern, (prompt, offset) => {
-      const followsNewlineInEvent = offset > 0 && /[\r\n]$/.test(data.slice(0, offset));
+    // RHEL's versioned venv activation template can render its label as
+    // `((name) )`. Normalize only that prompt decoration for a clean replay;
+    // the environment name and all command output remain unchanged.
+    const promptNormalizedData = data
+      .replace(/\(\(([^)\r\n]+)\) \) /g, "($1) ")
+      .replace(/(\([^)\r\n]+\) )\r?\n(?=\[rajat@)/g, "$1");
+    normalizedData = promptNormalizedData.replace(promptPattern, (prompt, offset) => {
+      const followsNewlineInEvent = offset > 0 && /[\r\n]$/.test(promptNormalizedData.slice(0, offset));
+      const followsVenvPrefix = offset > 0 && /\([^)\r\n]+\) $/.test(promptNormalizedData.slice(0, offset));
       const beginsAfterNewline = offset === 0 && previousOutputEndsWithNewline;
-      return followsNewlineInEvent || beginsAfterNewline ? prompt : `\r\n${prompt}`;
+      const beginsAfterVenvPrefix = offset === 0 && previousOutputEndsWithVenvPrefix;
+      return followsNewlineInEvent || followsVenvPrefix || beginsAfterNewline || beginsAfterVenvPrefix ? prompt : `\r\n${prompt}`;
     });
     previousOutputEndsWithNewline = /[\r\n]$/.test(normalizedData);
+    previousOutputEndsWithVenvPrefix = /\([^)\r\n]+\) $/.test(normalizedData);
   }
   return [Math.max(0, Number((time - firstTime).toFixed(6))), type, normalizedData];
 });
@@ -49,6 +59,11 @@ if (finalPromptEventIndex >= 0) {
   rebasedEvents[finalPromptEventIndex][2] = rebasedEvents[finalPromptEventIndex][2].slice(0, finalPromptEnd);
   for (let index = finalPromptEventIndex + 1; index < rebasedEvents.length; index += 1) {
     if (rebasedEvents[index][1] === "o") rebasedEvents[index][2] = "";
+  }
+  const completionHoldTime = Number((rebasedEvents[finalPromptEventIndex][0] + 1.25).toFixed(6));
+  const finalEvent = rebasedEvents.at(-1);
+  if (!finalEvent || finalEvent[0] < completionHoldTime) {
+    rebasedEvents.push([completionHoldTime, "o", ""]);
   }
 }
 

@@ -117,16 +117,16 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
         return (
           <section className="comparison-section" key={comparison.title} aria-labelledby={headingId}>
             <div className="comparison-heading">
-              <p className="eyebrow"><span /> Understand the difference</p>
+              <p className="eyebrow"><span /> {comparison.eyebrow ?? "Understand the difference"}</p>
               <h2 id={headingId}>{comparison.title}</h2>
               <p>{comparison.introduction}</p>
             </div>
             <details className="comparison-deep-dive">
-              <summary>Read the detailed comparison</summary>
-              <div className="comparison-table-wrap" tabIndex={0} aria-label={`${comparison.title} comparison table`}>
+              <summary>{comparison.summaryLabel ?? "Read the detailed comparison"}</summary>
+              <div className={`comparison-table-wrap${comparison.columns.length > 2 ? " comparison-table-wide" : ""}`} tabIndex={0} aria-label={`${comparison.title} table`}>
                 <table>
                   <thead>
-                    <tr><th scope="col">Compare</th>{comparison.columns.map((column) => <th scope="col" key={column}>{column}</th>)}</tr>
+                    <tr><th scope="col">{comparison.rowHeader ?? "Compare"}</th>{comparison.columns.map((column) => <th scope="col" key={column}>{column}</th>)}</tr>
                   </thead>
                   <tbody>
                     {comparison.rows.map((row) => (
@@ -140,7 +140,7 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
               </div>
             </details>
             <div className="comparison-takeaway">
-              <strong>Which should you choose?</strong>
+              <strong>{comparison.takeawayLabel ?? "Which should you choose?"}</strong>
               <p>{comparison.takeaway}</p>
               <span>Official references: {comparison.sources.map((source, index) => (
                 <span key={source.href}>{index > 0 && " · "}<a href={source.href} target="_blank" rel="noreferrer">{source.label} ↗</a></span>

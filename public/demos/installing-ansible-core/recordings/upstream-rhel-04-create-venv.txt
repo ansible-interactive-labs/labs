@@ -1,0 +1,19 @@
+[rajat@demo ~]$ python3.12 --version
+Python 3.12.14
+
+[rajat@demo ~]$ python3.12 -m pip --version
+pip 23.2.1 from /usr/lib/python3.12/site-packages/pip (python 3.12)
+
+[rajat@demo ~]$ mkdir -p ~/.venvs
+
+[rajat@demo ~]$ python3.12 -m venv --prompt ansible-core-2.21 ~/.venvs/ansible-core-2.21
+
+[rajat@demo ~]$ source ~/.venvs/ansible-core-2.21/bin/activate
+
+(ansible-core-2.21) [rajat@demo ~]$ python --version
+Python 3.12.14
+
+(ansible-core-2.21) [rajat@demo ~]$ python -m pip --version
+pip 23.2.1 from /home/rajat/.venvs/ansible-core-2.21/lib64/python3.12/site-packages/pip (python 3.12)
+
+(ansible-core-2.21) [rajat@demo ~]$

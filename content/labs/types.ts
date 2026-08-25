@@ -41,10 +41,14 @@ export type LabOverview = {
 export type LabComparison = {
   title: string;
   introduction: string;
-  columns: [string, string];
+  eyebrow?: string;
+  summaryLabel?: string;
+  rowHeader?: string;
+  takeawayLabel?: string;
+  columns: string[];
   rows: Array<{
     aspect: string;
-    values: [string, string];
+    values: string[];
   }>;
   takeaway: string;
   sources: Array<{
@@ -57,6 +61,7 @@ export type LabDemo = {
   id: string;
   title: string;
   objective: string;
+  outcomes?: string[];
   duration: string;
   durationMinutes: number;
   steps: LabStep[];

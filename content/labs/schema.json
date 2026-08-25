@@ -77,10 +77,14 @@
         "properties": {
           "title": { "type": "string", "minLength": 5 },
           "introduction": { "type": "string", "minLength": 20 },
+          "eyebrow": { "type": "string", "minLength": 3 },
+          "summaryLabel": { "type": "string", "minLength": 3 },
+          "rowHeader": { "type": "string", "minLength": 2 },
+          "takeawayLabel": { "type": "string", "minLength": 3 },
           "columns": {
             "type": "array",
-            "minItems": 2,
-            "maxItems": 2,
+            "minItems": 1,
+            "maxItems": 6,
             "items": { "type": "string", "minLength": 2 }
           },
           "rows": {
@@ -94,8 +98,8 @@
                 "aspect": { "type": "string", "minLength": 2 },
                 "values": {
                   "type": "array",
-                  "minItems": 2,
-                  "maxItems": 2,
+                  "minItems": 1,
+                  "maxItems": 6,
                   "items": { "type": "string", "minLength": 5 }
                 }
               }
@@ -141,6 +145,7 @@
           "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
           "title": { "type": "string", "minLength": 5 },
           "objective": { "type": "string", "minLength": 20 },
+          "outcomes": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 5 } },
           "duration": { "type": "string", "minLength": 3 },
           "durationMinutes": { "type": "integer", "minimum": 1 },
           "steps": {

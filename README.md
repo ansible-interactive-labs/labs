@@ -10,16 +10,12 @@ Each published lab receives a stable `HOD NNN` identifier. Public website attrib
 
 The information architecture separates three content families—`HOD` Hands-On Demos, `SOL` Solutions, and `CASE` Consulting Cases—and connects each family through a shared technology directory. The dedicated author profile at `/author/rajat-agrawal/` connects Rajat’s professional focus, teaching approach, and public LinkedIn profile to the complete platform.
 
-The first demo covers installing `ansible-core` on RHEL 9:
+HOD 001 covers two independently playable ways to install `ansible-core` on RHEL 9:
 
-1. Verify the RHEL 9 environment and disconnected starting state.
-2. Register it with `rhc connect` and confirm the result.
-3. Compare the Subscription Management and DNF repository views.
-4. Inspect the supported `ansible-core` package.
-5. Install it with DNF.
-6. Verify the package files, commands, and runtime.
-7. Inspect the active Ansible configuration and module documentation.
-8. Run a functional localhost smoke test.
+1. Install and validate the Red Hat-provided ansible-core RPM from RHEL AppStream.
+2. Install a compatible RHEL Python, create a virtual environment, and install upstream ansible-core from PyPI without installing the RHEL ansible-core RPM.
+
+The introduction keeps three compatibility decisions separate: the RHEL 9 AppStream RPM/runtime combination, upstream ansible-core control-node and managed-node Python support, and Red Hat Ansible Automation Platform execution-environment coverage. Each matrix links to its official lifecycle or compatibility source.
 
 Red Hat credentials are never stored in this repository or shown in recordings, transcripts, or screenshots.
 
@@ -113,6 +109,7 @@ No central registry or route file needs to be edited. The build discovers each `
 - Static routes and `sitemap.xml` are generated from discovered labs. Adding lab 101 follows exactly the same workflow as adding lab 2.
 - Lab JSON follows the versioned schema in `content/labs/schema.json`, allowing future content migrations without coupling content to UI components.
 - Optional comparison records render as accessible, mobile-scrollable tables with a practical decision takeaway and official references.
+- Demo modules can override the lab-level outcomes, so each Start Demo screen remains accurate as a single HOD grows to include multiple installation or operating-system workflows.
 
 ## Lab publishing standard
 

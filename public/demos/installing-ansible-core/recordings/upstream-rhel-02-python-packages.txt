@@ -1,0 +1,14 @@
+[rajat@demo ~]$ sudo dnf repolist --enabled
+Updating Subscription Management repositories.
+repo id                                          repo name
+rhel-9-for-aarch64-appstream-rpms                Red Hat Enterprise Linux 9 for ARM 64 - AppStream (RPMs)
+rhel-9-for-aarch64-baseos-rpms                   Red Hat Enterprise Linux 9 for ARM 64 - BaseOS (RPMs)
+
+[rajat@demo ~]$ sudo dnf list --available python3.12 python3.12-pip
+Updating Subscription Management repositories.
+Last metadata expiration check: 0:04:10 ago on Tue 25 Aug 2026 12:36:46 AM.
+Available Packages
+python3.12.aarch64                            3.12.14-1.el9_8                          rhel-9-for-aarch64-appstream-rpms
+python3.12-pip.noarch                         23.2.1-5.el9                             rhel-9-for-aarch64-appstream-rpms
+
+[rajat@demo ~]$

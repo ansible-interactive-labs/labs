@@ -1,0 +1,13 @@
+(ansible-core-2.21) [rajat@demo ~]$ ansible-galaxy collection list
+[WARNING]: None of the provided paths were usable. Please specify a valid path with --collections-path.
+
+(ansible-core-2.21) [rajat@demo ~]$ ansible-doc -l 2>/dev/null | awk -F. '{print $1}' | sort -u
+ansible
+
+(ansible-core-2.21) [rajat@demo ~]$ PAGER=cat ansible-doc -s ansible.builtin.ping
+- name: Try to connect to host, verify a usable python and return `pong' on success
+  ping:
+      data:                  # Data to return for the `ping' return value. If this parameter is set to `crash', the
+                             # module will cause an exception.
+
+(ansible-core-2.21) [rajat@demo ~]$
