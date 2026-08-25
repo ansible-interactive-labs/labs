@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getLabSummaries } from "@/content/labs/loader";
+import { brand } from "@/lib/brand";
 
 export const dynamic = "force-static";
 
@@ -11,6 +12,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${siteUrl}/`,
       changeFrequency: "weekly",
       priority: 1
+    },
+    {
+      url: `${siteUrl}${brand.creatorPath}`,
+      changeFrequency: "monthly",
+      priority: 0.7
     },
     ...getLabSummaries().map((lab) => ({
       url: `${siteUrl}/demos/${lab.slug}/`,

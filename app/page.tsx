@@ -18,7 +18,7 @@ export default function Home() {
           <a className="nav-link" href="#demos">Demos</a>
           <a className="nav-link subtle" href="#learning-path">Learning path</a>
           <a className="nav-link subtle" href="#lab-standard">Lab standard</a>
-          <a className="nav-link subtle" href="#creator">About Rajat</a>
+          <Link className="nav-link subtle" href={brand.creatorPath}>About Rajat</Link>
         </div>
       </nav>
 
@@ -29,7 +29,7 @@ export default function Home() {
           <p className="hero-intro">Real Ansible workflows captured on real systems—with every command, result, explanation, and troubleshooting step needed to reproduce the outcome in your own environment.</p>
           <div className="hero-actions">
             <Link className="button button-primary" href={`/demos/${firstLab.slug}/`}>Start first demo <span>→</span></Link>
-            <a className="creator-link" href={brand.linkedin} target="_blank" rel="noreferrer">Created by {brand.creator} <span>↗</span></a>
+            <Link className="creator-link" href={brand.creatorPath}>Created by {brand.creator} <span>→</span></Link>
           </div>
           <p className="hero-note">No lab timer · Progress saved · Self-paced · Independent educational project</p>
         </div>
@@ -53,7 +53,10 @@ export default function Home() {
           <p className="eyebrow"><span /> The creator</p>
           <h2 id="creator-title">Built and verified<br />by Rajat Agrawal.</h2>
           <p>Rajat creates practical automation learning experiences for people who want to see the complete workflow—not only the final command. Every published demo combines real execution, clear reasoning, expected results, and recovery guidance.</p>
-          <a className="button button-dark" href={brand.linkedin} target="_blank" rel="noreferrer">Connect with Rajat on LinkedIn <span>↗</span></a>
+          <div className="creator-actions">
+            <Link className="button button-dark" href={brand.creatorPath}>View Rajat’s profile <span>→</span></Link>
+            <a className="text-link" href={brand.linkedin} target="_blank" rel="noreferrer">Connect on LinkedIn ↗</a>
+          </div>
         </div>
         <aside className="creator-principles" aria-label="Rajat’s Automation Lab principles">
           <span>Creator’s standard</span>

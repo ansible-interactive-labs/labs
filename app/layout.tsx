@@ -4,9 +4,11 @@ import './globals.css';
 import { brand } from '@/lib/brand';
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
+const socialImage = `${siteUrl}/og.png`;
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
+  metadataBase: new URL(siteUrl),
   title: brand.siteName,
   description:
     'Verified Ansible hands-on demonstrations created by Rajat Agrawal, with real workflows, complete output, explanations, and troubleshooting.',
@@ -18,13 +20,13 @@ export const metadata: Metadata = {
     title: brand.siteName,
     description: `${brand.descriptor}. ${brand.tagline}`,
     type: 'website',
-    images: [{ url: `${basePath}/og.png`, width: 1731, height: 909, alt: `${brand.siteName} — ${brand.descriptor}` }],
+    images: [{ url: socialImage, width: 1731, height: 909, alt: `${brand.siteName} — ${brand.descriptor}` }],
   },
   twitter: {
     card: 'summary_large_image',
     title: brand.siteName,
     description: `${brand.descriptor}. ${brand.tagline}`,
-    images: [`${basePath}/og.png`],
+    images: [socialImage],
   },
 };
 

@@ -61,7 +61,7 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
           <p className="eyebrow"><span /> {formatHodNumber(lab.hodNumber)} · {lab.topic} · {lab.difficulty}</p>
           <h1>{lab.title}</h1>
           <p className="lab-description">{lab.description}</p>
-          <p className="lab-byline">Created, demonstrated, and verified by <a href={brand.linkedin} target="_blank" rel="noreferrer">{brand.creator} ↗</a></p>
+          <p className="lab-byline">Created, demonstrated, and verified by <Link href={brand.creatorPath}>{brand.creator} →</Link></p>
           <div className="lab-facts" aria-label="Lab facts">
             <span><small>Duration</small>{lab.duration}</span>
             <span><small>Platform</small>{lab.platform}</span>

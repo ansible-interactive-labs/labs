@@ -6,6 +6,8 @@ A static, replay-led library of verified Ansible Hands-On Demos created by Rajat
 
 Each published lab receives a stable `HOD NNN` identifier. Public website attribution uses the exact creator name **Rajat Agrawal** and links to [Rajat on LinkedIn](https://www.linkedin.com/in/connectwithrajat/). The project is independent and is not affiliated with or endorsed by Red Hat.
 
+The dedicated author profile at `/author/rajat-agrawal/` connects Rajat’s professional focus, teaching approach, and public LinkedIn profile to every Hands-On Demo.
+
 The first demo covers installing `ansible-core` on RHEL 9:
 
 1. Verify the RHEL 9 environment and disconnected starting state.
