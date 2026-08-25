@@ -231,10 +231,11 @@ for (const directory of directories) {
             let joinedOutput = "";
             let finalOutputTime = 0;
             let lastPromptTime;
+            let lastPromptEnd;
             for (const line of castLines) {
               const [time, type, data] = JSON.parse(line);
               if (type !== "o") continue;
-              joinedOutput += data;
+              const eventStart = joinedOutput.length;
               finalOutputTime = time;
               for (const match of data.matchAll(/\[(?:rajat|learner)@[^\]\r\n]+\][#$] /g)) {
                 const offset = match.index ?? 0;
@@ -242,7 +243,9 @@ for (const directory of directories) {
                 const beginsAfterNewline = offset === 0 && previousOutputEndsWithNewline;
                 if (!followsNewlineInEvent && !beginsAfterNewline) fail(sourceName, "terminal prompt must begin on a new line");
                 lastPromptTime = time;
+                lastPromptEnd = eventStart + offset + match[0].length;
               }
+              joinedOutput += data;
               previousOutputEndsWithNewline = /[\r\n]$/.test(data);
             }
             const visibleEnding = joinedOutput
@@ -251,6 +254,9 @@ for (const directory of directories) {
               .trimEnd();
             if (!/\[(?:rajat|learner)@[^\]\r\n]+\][#$]$/.test(visibleEnding)) {
               fail(sourceName, "terminal source must end on a returned shell prompt");
+            }
+            if (lastPromptEnd !== undefined && joinedOutput.slice(lastPromptEnd).length > 0) {
+              fail(sourceName, "terminal source must not emit output or cursor movement after the final prompt");
             }
             if (lastPromptTime === undefined || finalOutputTime - lastPromptTime < minimumCompletionHold) {
               fail(sourceName, `terminal source must hold the final prompt for at least ${minimumCompletionHold} second`);

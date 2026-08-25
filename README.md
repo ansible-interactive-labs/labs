@@ -99,7 +99,7 @@ Never add `--log-in` or `--log-io`; either option can retain credential input. T
 
 Record every published terminal session while signed in as the public demonstration user `rajat`. Preserve `[rajat@HOSTNAME]` prompts and `/home/rajat` paths as intentional creator branding. Continue removing passwords, private IP addresses, account and subscription identifiers, machine IDs, boot IDs, and credential prompts.
 
-Before recording, configure the demonstration shell with `export PROMPT_COMMAND='printf "\\n"'`. This ensures every prompt starts on a fresh line even when a command omits its trailing newline. Sanitization repairs attached prompts as a fallback, and validation rejects any cast or transcript where command output and the next prompt share a line.
+Before recording, configure the demonstration shell with `export PROMPT_COMMAND='printf "\\n"'`. This ensures every prompt starts on a fresh line even when a command omits its trailing newline. Sanitization repairs attached prompts as a fallback and removes terminal teardown output after the final prompt. Validation rejects casts or transcripts where command output and the next prompt share a line, and rejects any cast that moves the cursor away from the final prompt before playback ends.
 
 No central registry or route file needs to be edited. The build discovers each `lab.json`, validates required content and assets, creates its static route, and adds it to the sitemap automatically.
 

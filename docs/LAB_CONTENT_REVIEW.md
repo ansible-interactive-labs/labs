@@ -31,6 +31,7 @@ Review each lab through all of these lenses:
 - Credential entry and other secrets are excluded rather than simulated in the recording.
 - Terminal prompts intentionally preserve the public demonstration username `rajat`; private infrastructure, credentials, and subscription identifiers remain prohibited.
 - Every shell prompt begins on a new line; command output and the next prompt must never be joined in a replay or transcript.
+- The replay freezes on the final returned prompt. No newline, carriage return, terminal reset, or other output may move the cursor onto an empty line before playback ends.
 - Every step explains what the command does, why it is needed, what success looks like, and what to check when the result differs.
 - Commands are safe to copy and do not expose credentials, local addresses, account identifiers, or destructive shortcuts.
 - Version-dependent output is identified so learners do not expect an exact match unnecessarily.
