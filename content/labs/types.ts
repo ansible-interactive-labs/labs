@@ -31,17 +31,55 @@ export type LabPrerequisite = {
 export type LabOverview = {
   title: string;
   introduction: string;
+  itemsLabel?: string;
   items: Array<{
     title: string;
     detail: string;
   }>;
   note?: string;
+  relatedTools?: Array<{
+    title: string;
+    detail: string;
+    status: string;
+    href?: string;
+    linkLabel?: string;
+    reference: {
+      label: string;
+      href: string;
+    };
+  }>;
+  orchestrationOptions?: {
+    title: string;
+    introduction: string;
+    items: Array<{
+      title: string;
+      category: string;
+      detail: string;
+      href?: string;
+      linkLabel?: string;
+      reference: {
+        label: string;
+        href: string;
+      };
+    }>;
+    note: string;
+  };
 };
 
 export type LabComparison = {
   title: string;
   introduction: string;
   eyebrow?: string;
+  notesLabel?: string;
+  notes?: Array<{
+    title: string;
+    detail: string;
+    reference?: {
+      label: string;
+      href: string;
+    };
+  }>;
+  cellLayout?: "text" | "stacked";
   summaryLabel?: string;
   rowHeader?: string;
   takeawayLabel?: string;
@@ -49,8 +87,12 @@ export type LabComparison = {
   rows: Array<{
     aspect: string;
     values: string[];
+    reference?: {
+      label: string;
+      href: string;
+    };
   }>;
-  takeaway: string;
+  takeaway?: string;
   sources: Array<{
     label: string;
     href: string;
@@ -93,6 +135,12 @@ export type Lab = {
   outcomes: string[];
   overview?: LabOverview;
   prerequisites: LabPrerequisite[];
+  accessCallout?: {
+    title: string;
+    detail: string;
+    href: string;
+    linkLabel: string;
+  };
   comparisons?: LabComparison[];
   verified: {
     date: string;

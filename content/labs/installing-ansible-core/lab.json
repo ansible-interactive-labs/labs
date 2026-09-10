@@ -27,30 +27,85 @@
   ],
   "overview": {
     "title": "What is ansible-core?",
-    "introduction": "ansible-core is the minimal automation engine and extensible runtime maintained by the Ansible project. It provides the language and execution framework that turn inventories, playbooks, and ad hoc commands into automation, together with essential command-line tools and built-in content.",
+    "introduction": "ansible-core is the minimal automation engine at the center of Ansible automation. Developers and automation content authors use it to build, test, troubleshoot, and validate inventories, playbooks, roles, plugins, and collections before moving approved content into an operational workflow.",
+    "itemsLabel": "What ansible-core provides",
     "items": [
       {
-        "title": "Command-line tools",
-        "detail": "Includes commands such as ansible, ansible-playbook, ansible-doc, ansible-config, and ansible-galaxy."
+        "title": "Built-in command-line tools",
+        "detail": "The package installs commands for running playbooks, inspecting inventory and configuration, reading documentation, installing collections, encrypting sensitive data, and testing automation content. These include ansible, ansible-playbook, ansible-inventory, ansible-config, ansible-doc, ansible-galaxy, ansible-vault, and ansible-test."
       },
       {
         "title": "Automation language",
-        "detail": "Interprets YAML playbooks, tasks, handlers, variables, conditionals, loops, and includes."
+        "detail": "ansible-core processes playbooks written in YAML. Playbooks can contain tasks, handlers, variables, conditions, loops, imports, and includes."
       },
       {
         "title": "Execution runtime",
-        "detail": "Loads inventory, connections, strategies, modules, and plugins to run automation against managed nodes."
+        "detail": "It reads inventory, connects to managed nodes, loads the required plugins, and runs modules. The same engine can be invoked from a developer's terminal or through a controller."
       },
       {
         "title": "Built-in content",
-        "detail": "Provides the ansible.builtin collection namespace, whose modules and plugins are maintained inside ansible-core."
+        "detail": "It includes the modules and plugins in the ansible.builtin namespace. This content ships with ansible-core and does not require a separate collection installation."
       },
       {
-        "title": "Extensible by design",
-        "detail": "Can discover additional collections installed separately in configured collection paths when your automation needs more content."
+        "title": "Additional collections",
+        "detail": "Install collections separately when your automation needs modules, plugins, roles, or other content that is not included in ansible.builtin."
       }
     ],
-    "note": "ansible-core can be used directly and also serves as the engine beneath other Ansible tools and delivery experiences. Its exact version and maintenance policy depend on how it is packaged and installed."
+    "note": "In the following demonstrations, you will use the local ansible-core CLI to develop and validate automation. Teams that need shared credentials, controlled access, approvals, scheduling, and audit history should run approved production jobs through a controller or orchestration platform. The platform manages the workflow; an Ansible runtime executes the automation.",
+    "orchestrationOptions": {
+      "title": "Common platforms for shared Ansible operations",
+      "introduction": "These platforms provide a shared interface for running automation, controlling access, and reviewing job results. Their scope, Ansible integration, and support models differ.",
+      "items": [
+        {
+          "title": "Automation Controller",
+          "category": "Ansible-native · Red Hat supported",
+          "detail": "The Red Hat-supported enterprise controller included with Red Hat Ansible Automation Platform. It provides centralized credentials, access controls, job templates, workflows, schedules, APIs, job history, and auditing.",
+          "reference": {
+            "label": "Official product documentation",
+            "href": "https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.6/pdf/using_automation_execution/Red_Hat_Ansible_Automation_Platform-2.6-Using_automation_execution-en-US.pdf"
+          }
+        },
+        {
+          "title": "AWX",
+          "category": "Ansible-native · Upstream community",
+          "detail": "The upstream community project from which Automation Controller is developed. It provides a web interface, REST API, and task engine for Ansible. AWX is self-supported, so review its release, deployment, and upgrade model before using it in production.",
+          "reference": {
+            "label": "Official project overview",
+            "href": "https://github.com/ansible/awx"
+          }
+        },
+        {
+          "title": "Semaphore UI",
+          "category": "Multi-tool · Self-hosted control plane",
+          "detail": "A self-hosted web interface and API for running Ansible and other automation tools. It provides projects, repositories, inventories, protected credentials, task templates, schedules, logs, and role-based access. Community and commercial editions are available.",
+          "reference": {
+            "label": "Official documentation",
+            "href": "https://semaphoreui.com/docs"
+          }
+        },
+        {
+          "title": "Rundeck",
+          "category": "Runbook automation · Ansible integration",
+          "detail": "A runbook automation platform that can include Ansible in larger operational workflows. Its Ansible integration can import inventory and run modules or playbooks. Rundeck manages the workflow while Ansible performs the Ansible-specific execution.",
+          "reference": {
+            "label": "Official Ansible integration guide",
+            "href": "https://docs.rundeck.com/docs/learning/howto/using-ansible.html"
+          }
+        }
+      ],
+      "note": "Check how each platform handles execution isolation, secrets, permissions, approvals, audit records, availability, scaling, upgrades, integrations, and support. Links to dedicated HODs can be added as those demonstrations are published."
+    },
+    "relatedTools": [
+      {
+        "title": "ansible-navigator",
+        "detail": "ansible-navigator is installed separately from ansible-core. Red Hat documentation refers to it as automation content navigator. It gives developers command-line and interactive interfaces for running, inspecting, and troubleshooting Ansible content, often through execution environments. These environments normally contain ansible-core, the required collections, and their dependencies. A future HOD will cover its installation, downloading an execution environment, and running a test command.",
+        "status": "Dedicated HOD coming soon",
+        "reference": {
+          "label": "Read the official overview",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.6/develop-con_about_ansible_navigator"
+        }
+      }
+    ]
   },
   "prerequisites": [
     {
@@ -67,66 +122,61 @@
       "label": "Connectivity",
       "value": "Internet and DNS",
       "detail": "Outbound access to Red Hat registration and content services."
-    },
-    {
-      "label": "Subscription",
-      "value": "RHEL entitlement",
-      "detail": "A RHEL entitlement provides the BaseOS and AppStream access needed to install this RPM. An Ansible Automation Platform subscription is not required for the lab, but a RHEL subscription does not provide broad support for arbitrary ansible-core automation.",
-      "href": "https://developers.redhat.com/articles/faqs-no-cost-red-hat-enterprise-linux"
     }
   ],
+  "accessCallout": {
+    "title": "Don’t have a Red Hat subscription?",
+    "detail": "You can join the Red Hat Developer program at no cost. Eligible members can activate the self-supported Red Hat Developer Subscription for Individuals, which provides access to RHEL and repositories such as BaseOS and AppStream. You do not need an Ansible Automation Platform subscription to complete this lab. The Developer Subscription gives you access to the packages used here, but it does not include product support for automation you create with ansible-core.",
+    "href": "https://developers.redhat.com/register",
+    "linkLabel": "Join Red Hat Developer"
+  },
   "comparisons": [
     {
-      "title": "RHEL 9 AppStream ansible-core vs upstream ansible-core",
-      "introduction": "Now that you know what ansible-core provides, this section compares two ways of obtaining the same upstream automation engine. The RHEL AppStream RPM and upstream Python release primarily differ in packaging, installation ownership, version cadence, maintenance authority, lifecycle, and support scope. This lab installs the RHEL AppStream RPM. Package access through a RHEL subscription must not be confused with blanket support for every ansible-core use case.",
-      "columns": ["RHEL 9 AppStream RPM", "Upstream ansible-core release"],
-      "rows": [
+      "title": "RHEL-provided ansible-core vs upstream ansible-core",
+      "introduction": "RHEL provides ansible-core as an AppStream RPM, while the upstream Ansible project publishes it as a Python distribution on PyPI. These distributions differ in package management, Python integration, release cadence, maintenance lifecycle, and support.",
+      "notes": [
         {
-          "aspect": "Shared foundation",
-          "values": ["Provides the ansible-core command-line tools, automation language, execution runtime, and embedded ansible.builtin content as integrated into RHEL.", "Provides the same command-line tools, automation language, execution runtime, and embedded ansible.builtin content directly from the upstream project. Available versions, fixes, Python environments, and maintenance policies can differ between the two distributions."]
+          "title": "What stays the same",
+          "detail": "Both distributions provide the ansible-core command-line tools, automation language, execution runtime, and embedded ansible.builtin collection. Other collections are installed and maintained separately."
         },
         {
-          "aspect": "Artifact and provider",
-          "values": ["A Red Hat-built, signed, and tested RPM derived from upstream source and delivered through the RHEL AppStream repository.", "A release produced from the ansible/ansible stable branch, published as an upstream Python distribution and identified by its X.Y.Z version."]
-        },
-        {
-          "aspect": "Install and update path",
-          "values": ["Install and update with DNF. RPM tracks ownership, dependencies, signatures, and errata with the rest of the operating system.", "Install into a selected Python environment with pip or into an isolated application environment with pipx. That environment's Python packaging workflow owns upgrades and dependencies."]
-        },
-        {
-          "aspect": "Runtime integration",
-          "values": ["Uses the RHEL filesystem layout and platform Python dependencies; commands are installed system-wide under RPM control.", "Location and Python runtime depend on the interpreter, user site, virtual environment, or pipx environment selected during installation."]
-        },
-        {
-          "aspect": "Version strategy",
-          "values": ["RHEL 9 stays on the ansible-core 2.14 stream and advances the RPM release when Red Hat delivers fixes. A lower upstream version number does not by itself mean the RPM is unpatched.", "A new X.Y feature release normally arrives about every six months, with X.Y.Z servicing releases on an approximately four-week schedule."]
-        },
-        {
-          "aspect": "Maintenance window",
-          "values": ["The RHEL product lifecycle and AppStream policy govern maintenance; upstream end-of-life alone does not determine the status of the RHEL RPM.", "The project maintains three feature releases at graduated levels: the newest receives general bug and security fixes, the next receives critical and security fixes, and the oldest receives security fixes."]
-        },
-        {
-          "aspect": "Security and backports",
-          "values": ["Red Hat can backport selected fixes to the retained version to reduce compatibility risk. Use Red Hat advisories and security data—not only the upstream version string—to assess the RPM.", "Fixes are backported among maintained stable branches according to severity and appear in new upstream servicing releases; unmaintained releases generally stop receiving fixes."]
-        },
-        {
-          "aspect": "Published lifecycle",
-          "values": ["Red Hat lists ansible-core 2.14 as a Full Life Application Stream for RHEL 9, aligning the stream with the underlying RHEL major-release lifecycle and applicable errata policy.", "Lifecycle follows the upstream support matrix and changes as each new feature release moves the previous releases into narrower maintenance phases and eventually end of life."]
-        },
-        {
-          "aspect": "Support scope",
-          "values": ["RHEL support is deliberately limited to playbooks, roles, or modules supplied by or generated by Red Hat products, including RHEL System Roles and Red Hat Insights-generated automation. Broader support for the core platform and core-maintained modules requires Ansible Automation Platform.", "The upstream project provides documentation, maintenance releases, issue tracking, and community collaboration, but installing its release does not create a Red Hat product-support entitlement."]
-        },
-        {
-          "aspect": "Change and compatibility tradeoff",
-          "values": ["Prioritizes RHEL integration, predictable package management, and a stable feature baseline while selected fixes arrive as RPM updates.", "Makes newer core behavior, Python support, and features available sooner; feature-release upgrades can require porting work because ansible-core does not promise complete compatibility between X.Y releases."]
-        },
-        {
-          "aspect": "Additional automation content",
-          "values": ["The RPM provides the embedded ansible.builtin namespace. Additional collections are installed and managed separately. The collection-inventory step in this lab demonstrates the minimal namespace available on the clean RHEL installation.", "The upstream release also provides the embedded ansible.builtin namespace. Additional collections are selected, installed, upgraded, and supported separately from the core runtime."]
+          "title": "Package access",
+          "detail": "A RHEL subscription provides access to the AppStream RPM. Package access and support for automation created with ansible-core are separate; see Support coverage in the comparison below."
         }
       ],
-      "takeaway": "For this RHEL 9 lab, use the AppStream RPM because it is integrated with DNF and the RHEL lifecycle. Choose an upstream ansible-core release when you specifically need a newer core feature or Python compatibility and are prepared to own the Python environment, upgrade cadence, regression testing, and upstream project support path. If you need Red Hat support for general-purpose automation rather than only Red Hat-supplied or generated content, evaluate an Ansible Automation Platform subscription; installing the RHEL RPM alone does not expand the RHEL support scope.",
+      "summaryLabel": "Compare the two distribution paths",
+      "columns": ["RHEL-provided AppStream RPM", "Upstream PyPI distribution"],
+      "rows": [
+        {
+          "aspect": "Package and installation",
+          "values": ["A Red Hat-built and signed RPM installed with DNF from the RHEL AppStream repository. DNF manages its files, dependencies, signatures, updates, and errata.", "A Python distribution published by the upstream project. Install it with pip in a virtual environment or use pipx to create an isolated application environment."]
+        },
+        {
+          "aspect": "Environment ownership",
+          "values": ["DNF selects the RHEL filesystem locations and platform Python dependencies. The commands are available system-wide and remain under RPM control.", "You select the Python interpreter and installation environment. You are responsible for its dependencies, upgrades, and removal. Do not use pip to overwrite the RPM-managed installation or add packages to RHEL's platform Python; use a virtual environment or pipx."]
+        },
+        {
+          "aspect": "Versions and new features",
+          "values": ["RHEL 9 provides the ansible-core 2.14 Full Life Application Stream. Red Hat can update the RPM release while retaining the 2.14 feature baseline.", "Upstream normally publishes a new X.Y feature release about every six months and X.Y.Z patch releases about every four weeks. New features and support for newer Python versions become available here first."]
+        },
+        {
+          "aspect": "Maintenance and security fixes",
+          "values": ["Maintenance follows the RHEL and AppStream lifecycle. Red Hat can backport fixes without changing the upstream feature version, so assess the package through Red Hat advisories and security data rather than its version number alone.", "The upstream project maintains three X.Y releases at graduated levels. The newest receives general bug and security fixes, the next receives critical and security fixes, and the oldest receives security fixes. Unmaintained releases generally receive no further fixes."]
+        },
+        {
+          "aspect": "Python and compatibility",
+          "values": ["Use the Python dependencies selected by DNF for the RPM. Do not apply the upstream PyPI control-node matrix to this installation.", "Select a maintained ansible-core release that supports the Python version in your chosen environment. Test playbooks before changing X.Y releases because ansible-core does not guarantee complete compatibility between feature releases."]
+        },
+        {
+          "aspect": "Support coverage",
+          "values": ["Red Hat supports this RPM when it is used with playbooks, roles, and modules included with or generated by Red Hat products. Examples include RHEL System Roles, remediation playbooks generated by Red Hat Insights, and task playbooks generated by Red Hat Insights. Support for the underlying Ansible platform and core-maintained modules outside this scope requires an Ansible Automation Platform subscription.", "Maintained releases receive updates, documentation, issue tracking, and community collaboration from the upstream project. Installing ansible-core from PyPI does not create a Red Hat product-support entitlement."],
+          "reference": {
+            "label": "Read Red Hat's ansible-core support scope",
+            "href": "https://access.redhat.com/articles/6325611"
+          }
+        }
+      ],
+      "takeaway": "Use the AppStream RPM when RHEL integration and DNF-managed maintenance are the priority. Use the upstream PyPI distribution when you need a newer maintained ansible-core release or Python combination. For an upstream installation, keep ansible-core in a virtual environment or a pipx-managed environment so that pip-owned packages remain separate from the operating system's managed Python environment.",
       "sources": [
         {
           "label": "ansible-core overview",
@@ -137,12 +187,8 @@
           "href": "https://docs.ansible.com/projects/ansible-core/devel/installation_guide/intro_installation.html"
         },
         {
-          "label": "ansible-core releases and maintenance",
-          "href": "https://docs.ansible.com/projects/ansible/latest/reference_appendices/release_and_maintenance.html#ansible-core-release-cycle"
-        },
-        {
-          "label": "ansible-core branches and tags",
-          "href": "https://docs.ansible.com/projects/ansible/latest/dev_guide/core_branches_and_tags.html"
+          "label": "ansible-core audience, releases and maintenance",
+          "href": "https://docs.ansible.com/projects/ansible/latest/reference_appendices/release_and_maintenance.html"
         },
         {
           "label": "Red Hat ansible-core support scope",
@@ -159,94 +205,164 @@
       ]
     },
     {
-      "title": "RHEL 9 AppStream ansible-core runtime compatibility",
-      "introduction": "This matrix is intentionally scoped to the Red Hat-provided RPM used in Demo 01. Red Hat publishes ansible-core 2.14 and Python 3.9 as Full Life Application Streams for RHEL 9. The verified build row records the exact package and interpreter observed on the demonstration VM; later errata can change the servicing-release numbers without changing the documented 2.14 stream.",
+      "title": "RHEL-provided ansible-core compatibility",
+      "introduction": "RHEL packages ansible-core with a control-node Python runtime selected for each RHEL major release. Managed-host requirements depend on the operating system, connection method, module, and collection. The table covers the ansible-core baseline for Linux, Unix, and Windows hosts; individual collections and modules can set narrower requirements. It lists feature streams rather than exact RPM builds, so the installed 2.14.z or 2.16.z version can change through updates. Red Hat maintains these RPMs under the RHEL lifecycle, independently of the upstream lifecycle.",
       "eyebrow": "Red Hat-provided RPM",
-      "summaryLabel": "View the RHEL 9 AppStream runtime matrix",
-      "rowHeader": "Evidence",
-      "takeawayLabel": "Read the version correctly",
-      "columns": ["Operating system", "ansible-core", "Control-node Python", "Lifecycle and scope"],
-      "rows": [
+      "summaryLabel": "View the RHEL runtime matrix",
+      "cellLayout": "stacked",
+      "rowHeader": "RHEL control node",
+      "notesLabel": "Managed-host requirements by platform",
+      "notes": [
         {
-          "aspect": "Published stream",
-          "values": ["RHEL 9; introduced with RHEL 9.0", "2.14 Full Life Application Stream", "RHEL platform Python 3.9 Full Life Application Stream", "Maintained under the RHEL lifecycle; RPM support remains limited to Red Hat-supplied or generated automation content"]
+          "title": "Linux and Unix hosts",
+          "detail": "Ansible is not installed on the managed host. Most modules need one supported Python interpreter from the range or alternatives listed below; the host does not need every Python version shown. It also needs an account that Ansible can reach over SSH. When a task must run as root, that account needs permission to use sudo or another configured become method. The ansible.builtin.raw module can help bootstrap a host that does not yet have Python.",
+          "reference": {
+            "label": "Read the managed-node requirements",
+            "href": "https://docs.ansible.com/projects/ansible/latest/installation_guide/intro_installation.html#managed-node-requirements"
+          }
         },
         {
-          "aspect": "HOD 001 verification",
-          "values": ["RHEL 9.8 on aarch64", "2.14.18-3.el9_8.1", "Python 3.9.25", "Verified August 25, 2026; exact servicing releases and architecture suffixes can change with errata"]
+          "title": "Windows hosts",
+          "detail": "Windows modules run through Windows PowerShell rather than Python. The host also needs a supported Windows release and a configured connection. The versioned ansible-core guidance shown here uses WinRM; individual modules can require a newer Windows, PowerShell, or .NET Framework version.",
+          "reference": {
+            "label": "Read the Windows host requirements",
+            "href": "https://docs.ansible.com/projects/ansible-core/2.16/os_guide/windows_setup.html#host-requirements"
+          }
+        },
+        {
+          "title": "Network devices and appliances",
+          "detail": "Network modules commonly use collection-specific connection plugins and do not require Python on the managed device. Check the collection, module, connection-plugin, operating-system, and device-vendor documentation for additional transport, library, firmware, or platform requirements.",
+          "reference": {
+            "label": "Read about connection plugins",
+            "href": "https://docs.ansible.com/projects/ansible/latest/plugins/connection.html"
+          }
         }
       ],
-      "takeaway": "For the RHEL-provided package, treat RHEL 9, the ansible-core 2.14 stream, and the RPM-selected platform Python 3.9 runtime as one vendor-integrated combination. Do not apply the upstream PyPI control-node matrix to this RPM, and do not assume that a newer standalone Python should replace the interpreter selected by DNF. The exact 2.14.z and Python 3.9.z builds can advance through Red Hat updates.",
+      "columns": ["RPM feature stream", "RPM-selected control-node Python", "Linux/Unix managed host", "Windows managed host"],
+      "rows": [
+        {
+          "aspect": "RHEL 8",
+          "values": ["2.16.x", "Python 3.12", "Python 2.7 or 3.6–3.12\nSSH-accessible account\nsudo permission for tasks that require root access", "Windows PowerShell 5.1\n.NET Framework 4.6 or later\nActive WinRM listener"]
+        },
+        {
+          "aspect": "RHEL 9",
+          "values": ["2.14.x", "Python 3.9", "Python 2.7 or 3.5–3.11\nSSH-accessible account\nsudo permission for tasks that require root access", "Windows PowerShell 3–5.1\n.NET Framework 4.0 or later\nActive WinRM listener"]
+        },
+        {
+          "aspect": "RHEL 10",
+          "values": ["2.16.x", "Python 3.12", "Python 2.7 or 3.6–3.12\nSSH-accessible account\nsudo permission for tasks that require root access", "Windows PowerShell 5.1\n.NET Framework 4.6 or later\nActive WinRM listener"]
+        }
+      ],
       "sources": [
         {
           "label": "RHEL Application Streams lifecycle",
           "href": "https://access.redhat.com/support/policy/updates/rhel-app-streams-life-cycle"
         },
         {
-          "label": "Red Hat ansible-core support scope",
-          "href": "https://access.redhat.com/articles/6325611"
+          "label": "ansible-core target Python and PowerShell support matrix",
+          "href": "https://docs.ansible.com/projects/ansible/latest/reference_appendices/release_and_maintenance.html"
+        },
+        {
+          "label": "ansible-core 2.14 Windows host requirements",
+          "href": "https://docs.ansible.com/projects/ansible-core/2.14/os_guide/windows_setup.html#host-requirements"
+        },
+        {
+          "label": "ansible-core 2.16 Windows host requirements",
+          "href": "https://docs.ansible.com/projects/ansible-core/2.16/os_guide/windows_setup.html#host-requirements"
+        },
+        {
+          "label": "Ansible privilege escalation with become",
+          "href": "https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_privilege_escalation.html"
         }
       ]
     },
     {
-      "title": "Upstream ansible-core and Python compatibility",
-      "introduction": "The Python requirement depends on where Python runs. The control node is the machine that runs ansible-core; a managed host is a target that executes transferred Ansible modules. Before installing from PyPI, select an ansible-core release whose control-node range includes your chosen interpreter. This matrix reproduces the upstream project's complete published history from ansible-base 2.10 through the latest release. Lifecycle status is included because a technically installable but unmaintained release is not a sound choice for a new control node.",
-      "eyebrow": "Choose a supported runtime",
-      "summaryLabel": "View the upstream Python support matrix",
+      "title": "Upstream ansible-core compatibility",
+      "introduction": "The upstream Ansible project publishes ansible-core as a Python distribution on PyPI. Compatibility must be checked at both ends of the connection: the Python interpreter that runs ansible-core on the control node and the runtime used to execute modules on each managed host. Linux and Unix hosts normally use Python, Windows hosts use PowerShell and .NET, and network devices often follow collection- and connection-plugin-specific requirements instead. The matrix covers ansible-base 2.10 through the latest published release and includes lifecycle dates because a compatible release is not necessarily a maintained release.",
+      "eyebrow": "Upstream Python distribution",
+      "summaryLabel": "View the upstream runtime matrix",
+      "cellLayout": "stacked",
       "rowHeader": "ansible-core",
-      "takeawayLabel": "How to use this matrix",
-      "columns": ["Lifecycle as of August 2026", "Control-node Python", "Managed-host Python / PowerShell"],
+      "takeawayLabel": "Choose a maintained combination",
+      "notesLabel": "Managed-host requirements by platform",
+      "notes": [
+        {
+          "title": "Linux and Unix hosts",
+          "detail": "Ansible is not installed on the managed host. Most modules need one supported Python interpreter from the range or alternatives listed below; the host does not need every Python version shown. It also needs an account that Ansible can reach over SSH. When a task must run as root, that account needs permission to use sudo or another configured become method. The ansible.builtin.raw module can help bootstrap a host that does not yet have Python.",
+          "reference": {
+            "label": "Read the managed-node requirements",
+            "href": "https://docs.ansible.com/projects/ansible/latest/installation_guide/intro_installation.html#managed-node-requirements"
+          }
+        },
+        {
+          "title": "Windows hosts",
+          "detail": "Windows modules run through PowerShell rather than Python. PowerShell and .NET requirements changed across ansible-core releases, so use the matching row below. A Windows connection must also be configured. Individual modules can require newer components.",
+          "reference": {
+            "label": "Read the Windows guidance",
+            "href": "https://docs.ansible.com/projects/ansible-core/devel/os_guide/intro_windows.html"
+          }
+        },
+        {
+          "title": "Network devices and appliances",
+          "detail": "Network modules commonly use collection-specific connection plugins and do not require Python on the managed device. Check the collection, module, connection-plugin, operating-system, and device-vendor documentation for additional requirements.",
+          "reference": {
+            "label": "Read about connection plugins",
+            "href": "https://docs.ansible.com/projects/ansible/latest/plugins/connection.html"
+          }
+        }
+      ],
+      "columns": ["Lifecycle as of August 2026", "Control-node Python", "Linux/Unix managed host", "Windows managed host"],
       "rows": [
         {
           "aspect": "2.21",
-          "values": ["GA: May 2026\nCritical fixes: November 2026\nSecurity fixes: May 2027\nEOL: November 2027", "Python 3.12–3.14", "Python 3.9–3.14\nPowerShell 5.1–7"]
+          "values": ["GA: May 2026\nCritical fixes: November 2026\nSecurity fixes: May 2027\nEOL: November 2027", "Python 3.12–3.14", "Python 3.9–3.14\nSSH-accessible account\nsudo permission for tasks that require root access", "Windows PowerShell 5.1 with .NET Framework 4.6 or later\nOr PowerShell 7.6 LTS\nWinRM, PSRP, or SSH connection"]
         },
         {
           "aspect": "2.20",
-          "values": ["GA: 3 November 2025\nCritical fixes: 18 May 2026\nSecurity fixes: 2 November 2026\nEOL: May 2027", "Python 3.12–3.14", "Python 3.9–3.14\nPowerShell 5.1"]
+          "values": ["GA: 3 November 2025\nCritical fixes: 18 May 2026\nSecurity fixes: 2 November 2026\nEOL: May 2027", "Python 3.12–3.14", "Python 3.9–3.14\nSSH-accessible account\nsudo permission for tasks that require root access", "Windows PowerShell 5.1\n.NET Framework 4.6 or later\nActive WinRM listener"]
         },
         {
           "aspect": "2.19",
-          "values": ["GA: 21 July 2025\nCritical fixes: 3 November 2025\nSecurity fixes: 18 May 2026\nEOL: November 2026", "Python 3.11–3.13", "Python 3.8–3.13\nPowerShell 5.1"]
+          "values": ["GA: 21 July 2025\nCritical fixes: 3 November 2025\nSecurity fixes: 18 May 2026\nEOL: November 2026", "Python 3.11–3.13", "Python 3.8–3.13\nSSH-accessible account\nsudo permission for tasks that require root access", "Windows PowerShell 5.1\n.NET Framework 4.6 or later\nActive WinRM listener"]
         },
         {
           "aspect": "2.18",
-          "values": ["GA: 4 November 2024\nCritical fixes: 19 May 2025\nSecurity fixes: 3 November 2025\nEOL: May 2026", "Python 3.11–3.13", "Python 3.8–3.13\nPowerShell 5.1"]
+          "values": ["GA: 4 November 2024\nCritical fixes: 19 May 2025\nSecurity fixes: 3 November 2025\nEOL: May 2026", "Python 3.11–3.13", "Python 3.8–3.13\nSSH-accessible account\nsudo permission for tasks that require root access", "Windows PowerShell 5.1\n.NET Framework 4.6 or later\nActive WinRM listener"]
         },
         {
           "aspect": "2.17",
-          "values": ["GA: 20 May 2024\nCritical fixes: 4 November 2024\nSecurity fixes: 19 May 2025\nEOL: November 2025", "Python 3.10–3.12", "Python 3.7–3.12\nPowerShell 5.1"]
+          "values": ["GA: 20 May 2024\nCritical fixes: 4 November 2024\nSecurity fixes: 19 May 2025\nEOL: November 2025", "Python 3.10–3.12", "Python 3.7–3.12\nSSH-accessible account\nsudo permission for tasks that require root access", "Windows PowerShell 5.1\n.NET Framework 4.6 or later\nActive WinRM listener"]
         },
         {
           "aspect": "2.16",
-          "values": ["GA: 6 November 2023\nCritical fixes: 20 May 2024\nSecurity fixes: November 2024\nEOL: July 2025", "Python 3.10–3.12", "Python 2.7\nPython 3.6–3.12\nPowerShell 5.1"]
+          "values": ["GA: 6 November 2023\nCritical fixes: 20 May 2024\nSecurity fixes: November 2024\nEOL: July 2025", "Python 3.10–3.12", "Python 2.7 or 3.6–3.12\nSSH-accessible account\nsudo permission for tasks that require root access", "Windows PowerShell 5.1\n.NET Framework 4.6 or later\nActive WinRM listener"]
         },
         {
           "aspect": "2.15",
-          "values": ["GA: 22 May 2023\nCritical fixes: 6 November 2023\nSecurity fixes: 20 May 2024\nEOL: November 2024", "Python 3.9–3.11", "Python 2.7\nPython 3.5–3.11\nPowerShell 3–5.1"]
+          "values": ["GA: 22 May 2023\nCritical fixes: 6 November 2023\nSecurity fixes: 20 May 2024\nEOL: November 2024", "Python 3.9–3.11", "Python 2.7 or 3.5–3.11\nSSH-accessible account\nsudo permission for tasks that require root access", "Windows PowerShell 3–5.1\n.NET Framework 4.0 or later\nActive WinRM listener"]
         },
         {
           "aspect": "2.14",
-          "values": ["GA: 7 November 2022\nCritical fixes: 22 May 2023\nSecurity fixes: 6 November 2023\nUpstream EOL: 20 May 2024\nRHEL AppStream RPM: separate Red Hat lifecycle", "Python 3.9–3.11", "Python 2.7\nPython 3.5–3.11\nPowerShell 3–5.1"]
+          "values": ["GA: 7 November 2022\nCritical fixes: 22 May 2023\nSecurity fixes: 6 November 2023\nUpstream EOL: 20 May 2024\nRHEL AppStream RPM: separate Red Hat lifecycle", "Python 3.9–3.11", "Python 2.7 or 3.5–3.11\nSSH-accessible account\nsudo permission for tasks that require root access", "Windows PowerShell 3–5.1\n.NET Framework 4.0 or later\nActive WinRM listener"]
         },
         {
           "aspect": "2.13",
-          "values": ["GA: 23 May 2022\nCritical fixes: 7 November 2022\nSecurity fixes: 22 May 2023\nEOL: 6 November 2023", "Python 3.8–3.10", "Python 2.7\nPython 3.5–3.10\nPowerShell 3–5.1"]
+          "values": ["GA: 23 May 2022\nCritical fixes: 7 November 2022\nSecurity fixes: 22 May 2023\nEOL: 6 November 2023", "Python 3.8–3.10", "Python 2.7 or 3.5–3.10\nSSH-accessible account\nsudo permission for tasks that require root access", "Windows PowerShell 3–5.1\n.NET Framework 4.0 or later\nActive WinRM listener"]
         },
         {
           "aspect": "2.12",
-          "values": ["GA: 8 November 2021\nCritical fixes: 23 May 2022\nSecurity fixes: 7 November 2022\nEOL: 22 May 2023", "Python 3.8–3.10", "Python 2.6–2.7\nPython 3.5–3.10\nPowerShell 3–5.1"]
+          "values": ["GA: 8 November 2021\nCritical fixes: 23 May 2022\nSecurity fixes: 7 November 2022\nEOL: 22 May 2023", "Python 3.8–3.10", "Python 2.6–2.7 or 3.5–3.10\nSSH-accessible account\nsudo permission for tasks that require root access", "Windows PowerShell 3–5.1\n.NET Framework 4.0 or later\nActive WinRM listener"]
         },
         {
           "aspect": "2.11",
-          "values": ["GA: 26 April 2021\nCritical fixes: 8 November 2021\nSecurity fixes: 23 May 2022\nEOL: 7 November 2022", "Python 2.7\nPython 3.5–3.9", "Python 2.6–2.7\nPython 3.5–3.9\nPowerShell 3–5.1"]
+          "values": ["GA: 26 April 2021\nCritical fixes: 8 November 2021\nSecurity fixes: 23 May 2022\nEOL: 7 November 2022", "Python 2.7 or 3.5–3.9", "Python 2.6–2.7 or 3.5–3.9\nSSH-accessible account\nsudo permission for tasks that require root access", "Windows PowerShell 3–5.1\n.NET Framework 4.0 or later\nActive WinRM listener"]
         },
         {
           "aspect": "ansible-base 2.10",
-          "values": ["GA: 13 August 2020\nCritical fixes: 26 April 2021\nSecurity fixes: 8 November 2021\nEOL: 23 May 2022", "Python 2.7\nPython 3.5–3.9", "Python 2.6–2.7\nPython 3.5–3.9\nPowerShell 3–5.1"]
+          "values": ["GA: 13 August 2020\nCritical fixes: 26 April 2021\nSecurity fixes: 8 November 2021\nEOL: 23 May 2022", "Python 2.7 or 3.5–3.9", "Python 2.6–2.7 or 3.5–3.9\nSSH-accessible account\nsudo permission for tasks that require root access", "Windows PowerShell 3–5.1\n.NET Framework 4.0 or later\nActive WinRM listener"]
         }
       ],
-      "takeaway": "For this PyPI demonstration, RHEL 9's default Python 3.9 is too old for maintained upstream releases. Install RHEL's Python 3.12 packages first, create a virtual environment with that interpreter, and then install upstream ansible-core 2.21 from PyPI. Do not choose ansible-core 2.15 merely because pip can resolve it on Python 3.9: that release has been unmaintained since November 2024.",
+      "takeaway": "Choose a maintained ansible-core release first, then confirm that it supports the Python versions on both your control node and managed hosts. Do not select an end-of-life release solely because it can be installed with an older Python interpreter.",
       "sources": [
         {
           "label": "Ansible community ansible-core support matrix",
@@ -257,93 +373,31 @@
           "href": "https://docs.ansible.com/projects/ansible/latest/installation_guide/intro_installation.html"
         },
         {
+          "label": "ansible-core 2.15 Windows host requirements",
+          "href": "https://docs.ansible.com/projects/ansible-core/2.15/os_guide/windows_setup.html#host-requirements"
+        },
+        {
+          "label": "ansible-core 2.16 Windows host requirements",
+          "href": "https://docs.ansible.com/projects/ansible-core/2.16/os_guide/windows_setup.html#host-requirements"
+        },
+        {
+          "label": "PowerShell 7 support from ansible-core 2.21",
+          "href": "https://docs.ansible.com/projects/ansible/latest/os_guide/windows_pwsh.html"
+        },
+        {
+          "label": "Ansible privilege escalation with become",
+          "href": "https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_privilege_escalation.html"
+        },
+        {
           "label": "RHEL versioned Python and virtual environment guidance",
           "href": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/installing_and_using_dynamic_programming_languages/assembly_installing-and-using-python_installing-and-using-dynamic-programming-languages"
-        }
-      ]
-    },
-    {
-      "title": "Red Hat Ansible Automation Platform ansible-core compatibility",
-      "introduction": "This table focuses only on ansible-core's control-node and managed-host Python coverage. Red Hat's current Ansible Automation Platform lifecycle table explicitly lists 2.15, 2.16, 2.17, 2.18, and 2.20; those rows reproduce Red Hat's published values. The current table does not list 2.11–2.14 or 2.19 as supported combinations, so those requested historical rows use the upstream project's published compatibility ranges and must not be read as current Red Hat support. Red Hat delivers supported ansible-core versions in AAP through execution environment images, but image and base-OS selection is intentionally deferred to the ansible-navigator demonstration. The separately maintained RHEL 9 AppStream 2.14 RPM remains documented in the preceding RHEL matrix.",
-      "eyebrow": "Red Hat supported combinations",
-      "summaryLabel": "View the Red Hat AAP compatibility matrix",
-      "rowHeader": "ansible-core",
-      "takeawayLabel": "Keep the distribution paths separate",
-      "columns": ["Control-node Python", "Managed-host Python"],
-      "rows": [
-        {
-          "aspect": "2.20\nRed Hat-listed",
-          "values": ["Python 3.12–3.14", "Python 3.9–3.14"]
-        },
-        {
-          "aspect": "2.19\nHistorical upstream range",
-          "values": ["Python 3.11–3.13", "Python 3.8–3.13"]
-        },
-        {
-          "aspect": "2.18\nRed Hat-listed",
-          "values": ["Python 3.11–3.13", "Python 3.8–3.13"]
-        },
-        {
-          "aspect": "2.17\nRed Hat-listed · no longer supported",
-          "values": ["Python 3.10–3.12", "Python 3.7–3.12"]
-        },
-        {
-          "aspect": "2.16\nRed Hat-listed",
-          "values": ["Python 3.10–3.12", "Python 2.7\nPython 3.6–3.12"]
-        },
-        {
-          "aspect": "2.15\nRed Hat-listed · support ended June 2026",
-          "values": ["Python 3.12+", "Python 2.7\nPython 3.5–3.11"]
-        },
-        {
-          "aspect": "2.14\nHistorical upstream range",
-          "values": ["Python 3.9–3.11", "Python 2.7\nPython 3.5–3.11"]
-        },
-        {
-          "aspect": "2.13\nHistorical upstream range",
-          "values": ["Python 3.8–3.10", "Python 2.7\nPython 3.5–3.10"]
-        },
-        {
-          "aspect": "2.12\nHistorical upstream range",
-          "values": ["Python 3.8–3.10", "Python 2.6–2.7\nPython 3.5–3.10"]
-        },
-        {
-          "aspect": "2.11\nHistorical upstream range",
-          "values": ["Python 2.7\nPython 3.5–3.9", "Python 2.6–2.7\nPython 3.5–3.9"]
-        }
-      ],
-      "takeaway": "For current Red Hat support decisions, rely only on combinations explicitly present in Red Hat's current lifecycle table and observe its support notes: 2.17 is no longer supported, and 2.15 support ended in June 2026. Rows labeled historical are included to explain older compatibility, not to extend Red Hat support. For the RHEL-provided AppStream 2.14 RPM, use the separate RHEL matrix above. Matching a Python version alone never moves an installation from upstream or RHEL AppStream into the AAP support model.",
-      "sources": [
-        {
-          "label": "Red Hat Ansible Automation Platform lifecycle and compatibility matrix",
-          "href": "https://access.redhat.com/support/policy/updates/ansible-automation-platform"
-        },
-        {
-          "label": "Upstream historical ansible-core support matrix",
-          "href": "https://docs.ansible.com/projects/ansible/latest/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix"
-        },
-        {
-          "label": "AAP 2.2 historical execution environment requirements",
-          "href": "https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.2/html-single/creating_and_consuming_execution_environments/creating_and_consuming_execution_environments"
-        },
-        {
-          "label": "AAP 2.4 historical execution environment requirements",
-          "href": "https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.4/html/red_hat_ansible_automation_platform_upgrade_and_migration_guide/upgrading-to-ees"
-        },
-        {
-          "label": "RHEL Application Streams lifecycle",
-          "href": "https://access.redhat.com/support/policy/updates/rhel-app-streams-life-cycle"
-        },
-        {
-          "label": "Red Hat ansible-core support scope",
-          "href": "https://access.redhat.com/articles/6325611"
         }
       ]
     }
   ],
   "verified": {
-    "date": "August 25, 2026",
-    "dateISO": "2026-08-25",
+    "date": "September 10, 2026",
+    "dateISO": "2026-09-10",
     "os": "Red Hat Enterprise Linux 9.8 (Plow)",
     "architecture": "aarch64",
     "package": "RHEL RPM 2.14.18-3.el9_8.1 · upstream PyPI 2.21.2"

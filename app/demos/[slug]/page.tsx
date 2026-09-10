@@ -76,23 +76,67 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
       </header>
 
       {lab.overview && (
-        <section className="lab-overview" aria-labelledby="overview-title">
-          <div className="overview-heading">
-            <p className="eyebrow"><span /> Core concept</p>
-            <h2 id="overview-title">{lab.overview.title}</h2>
-            <p>{lab.overview.introduction}</p>
-          </div>
-          <div className="overview-grid">
-            {lab.overview.items.map((item, index) => (
-              <article key={item.title}>
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                <h3>{item.title}</h3>
-                <p>{item.detail}</p>
-              </article>
-            ))}
-          </div>
-          {lab.overview.note && <p className="overview-note"><strong>Keep in mind:</strong> {lab.overview.note}</p>}
-        </section>
+        <>
+          <section className="lab-overview" aria-labelledby="overview-title">
+            <div className="overview-heading">
+              <p className="eyebrow"><span /> Core concept</p>
+              <h2 id="overview-title">{lab.overview.title}</h2>
+              <p>{lab.overview.introduction}</p>
+            </div>
+            {lab.overview.itemsLabel && <p className="overview-items-label">{lab.overview.itemsLabel}</p>}
+            <div className="overview-grid">
+              {lab.overview.items.map((item, index) => (
+                <article key={item.title}>
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <h3>{item.title}</h3>
+                  <p>{item.detail}</p>
+                </article>
+              ))}
+            </div>
+            {lab.overview.note && <p className="overview-note"><strong>For development and production:</strong> {lab.overview.note}</p>}
+          </section>
+          {lab.overview.orchestrationOptions ? (
+            <section className="overview-orchestration" aria-labelledby={`orchestration-${lab.slug}`}>
+              <div className="orchestration-heading">
+                <p>Running Ansible as a team</p>
+                <h2 id={`orchestration-${lab.slug}`}>{lab.overview.orchestrationOptions.title}</h2>
+                <p>{lab.overview.orchestrationOptions.introduction}</p>
+              </div>
+              <div className="orchestration-grid">
+                {lab.overview.orchestrationOptions.items.map((option) => (
+                  <article key={option.title}>
+                    <span>{option.category}</span>
+                    <h3>{option.title}</h3>
+                    <p>{option.detail}</p>
+                    <div>
+                      {option.href && <Link href={option.href}>{option.linkLabel ?? "Open the dedicated HOD"} →</Link>}
+                      <a href={option.reference.href} target="_blank" rel="noreferrer">{option.reference.label} ↗</a>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              <p className="orchestration-note"><strong>Evaluate before adopting:</strong> {lab.overview.orchestrationOptions.note}</p>
+            </section>
+          ) : null}
+          {lab.overview.relatedTools?.length ? (
+            <section className="overview-related-tools" aria-label="Related developer tools">
+              {lab.overview.relatedTools.map((tool) => (
+                <article key={tool.title}>
+                  <div className="related-tool-heading">
+                    <p>Related developer tool</p>
+                    <span>{tool.status}</span>
+                  </div>
+                  <h2><code>{tool.title}</code></h2>
+                  <p>{tool.detail}</p>
+                  <div className="related-tool-links">
+                    {tool.href && <Link href={tool.href}>{tool.linkLabel ?? "Open the dedicated HOD"} →</Link>}
+                    <a href={tool.reference.href} target="_blank" rel="noreferrer">{tool.reference.label} ↗</a>
+                  </div>
+                </article>
+              ))}
+            </section>
+          ) : null}
+        </>
       )}
 
       <section className="lab-prerequisites" aria-labelledby="prerequisites-title">
@@ -110,6 +154,16 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
             </article>
           ))}
         </div>
+        {lab.accessCallout ? (
+          <aside className="prerequisite-callout lab-access-callout">
+            <div className="callout-icon" aria-hidden="true">✓</div>
+            <div>
+              <strong>{lab.accessCallout.title}</strong>
+              <p>{lab.accessCallout.detail}</p>
+            </div>
+            <a href={lab.accessCallout.href} target="_blank" rel="noreferrer">{lab.accessCallout.linkLabel} <span>↗</span></a>
+          </aside>
+        ) : null}
       </section>
 
       {lab.comparisons?.map((comparison, comparisonIndex) => {
@@ -121,6 +175,20 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
               <h2 id={headingId}>{comparison.title}</h2>
               <p>{comparison.introduction}</p>
             </div>
+            {comparison.notes?.length ? (
+              <>
+                {comparison.notesLabel ? <h3 className="comparison-notes-label">{comparison.notesLabel}</h3> : null}
+                <div className="comparison-notes">
+                  {comparison.notes.map((note) => (
+                    <aside className="comparison-note" key={note.title}>
+                      <strong>{note.title}</strong>
+                      <p>{note.detail}</p>
+                      {note.reference ? <a href={note.reference.href} target="_blank" rel="noreferrer">{note.reference.label} ↗</a> : null}
+                    </aside>
+                  ))}
+                </div>
+              </>
+            ) : null}
             <details className="comparison-deep-dive">
               <summary>{comparison.summaryLabel ?? "Read the detailed comparison"}</summary>
               <div className={`comparison-table-wrap${comparison.columns.length > 2 ? " comparison-table-wide" : ""}`} tabIndex={0} aria-label={`${comparison.title} table`}>
@@ -131,20 +199,35 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
                   <tbody>
                     {comparison.rows.map((row) => (
                       <tr key={row.aspect}>
-                        <th scope="row">{row.aspect}</th>
-                        {row.values.map((value, index) => <td key={`${row.aspect}-${index}`}>{value}</td>)}
+                        <th scope="row">
+                          {row.aspect}
+                          {row.reference ? <a className="comparison-row-reference" href={row.reference.href} target="_blank" rel="noreferrer">{row.reference.label} ↗</a> : null}
+                        </th>
+                        {row.values.map((value, index) => (
+                          <td data-label={comparison.columns[index]} key={`${row.aspect}-${index}`}>
+                            {comparison.cellLayout === "stacked" && value.includes("\n") ? (
+                              <ul className="comparison-cell-list">
+                                {value.split("\n").map((item) => <li key={item}>{item}</li>)}
+                              </ul>
+                            ) : value}
+                          </td>
+                        ))}
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             </details>
-            <div className="comparison-takeaway">
-              <strong>{comparison.takeawayLabel ?? "Which should you choose?"}</strong>
-              <p>{comparison.takeaway}</p>
-              <span>Official references: {comparison.sources.map((source, index) => (
+            {comparison.takeaway ? (
+              <div className="comparison-takeaway">
+                <strong>{comparison.takeawayLabel ?? "Which should you choose?"}</strong>
+                <p>{comparison.takeaway}</p>
+              </div>
+            ) : null}
+            <div className="comparison-sources">
+              <span>Official references:</span> {comparison.sources.map((source, index) => (
                 <span key={source.href}>{index > 0 && " · "}<a href={source.href} target="_blank" rel="noreferrer">{source.label} ↗</a></span>
-              ))}</span>
+              ))}
             </div>
           </section>
         );

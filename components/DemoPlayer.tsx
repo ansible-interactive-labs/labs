@@ -3,7 +3,6 @@
 /* Native images keep screenshot URLs compatible with GitHub Pages project paths. */
 /* eslint-disable @next/next/no-img-element */
 
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { Lab, LabDemo } from "@/content/labs/types";
 import TerminalReplay from "@/components/TerminalReplay";
@@ -125,6 +124,27 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
     setAnnouncement("Demo restarted at step 1.");
   };
 
+  const closePlayer = () => {
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => undefined);
+    setStepIndex(0);
+    setCopied(false);
+    setCompleted(false);
+    setStarted(false);
+    setAnnouncement("Demo closed. Progress was reset and focus returned to this demonstration.");
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        const moduleId = `demo-${demo.id}`;
+        const demoModule = document.getElementById(moduleId);
+        const url = new URL(window.location.href);
+        url.hash = moduleId;
+        window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+        demoModule?.scrollIntoView({ block: "start" });
+        demoModule?.querySelector<HTMLElement>(".start-lab-button")?.focus({ preventScroll: true });
+      });
+    });
+  };
+
   const issueTitle = encodeURIComponent(`[Lab feedback] ${lab.title} — step ${stepIndex + 1}`);
   const issueBody = encodeURIComponent(`Lab: ${lab.title}\nStep: ${stepIndex + 1} — ${step.title}\n\nWhat happened?\n\nWhat result did you expect?\n`);
   const issueUrl = `https://github.com/ansible-interactive-labs/labs/issues/new?title=${issueTitle}&body=${issueBody}`;
@@ -139,7 +159,7 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
         </div>
         <div className="player-tools">
           {started && fullscreenSupported && <button type="button" onClick={openFullscreen} aria-label="Open demo in fullscreen">↗ <span>Fullscreen</span></button>}
-          <Link href="/" aria-label="Return to demo library">×</Link>
+          <button className="player-close" type="button" onClick={closePlayer} aria-label={`Close demo and return to ${demo.title}`}>×</button>
         </div>
       </header>
 

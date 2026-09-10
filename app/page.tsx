@@ -112,7 +112,7 @@ export default function Home() {
           <div className="callout-icon" aria-hidden="true">✓</div>
           <div>
             <strong>No-cost RHEL access for individual learners</strong>
-            <p>A registered RHEL system with the required repositories is enough for the first demo. A separate Ansible Automation Platform subscription is not required to install the RHEL-provided <code>ansible-core</code> package.</p>
+            <p>Joining Red Hat Developer is free. Eligible individuals receive a no-cost, self-supported Developer Subscription for Individuals that can provide RHEL and applicable repository access. A separate Ansible Automation Platform subscription is not required to install the RHEL-provided <code>ansible-core</code> package.</p>
           </div>
           <a href="https://developers.redhat.com/register" target="_blank" rel="noreferrer">Join Red Hat Developer <span>↗</span></a>
         </aside>

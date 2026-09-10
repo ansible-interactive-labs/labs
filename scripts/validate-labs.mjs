@@ -115,8 +115,17 @@ for (const directory of directories) {
   });
   (lab.comparisons ?? []).forEach((comparison, index) => {
     const sourceName = `${directory} comparison ${index + 1}`;
-    ["title", "introduction", "takeaway"].forEach((key) => {
+    ["title", "introduction"].forEach((key) => {
       if (!nonEmptyString(comparison?.[key])) fail(sourceName, `${key} is required`);
+    });
+    if (comparison?.takeaway !== undefined && !nonEmptyString(comparison.takeaway)) fail(sourceName, "takeaway must be a non-empty string when provided");
+    (comparison?.notes ?? []).forEach((note, noteIndex) => {
+      if (!nonEmptyString(note?.title)) fail(sourceName, `notes[${noteIndex}].title is required`);
+      if (!nonEmptyString(note?.detail)) fail(sourceName, `notes[${noteIndex}].detail is required`);
+      if (note?.reference) {
+        if (!nonEmptyString(note.reference.label)) fail(sourceName, `notes[${noteIndex}].reference.label is required`);
+        try { new URL(note.reference.href); } catch { fail(sourceName, `notes[${noteIndex}].reference.href must be a valid URL`); }
+      }
     });
     if (!Array.isArray(comparison?.columns) || comparison.columns.length < 1 || comparison.columns.length > 6 || comparison.columns.some((item) => !nonEmptyString(item))) {
       fail(sourceName, "columns must contain between one and six labels");
@@ -126,6 +135,10 @@ for (const directory of directories) {
       if (!nonEmptyString(row?.aspect)) fail(sourceName, `rows[${rowIndex}].aspect is required`);
       if (!Array.isArray(row?.values) || row.values.length !== comparison.columns.length || row.values.some((item) => !nonEmptyString(item))) {
         fail(sourceName, `rows[${rowIndex}].values must match the number of column labels`);
+      }
+      if (row?.reference) {
+        if (!nonEmptyString(row.reference.label)) fail(sourceName, `rows[${rowIndex}].reference.label is required`);
+        try { new URL(row.reference.href); } catch { fail(sourceName, `rows[${rowIndex}].reference.href must be a valid URL`); }
       }
     });
     if (!Array.isArray(comparison?.sources) || comparison.sources.length === 0) fail(sourceName, "at least one official source is required");
