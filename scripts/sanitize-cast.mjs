@@ -69,8 +69,12 @@ if (finalPromptEventIndex >= 0) {
 
 const output = [JSON.stringify(header), ...rebasedEvents.map((event) => JSON.stringify(event))].join("\n") + "\n";
 const sensitivePatterns = [
-  /192\.168\.\d+\.\d+/i,
+  /10\.\d{1,3}\.\d{1,3}\.\d{1,3}/i,
+  /172\.(?:1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}/i,
+  /192\.168\.\d{1,3}\.\d{1,3}/i,
   /password\s+for/i,
+  /(?:api[_-]?key|access[_-]?token|client[_-]?secret)\s*[:=]/i,
+  /BEGIN (?:RSA |OPENSSH |EC )?PRIVATE KEY/i,
   /\/tmp\/ansible-lab/i,
   /machine id/i,
   /boot id/i

@@ -6,7 +6,7 @@ Rajat’s Applied Technology Lab supports the modern-browser baseline documented
 | --- | ---: |
 | Google Chrome | 111 |
 | Microsoft Edge | 111 |
-| Mozilla Firefox | 111 |
+| Mozilla Firefox | 128 |
 | Apple Safari | 16.4 |
 | Mobile Safari on iOS/iPadOS | 16.4 |
 | Chrome on Android | Uses the current Android Chrome engine |

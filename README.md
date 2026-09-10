@@ -54,7 +54,7 @@ The workflow detects whether the repository is a root site (`owner.github.io`) o
 
 ## Browser and mobile support
 
-The project explicitly targets Chrome 111+, Edge 111+, Firefox 111+, Safari 16.4+, and iOS Safari 16.4+. Responsive release checks cover narrow phones, current phones, tablets, compact laptops, and desktops. See [`docs/BROWSER_SUPPORT.md`](docs/BROWSER_SUPPORT.md) for the support contract, progressive-enhancement behavior, and QA checklist.
+The project explicitly targets Chrome 111+, Edge 111+, Firefox 128+, Safari 16.4+, and iOS Safari 16.4+. Responsive release checks cover narrow phones, current phones, tablets, compact laptops, and desktops. See [`docs/BROWSER_SUPPORT.md`](docs/BROWSER_SUPPORT.md) for the support contract, progressive-enhancement behavior, and QA checklist.
 
 ## Add another demo
 

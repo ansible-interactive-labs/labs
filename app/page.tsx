@@ -5,6 +5,7 @@ import PrimaryNav from "@/components/PrimaryNav";
 import { getLabSummaries } from "@/content/labs/loader";
 import { brand } from "@/lib/brand";
 import { contentFamilies } from "@/lib/site-structure";
+import AutomationOrbit from "@/components/AutomationOrbit";
 
 export default function Home() {
   const labs = getLabSummaries();
@@ -15,7 +16,7 @@ export default function Home() {
     <main id="main-content">
       <PrimaryNav />
 
-      <section className="hero" id="top">
+      <section className="hero hero-redesign" id="top">
         <div className="hero-copy">
           <p className="eyebrow"><span /> Rajat Agrawal’s applied technology portfolio</p>
           <h1>Learn it. Build it.<br /><em>Apply it.</em></h1>
@@ -27,17 +28,7 @@ export default function Home() {
           <p className="hero-note">Published work you can inspect · Hands-On Demos available now · Solutions and consulting cases expanding next</p>
         </div>
 
-        <div className="hero-console" aria-label="Example Ansible terminal output">
-          <div className="console-bar"><i /><i /><i /><span>control-node — terminal</span></div>
-          <div className="console-body">
-            <p><b>$</b> ansible localhost -m ping</p>
-            <p className="success">localhost | SUCCESS =&gt; {'{'}</p>
-            <p className="indent">&quot;changed&quot;: false,</p>
-            <p className="indent">&quot;ping&quot;: &quot;pong&quot;</p>
-            <p className="success">{'}'}</p>
-            <span className="console-cursor" />
-          </div>
-        </div>
+        <AutomationOrbit />
       </section>
 
       <section className="content-families" aria-labelledby="content-families-title">

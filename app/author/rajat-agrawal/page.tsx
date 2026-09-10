@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import SiteFooter from "@/components/SiteFooter";
 import PrimaryNav from "@/components/PrimaryNav";
 import { brand } from "@/lib/brand";
+import rajatHeadshot from "@/assets/rajat-agrawal-headshot.jpg";
 
 const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
 const authorUrl = `${siteUrl}${brand.creatorPath}`;
@@ -61,7 +63,16 @@ export default function AuthorPage() {
 
       <header className="author-hero">
         <div className="author-identity">
-          <div className="author-monogram" aria-hidden="true">RA<span>_</span></div>
+          <div className="author-portrait">
+            <Image
+              className="author-portrait-image"
+              src={rajatHeadshot}
+              alt="Rajat Agrawal"
+              priority
+              sizes="(max-width: 540px) 88vw, (max-width: 900px) 34vw, 430px"
+            />
+            <span className="author-portrait-corner" aria-hidden="true">RA / 01</span>
+          </div>
           <div className="author-status"><i /> Portfolio creator · Automation practitioner · Educator</div>
         </div>
         <div className="author-introduction">

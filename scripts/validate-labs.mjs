@@ -12,7 +12,7 @@ const maxRecordingBytes = 1024 * 1024;
 const requiredRecordingGeometry = "120x34";
 const maximumRecordingIdleGap = 1.25;
 const minimumCompletionHold = 1;
-const sensitiveRecordingPattern = /(?:VNC|SSH) Password|192\.168\.\d+\.\d+|password\s*=|\[sudo\] password|machine-id|boot-id/i;
+const sensitiveRecordingPattern = /(?:VNC|SSH) Password|(?:10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3})|password\s*=|\[sudo\] password|(?:api[_-]?key|access[_-]?token|client[_-]?secret)\s*[:=]|BEGIN (?:RSA |OPENSSH |EC )?PRIVATE KEY|machine-id|boot-id/i;
 const errors = [];
 const warnings = [];
 
