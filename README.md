@@ -61,7 +61,7 @@ The project explicitly targets Chrome 111+, Edge 111+, Firefox 128+, Safari 16.4
 1. Copy an existing `content/labs/<demo-slug>/lab.json` into a new directory and update every field. The included `schema.json` provides editor validation.
 2. Create `public/demos/<demo-slug>/assets/`.
 3. Record every terminal workflow as an asciicast v2 file at exactly 120 columns × 34 rows, generate a text transcript, and retain a clean 16:9 screenshot as a resilient fallback. Use sequential names and reference all media from the lab JSON.
-4. Include a command, plain-language explanation, expected result, and troubleshooting guidance for every meaningful action.
+4. Give every step a descriptive introduction that explains its purpose and context without narrating individual commands. Store each learner-visible command separately with its own one- or two-line explanation, then include the expected result and troubleshooting guidance.
 5. Record the tested OS, architecture, package or image version, and verification date.
 6. Complete the instructional audit in `docs/LAB_CONTENT_REVIEW.md`, save the findings as `content/labs/<demo-slug>/review.md`, and share them even when no gaps are found.
 7. Add a source-backed `comparisons` block whenever learners may confuse related tools, packages, commands, or support models.
@@ -95,7 +95,7 @@ Never add `--log-in` or `--log-io`; either option can retain credential input. T
 
 Record every published terminal session while signed in as the public demonstration user `rajat`. Preserve `[rajat@HOSTNAME]` prompts and `/home/rajat` paths as intentional creator branding. Continue removing passwords, private IP addresses, account and subscription identifiers, machine IDs, boot IDs, and credential prompts.
 
-Before recording, configure the demonstration shell with `export PROMPT_COMMAND='printf "\\n"'`. This ensures every prompt starts on a fresh line even when a command omits its trailing newline. Sanitization repairs attached prompts as a fallback and removes terminal teardown output after the final prompt. Validation rejects casts or transcripts where command output and the next prompt share a line, and rejects any cast that moves the cursor away from the final prompt before playback ends.
+Immediately before every recording session, configure the demonstration shell behind the scenes with `export PROMPT_COMMAND='printf "\\n"'`. Do not include this preparation command in the learner-visible step. It ensures every prompt starts on a fresh line even when a command omits its trailing newline. Sanitization repairs attached prompts as a fallback and removes terminal teardown output after the final prompt. Validation rejects casts or transcripts where command output and the next prompt share a line, and rejects any cast that moves the cursor away from the final prompt before playback ends.
 
 No central registry or route file needs to be edited. The build discovers each `lab.json`, validates required content and assets, creates its static route, and adds it to the sitemap automatically.
 
@@ -104,7 +104,7 @@ No central registry or route file needs to be edited. The build discovers each `
 - Each lab is an independent content unit under `content/labs/<slug>/lab.json`, so contributors do not edit a growing monolithic file.
 - The homepage ships compact `LabSummary` records only. Each dedicated HOD route can contain one or more independent `demos[]`, and each demo owns its steps, verification, troubleshooting, and optional cleanup.
 - The catalog searches and sorts the summaries, but renders only 12 cards initially and reveals additional groups on demand.
-- Build-time validation rejects duplicate slugs, invalid metadata, missing assets, screenshots above the 2 MiB budget, recordings above the 1 MiB budget, terminal recordings that are not asciicast v2 at 120×34, incomplete instructional fields, and likely private data in lab JSON, replays, or transcripts.
+- Build-time validation rejects duplicate tracking IDs or slugs, invalid metadata, unexplained step commands, missing assets, screenshots above the 2 MiB budget, recordings above the 1 MiB budget, terminal recordings that are not asciicast v2 at 120×34, incomplete instructional fields, and likely private data in lab JSON, replays, or transcripts.
 - Every lab directory must contain a review report, preventing a structurally valid but instructionally incomplete lab from entering the build unnoticed.
 - Static routes and `sitemap.xml` are generated from discovered labs. Adding lab 101 follows exactly the same workflow as adding lab 2.
 - Lab JSON follows the versioned schema in `content/labs/schema.json`, allowing future content migrations without coupling content to UI components.

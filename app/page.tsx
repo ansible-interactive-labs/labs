@@ -122,7 +122,7 @@ export default function Home() {
             ["01", "Verified", "Tested OS, architecture, package details, and a visible last-verified date."],
             ["02", "Accessible", "Keyboard navigation, terminal transcripts, meaningful image descriptions, strong contrast, and reduced motion."],
             ["03", "Recoverable", "Per-step diagnostics, common-issue guidance, completion checks, and optional cleanup."],
-            ["04", "Portable", "Responsive on phones and tablets, with terminal replays, screenshot fallbacks, and saved local progress."]
+            ["04", "Portable", "Responsive on phones and tablets, with terminal replays, screenshot fallbacks, and fresh-start demo sessions."]
           ].map(([number, title, detail]) => (
             <article key={number}><span>{number}</span><h3>{title}</h3><p>{detail}</p></article>
           ))}

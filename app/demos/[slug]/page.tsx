@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Fragment } from "react";
 import DemoPlayer from "@/components/DemoPlayer";
 import SiteFooter from "@/components/SiteFooter";
 import PrimaryNav from "@/components/PrimaryNav";
 import { getLab, getLabSlugs } from "@/content/labs/loader";
-import { brand, formatHodNumber } from "@/lib/brand";
+import type { LabComparison } from "@/content/labs/types";
+import { brand } from "@/lib/brand";
 
 export const dynamicParams = false;
 
@@ -23,18 +25,87 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: lab.title,
     description: lab.shortDescription,
     openGraph: {
-      title: `${formatHodNumber(lab.hodNumber)} · ${lab.title}`,
+      title: `${lab.hodId} · ${lab.title}`,
       description: `${lab.shortDescription} Created by ${brand.creator}.`,
       type: "article",
       images: [{ url: image, alt: lab.coverAlt }]
     },
     twitter: {
       card: "summary_large_image",
-      title: `${formatHodNumber(lab.hodNumber)} · ${lab.title}`,
+      title: `${lab.hodId} · ${lab.title}`,
       description: `${lab.shortDescription} Created by ${brand.creator}.`,
       images: [image]
     }
   };
+}
+
+function ComparisonSection({ labSlug, comparison, index }: { labSlug: string; comparison: LabComparison; index: number }) {
+  const headingId = `comparison-${labSlug}-${index + 1}`;
+  const className = comparison.afterDemoId ? "comparison-section interstitial-comparison" : "comparison-section";
+
+  return (
+    <section className={className} aria-labelledby={headingId}>
+      <div className="comparison-heading">
+        <p className="eyebrow"><span /> {comparison.eyebrow ?? "Understand the difference"}</p>
+        <h2 id={headingId}>{comparison.title}</h2>
+        <p>{comparison.introduction}</p>
+      </div>
+      {comparison.notes?.length ? (
+        <>
+          {comparison.notesLabel ? <h3 className="comparison-notes-label">{comparison.notesLabel}</h3> : null}
+          <div className="comparison-notes">
+            {comparison.notes.map((note) => (
+              <aside className="comparison-note" key={note.title}>
+                <strong>{note.title}</strong>
+                <p>{note.detail}</p>
+                {note.reference ? <a href={note.reference.href} target="_blank" rel="noreferrer">{note.reference.label} ↗</a> : null}
+              </aside>
+            ))}
+          </div>
+        </>
+      ) : null}
+      <details className="comparison-deep-dive">
+        <summary>{comparison.summaryLabel ?? "Read the detailed comparison"}</summary>
+        <div className={`comparison-table-wrap${comparison.columns.length > 2 ? " comparison-table-wide" : ""}`} tabIndex={0} aria-label={`${comparison.title} table`}>
+          <table>
+            <thead>
+              <tr><th scope="col">{comparison.rowHeader ?? "Compare"}</th>{comparison.columns.map((column) => <th scope="col" key={column}>{column}</th>)}</tr>
+            </thead>
+            <tbody>
+              {comparison.rows.map((row) => (
+                <tr key={row.aspect}>
+                  <th scope="row">
+                    {row.aspect}
+                    {row.reference ? <a className="comparison-row-reference" href={row.reference.href} target="_blank" rel="noreferrer">{row.reference.label} ↗</a> : null}
+                  </th>
+                  {row.values.map((value, valueIndex) => (
+                    <td data-label={comparison.columns[valueIndex]} key={`${row.aspect}-${valueIndex}`}>
+                      {comparison.cellLayout === "stacked" && value.includes("\n") ? (
+                        <ul className="comparison-cell-list">
+                          {value.split("\n").map((item) => <li key={item}>{item}</li>)}
+                        </ul>
+                      ) : value}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </details>
+      {comparison.takeaway ? (
+        <div className="comparison-takeaway">
+          <strong>{comparison.takeawayLabel ?? "Which should you choose?"}</strong>
+          <p>{comparison.takeaway}</p>
+        </div>
+      ) : null}
+      <div className="comparison-sources">
+        <span>Official references:</span> {comparison.sources.map((source, sourceIndex) => (
+          <span key={source.href}>{sourceIndex > 0 && " · "}<a href={source.href} target="_blank" rel="noreferrer">{source.label} ↗</a></span>
+        ))}
+      </div>
+    </section>
+  );
 }
 
 export default async function DemoPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -52,7 +123,7 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
 
       <header className="lab-hero">
         <div>
-          <p className="eyebrow"><span /> {formatHodNumber(lab.hodNumber)} · {lab.topic} · {lab.difficulty}</p>
+          <p className="eyebrow"><span /> {lab.hodId} · {lab.topic} · {lab.difficulty}</p>
           <h1>{lab.title}</h1>
           <p className="lab-description">{lab.description}</p>
           <p className="lab-byline">Created, demonstrated, and verified by <Link href={brand.creatorPath}>{brand.creator} →</Link> · <Link href="/demos/">All Hands-On Demos →</Link></p>
@@ -166,72 +237,9 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
         ) : null}
       </section>
 
-      {lab.comparisons?.map((comparison, comparisonIndex) => {
-        const headingId = `comparison-${lab.slug}-${comparisonIndex + 1}`;
-        return (
-          <section className="comparison-section" key={comparison.title} aria-labelledby={headingId}>
-            <div className="comparison-heading">
-              <p className="eyebrow"><span /> {comparison.eyebrow ?? "Understand the difference"}</p>
-              <h2 id={headingId}>{comparison.title}</h2>
-              <p>{comparison.introduction}</p>
-            </div>
-            {comparison.notes?.length ? (
-              <>
-                {comparison.notesLabel ? <h3 className="comparison-notes-label">{comparison.notesLabel}</h3> : null}
-                <div className="comparison-notes">
-                  {comparison.notes.map((note) => (
-                    <aside className="comparison-note" key={note.title}>
-                      <strong>{note.title}</strong>
-                      <p>{note.detail}</p>
-                      {note.reference ? <a href={note.reference.href} target="_blank" rel="noreferrer">{note.reference.label} ↗</a> : null}
-                    </aside>
-                  ))}
-                </div>
-              </>
-            ) : null}
-            <details className="comparison-deep-dive">
-              <summary>{comparison.summaryLabel ?? "Read the detailed comparison"}</summary>
-              <div className={`comparison-table-wrap${comparison.columns.length > 2 ? " comparison-table-wide" : ""}`} tabIndex={0} aria-label={`${comparison.title} table`}>
-                <table>
-                  <thead>
-                    <tr><th scope="col">{comparison.rowHeader ?? "Compare"}</th>{comparison.columns.map((column) => <th scope="col" key={column}>{column}</th>)}</tr>
-                  </thead>
-                  <tbody>
-                    {comparison.rows.map((row) => (
-                      <tr key={row.aspect}>
-                        <th scope="row">
-                          {row.aspect}
-                          {row.reference ? <a className="comparison-row-reference" href={row.reference.href} target="_blank" rel="noreferrer">{row.reference.label} ↗</a> : null}
-                        </th>
-                        {row.values.map((value, index) => (
-                          <td data-label={comparison.columns[index]} key={`${row.aspect}-${index}`}>
-                            {comparison.cellLayout === "stacked" && value.includes("\n") ? (
-                              <ul className="comparison-cell-list">
-                                {value.split("\n").map((item) => <li key={item}>{item}</li>)}
-                              </ul>
-                            ) : value}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </details>
-            {comparison.takeaway ? (
-              <div className="comparison-takeaway">
-                <strong>{comparison.takeawayLabel ?? "Which should you choose?"}</strong>
-                <p>{comparison.takeaway}</p>
-              </div>
-            ) : null}
-            <div className="comparison-sources">
-              <span>Official references:</span> {comparison.sources.map((source, index) => (
-                <span key={source.href}>{index > 0 && " · "}<a href={source.href} target="_blank" rel="noreferrer">{source.label} ↗</a></span>
-              ))}
-            </div>
-          </section>
-        );
-      })}
+      {lab.comparisons?.map((comparison, comparisonIndex) => (
+        comparison.afterDemoId ? null : <ComparisonSection labSlug={lab.slug} comparison={comparison} index={comparisonIndex} key={comparison.title} />
+      ))}
 
       <section className="demo-modules" aria-labelledby="demonstrations-title">
         <div className="demo-modules-heading">
@@ -239,17 +247,24 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
           <h2 id="demonstrations-title">{lab.demos.length === 1 ? "Demonstration" : "Demonstrations"}</h2>
           <p>Each demonstration is an independent workflow with contextual explanations, expected results, recovery guidance, and a final verification.</p>
         </div>
-        {lab.demos.map((demo, index) => (
-          <article className="demo-module" id={`demo-${demo.id}`} key={demo.id}>
-            <header className="demo-module-heading">
-              <div><span>Demo {String(index + 1).padStart(2, "0")}</span><h3>{demo.title}</h3></div>
-              <p>{demo.objective}</p>
-              <dl><div><dt>Duration</dt><dd>{demo.duration}</dd></div><div><dt>Steps</dt><dd>{demo.steps.length}</dd></div></dl>
-            </header>
-            <div className="player-shell" aria-label={`${demo.title} player`}>
-              <DemoPlayer lab={lab} demo={demo} />
-            </div>
-          </article>
+        {lab.demos.map((demo) => (
+          <Fragment key={demo.id}>
+            <article className="demo-module" id={`demo-${demo.id}`}>
+              <header className="demo-module-heading">
+                <div><span>{demo.demoId}</span><h3>{demo.title}</h3></div>
+                <p>{demo.objective}</p>
+                <dl><div><dt>Duration</dt><dd>{demo.duration}</dd></div><div><dt>Steps</dt><dd>{demo.steps.length}</dd></div></dl>
+              </header>
+              <div className="player-shell" aria-label={`${demo.title} player`}>
+                <DemoPlayer lab={lab} demo={demo} />
+              </div>
+            </article>
+            {lab.comparisons?.map((comparison, comparisonIndex) => (
+              comparison.afterDemoId === demo.id
+                ? <ComparisonSection labSlug={lab.slug} comparison={comparison} index={comparisonIndex} key={comparison.title} />
+                : null
+            ))}
+          </Fragment>
         ))}
       </section>
 

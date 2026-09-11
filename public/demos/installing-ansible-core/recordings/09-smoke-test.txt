@@ -1,6 +1,10 @@
-[rajat@demo ~]$ ansible localhost -m ansible.builtin.ping -c local
+[rajat@demo ~]$ ansible localhost -i localhost, -m ansible.builtin.ping -c local
 localhost | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
     "changed": false,
     "ping": "pong"
 }
+
 [rajat@demo ~]$

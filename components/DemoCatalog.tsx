@@ -6,7 +6,6 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { LabSummary } from "@/content/labs/types";
-import { formatHodNumber } from "@/lib/brand";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -80,7 +79,7 @@ export default function DemoCatalog({ labs }: { labs: LabSummary[] }) {
             <article className="demo-card" key={lab.slug}>
               <Link className="demo-visual" href={`/demos/${lab.slug}/`} aria-label={`Open ${lab.title} interactive demo`}>
                 <img src={`${basePath}${lab.coverImage}`} alt={lab.coverAlt} loading="lazy" decoding="async" />
-                <span className="hod-badge">{formatHodNumber(lab.hodNumber)}</span>
+                <span className="hod-badge">{lab.hodId}</span>
                 <span className="play-button" aria-hidden="true">▶</span>
                 <span className="duration">{lab.duration}</span>
               </Link>

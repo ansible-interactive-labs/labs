@@ -11,7 +11,7 @@ const labFile = (slug: string) => join(labsDirectory, slug, "lab.json");
 const assertLab = (value: unknown, source: string): Lab => {
   if (!value || typeof value !== "object") throw new Error(`${source}: lab data must be an object`);
   const lab = value as Partial<Lab>;
-  const requiredStrings: Array<keyof Lab> = ["slug", "title", "shortDescription", "description", "coverImage", "coverAlt", "duration", "difficulty", "topic", "platform", "status"];
+  const requiredStrings: Array<keyof Lab> = ["hodId", "slug", "title", "shortDescription", "description", "coverImage", "coverAlt", "duration", "difficulty", "topic", "platform", "status"];
   requiredStrings.forEach((key) => {
     if (typeof lab[key] !== "string" || !(lab[key] as string).trim()) throw new Error(`${source}: ${String(key)} is required`);
   });
@@ -19,6 +19,7 @@ const assertLab = (value: unknown, source: string): Lab => {
   if (!slugPattern.test(lab.slug ?? "")) throw new Error(`${source}: slug must use lowercase words separated by hyphens`);
   if (!Array.isArray(lab.demos) || lab.demos.length === 0) throw new Error(`${source}: at least one demo is required`);
   lab.demos.forEach((demo, index) => {
+    if (typeof demo.demoId !== "string" || !demo.demoId.trim()) throw new Error(`${source}: demo ${index + 1} requires a demoId`);
     if (!Array.isArray(demo.steps) || demo.steps.length === 0) throw new Error(`${source}: demo ${index + 1} requires at least one step`);
     if (!Array.isArray(demo.verification) || demo.verification.length === 0) throw new Error(`${source}: demo ${index + 1} requires verification checks`);
     if (!Array.isArray(demo.troubleshooting) || demo.troubleshooting.length === 0) throw new Error(`${source}: demo ${index + 1} requires troubleshooting guidance`);
@@ -43,6 +44,7 @@ export const getLabSummaries = cache((): LabSummary[] => getLabSlugs()
   .map((slug) => getLab(slug))
   .filter((lab): lab is Lab => Boolean(lab))
   .map((lab) => ({
+    hodId: lab.hodId,
     slug: lab.slug,
     title: lab.title,
     shortDescription: lab.shortDescription,

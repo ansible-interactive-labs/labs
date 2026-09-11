@@ -1,6 +1,8 @@
 {"version":2,"width":120,"height":34,"idle_time_limit":1.25,"title":"smoke test","env":{"SHELL":"/bin/bash","TERM":"xterm-256color"}}
-[0,"o","\r\n[rajat@demo ~]$ "]
-[1.25,"o","ansible localhost -m ansible.builtin.ping -c local\r\n"]
-[1.598523,"o","localhost | SUCCESS => {\r\n    \"changed\": false,\r\n    \"ping\": \"pong\"\r\n}\r\n"]
-[1.623367,"o","[rajat@demo ~]$ "]
-[2.873367,"o",""]
+[0,"o","\r\n"]
+[0.000123,"o","[rajat@demo ~]$ "]
+[1.250123,"o","ansible localhost -i localhost, -m ansible.builtin.ping -c local\r\n"]
+[1.592691,"o","localhost | SUCCESS => {\r\n    \"ansible_facts\": {\r\n        \"discovered_interpreter_python\": \"/usr/bin/python3\"\r\n    },\r\n    \"changed\": false,\r\n    \"ping\": \"pong\"\r\n}\r\n"]
+[1.614398,"o","\r\n"]
+[1.614401,"o","[rajat@demo ~]$ "]
+[2.864401,"o",""]

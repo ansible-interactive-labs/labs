@@ -1,6 +1,6 @@
 # Installing ansible-core content review
 
-Reviewed: September 10, 2026
+Reviewed: September 11, 2026
 
 ## Readiness
 
@@ -39,8 +39,8 @@ Implemented in this review:
 - Added an explicit “Managed-host requirements by platform” heading above the Linux/Unix, Windows, and network-device cards so they cannot be mistaken for control-node requirements.
 - Removed the Ansible Automation Platform supported-combinations matrix because HOD 001 covers only the RHEL AppStream RPM and upstream Python distribution. AAP releases, execution environments, and their compatibility policy belong in the future ansible-navigator or execution-environment HOD.
 - Used the distribution terms “Red Hat-provided ansible-core RPM,” “upstream ansible-core from PyPI,” and “community-maintained upstream release.” Avoided the ambiguous phrase “community Ansible,” which can be mistaken for the separate `ansible` Python package.
-- Recorded installation of `python3.12` and `python3.12-pip` with DNF, creation of a Python 3.12 virtual environment, installation of upstream `ansible-core==2.21.2`, and activation/deactivation behavior.
-- Proved package provenance: no `ansible-core` RPM is installed in Demo 02, both Python and Ansible resolve inside the virtual environment, pip reports no broken requirements, and `ansible --version` reports core 2.21.2 on Python 3.12.14.
+- Recorded installation of `python3.12` and `python3.12-pip` with DNF, creation of a Python 3.12 virtual environment, installation of upstream `ansible-core` 2.21.4, and activation/deactivation behavior.
+- Proved package provenance: no `ansible-core` RPM is installed in Demo 02, both Python and Ansible resolve inside the virtual environment, pip reports no broken requirements, and `ansible --version` reports core 2.21.4 on Python 3.12.14.
 - Verified the upstream content boundary, `ansible.builtin` documentation namespace, localhost `ping: pong` smoke test, and shell-scoped virtual-environment activation.
 - Added demo-specific learning outcomes so each independent Start Demo screen describes only the workflow the learner is about to run.
 - Replaced all nine Demo 02 screenshot fallbacks with terminal-player end states and confirmed that each replay returns to a fresh `[rajat@demo]` prompt on its own line.

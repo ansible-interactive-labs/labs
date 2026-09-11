@@ -18,8 +18,9 @@ const exitIndex = visibleEvents.findIndex((event) => event[1] === "o" && event[2
 const trimmedEvents = exitIndex >= 0 ? visibleEvents.slice(0, exitIndex) : visibleEvents;
 const firstTime = trimmedEvents[0]?.[0] ?? 0;
 const promptPattern = /\[(?:rajat|learner)@[^\]\r\n]+\][#$] /g;
-let previousOutputEndsWithNewline = true;
+let previousOutputTrailingNewlines = 2;
 let previousOutputEndsWithVenvPrefix = false;
+let previousRebasedOutput;
 const rebasedEvents = trimmedEvents.map(([time, type, data]) => {
   let normalizedData = data;
   if (type === "o") {
@@ -28,18 +29,29 @@ const rebasedEvents = trimmedEvents.map(([time, type, data]) => {
     // the environment name and all command output remain unchanged.
     const promptNormalizedData = data
       .replace(/\(\(([^)\r\n]+)\) \) /g, "($1) ")
-      .replace(/(\([^)\r\n]+\) )\r?\n(?=\[rajat@)/g, "$1");
+      .replace(/(\([^)\r\n]+\) )(?:\r?\n)+(?=\[rajat@)/g, "$1");
+    if (/^\[(?:rajat|learner)@/.test(promptNormalizedData) && previousRebasedOutput && /\([^)\r\n]+\) \r?\n$/.test(previousRebasedOutput[2])) {
+      previousRebasedOutput[2] = previousRebasedOutput[2].replace(/\r?\n$/, "");
+      previousOutputTrailingNewlines = 0;
+      previousOutputEndsWithVenvPrefix = true;
+    }
     normalizedData = promptNormalizedData.replace(promptPattern, (prompt, offset) => {
-      const followsNewlineInEvent = offset > 0 && /[\r\n]$/.test(promptNormalizedData.slice(0, offset));
-      const followsVenvPrefix = offset > 0 && /\([^)\r\n]+\) $/.test(promptNormalizedData.slice(0, offset));
-      const beginsAfterNewline = offset === 0 && previousOutputEndsWithNewline;
+      const prefix = promptNormalizedData.slice(0, offset);
+      const trailingNewlines = offset > 0
+        ? (prefix.match(/(?:\r?\n)+$/)?.[0].match(/\n/g)?.length ?? 0)
+        : previousOutputTrailingNewlines;
+      const followsVenvPrefix = offset > 0 && /\([^)\r\n]+\) $/.test(prefix);
       const beginsAfterVenvPrefix = offset === 0 && previousOutputEndsWithVenvPrefix;
-      return followsNewlineInEvent || followsVenvPrefix || beginsAfterNewline || beginsAfterVenvPrefix ? prompt : `\r\n${prompt}`;
+      return followsVenvPrefix || beginsAfterVenvPrefix || trailingNewlines >= 2
+        ? prompt
+        : `${"\r\n".repeat(2 - trailingNewlines)}${prompt}`;
     });
-    previousOutputEndsWithNewline = /[\r\n]$/.test(normalizedData);
+    previousOutputTrailingNewlines = normalizedData.match(/(?:\r?\n)+$/)?.[0].match(/\n/g)?.length ?? 0;
     previousOutputEndsWithVenvPrefix = /\([^)\r\n]+\) $/.test(normalizedData);
   }
-  return [Math.max(0, Number((time - firstTime).toFixed(6))), type, normalizedData];
+  const rebasedEvent = [Math.max(0, Number((time - firstTime).toFixed(6))), type, normalizedData];
+  if (type === "o") previousRebasedOutput = rebasedEvent;
+  return rebasedEvent;
 });
 
 // Freeze the published replay on the final returned prompt. Stopping a shell

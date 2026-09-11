@@ -27,12 +27,12 @@ Review each lab through all of these lenses:
 - The terminal canvas fills the fixed media pane; recordings must not appear as a smaller inset video inside the player.
 - Each demo module exposes one Start Demo button; active demo mode fits the viewport, keeps navigation fixed, and confines vertical scrolling to instructional content.
 - Verification appears in the player after the final functional step, and troubleshooting remains contextual to the current step or available through the in-player recovery guide instead of duplicating large page sections.
-- Separate commands render as visually distinct blocks while multiline commands remain grouped together.
+- Each learner-visible command has its own one- or two-line explanation. Separate commands render as distinct rows while multiline commands remain grouped as one command.
 - Credential entry and other secrets are excluded rather than simulated in the recording.
 - Terminal prompts intentionally preserve the public demonstration username `rajat`; private infrastructure, credentials, and subscription identifiers remain prohibited.
 - Every shell prompt begins on a new line; command output and the next prompt must never be joined in a replay or transcript.
 - The replay freezes on the final returned prompt. No newline, carriage return, terminal reset, or other output may move the cursor onto an empty line before playback ends.
-- Every step explains what the command does, why it is needed, what success looks like, and what to check when the result differs.
+- Every step introduction describes the purpose and context without narrating its command sequence. Command rows explain what each command does, while expected results and troubleshooting cover success and recovery.
 - Commands are safe to copy and do not expose credentials, local addresses, account identifiers, or destructive shortcuts.
 - Version-dependent output is identified so learners do not expect an exact match unnecessarily.
 - Troubleshooting covers the likely failure points and does not weaken security controls.

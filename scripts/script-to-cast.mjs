@@ -132,8 +132,8 @@ replaceAcrossEvents(/Password: [^\r\n]*\r?\n/g, "Password: [entered securely]\r\
 replaceAcrossEvents(/exit\r?\n$/g, "");
 // Some CLI tools (notably `ansible-config dump --only-changed`) do not end
 // their output with a newline. Keep the authentic output while ensuring the
-// next prompt always starts on a visually distinct line.
-replaceAcrossEvents(/(?<![\r\n])\[rajat@demo ~\]\$ /g, "\r\n[rajat@demo ~]$ ");
+// next prompt is separated from that output by a blank line.
+replaceAcrossEvents(/(?<![\r\n])\[rajat@demo ~\]\$ /g, "\r\n\r\n[rajat@demo ~]$ ");
 // GNOME Terminal may redraw the prompt while Ctrl-D closes the recorder.
 // Collapse that redraw so the replay ends on one clear completion prompt.
 replaceAcrossEvents(/\[rajat@demo ~\]\$ \r\u001b\[K\r\n\[rajat@demo ~\]\$ /g, "[rajat@demo ~]$ ");

@@ -5,6 +5,8 @@ const root = process.cwd();
 const labsRoot = join(root, "content", "labs");
 const publicRoot = join(root, "public");
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const hodIdPattern = /^HOD-[0-9]{3,}$/;
+const demoIdPattern = /^HOD-[0-9]{3,}-D[0-9]{2,}$/;
 const imagePattern = /^\/demos\/.+\.(png|jpe?g|webp)$/i;
 const maxImageBytes = 2 * 1024 * 1024;
 const maxLabImageBytes = 12 * 1024 * 1024;
@@ -31,6 +33,8 @@ const slugs = new Set();
 const titles = new Set();
 const orders = new Set();
 const hodNumbers = new Set();
+const hodIds = new Set();
+const demoTrackingIds = new Set();
 let totalSteps = 0;
 let totalImages = 0;
 let totalRecordings = 0;
@@ -71,6 +75,11 @@ for (const directory of directories) {
   if (!Number.isInteger(lab.hodNumber) || lab.hodNumber < 1) fail(directory, "hodNumber must be a positive integer");
   if (hodNumbers.has(lab.hodNumber)) fail(directory, `duplicate hodNumber ${lab.hodNumber}`);
   hodNumbers.add(lab.hodNumber);
+  if (!hodIdPattern.test(lab.hodId ?? "")) fail(directory, "hodId must use the format HOD-001");
+  if (hodIds.has(lab.hodId)) fail(directory, `duplicate hodId ${lab.hodId}`);
+  hodIds.add(lab.hodId);
+  const expectedHodId = `HOD-${String(lab.hodNumber).padStart(3, "0")}`;
+  if (lab.hodId !== expectedHodId) fail(directory, `hodId must match hodNumber (${expectedHodId})`);
   if (orders.has(lab.publishedOrder)) warn(directory, `publishedOrder ${lab.publishedOrder} is shared with another lab`);
   orders.add(lab.publishedOrder);
   if (!["Beginner", "Intermediate", "Advanced"].includes(lab.difficulty)) fail(directory, "difficulty is invalid");
@@ -152,12 +161,16 @@ for (const directory of directories) {
   const demoSteps = [];
   (lab.demos ?? []).forEach((demo, demoIndex) => {
     const sourceName = `${directory} demo ${demoIndex + 1}`;
-    ["id", "title", "objective", "duration"].forEach((key) => {
+    ["id", "demoId", "title", "objective", "duration"].forEach((key) => {
       if (!nonEmptyString(demo?.[key])) fail(sourceName, `${key} is required`);
     });
     if (!slugPattern.test(demo?.id ?? "")) fail(sourceName, "id must contain lowercase words separated by hyphens");
     if (demoIds.has(demo?.id)) fail(sourceName, `duplicate demo id ${demo.id}`);
     demoIds.add(demo?.id);
+    if (!demoIdPattern.test(demo?.demoId ?? "")) fail(sourceName, "demoId must use the format HOD-001-D01");
+    if (!demo?.demoId?.startsWith(`${lab.hodId}-D`)) fail(sourceName, `demoId must begin with ${lab.hodId}-D`);
+    if (demoTrackingIds.has(demo?.demoId)) fail(sourceName, `duplicate demoId ${demo.demoId}`);
+    demoTrackingIds.add(demo?.demoId);
     if (!Number.isInteger(demo?.durationMinutes) || demo.durationMinutes < 1) fail(sourceName, "durationMinutes must be a positive integer");
     if (!Array.isArray(demo?.steps) || demo.steps.length === 0) fail(sourceName, "steps must contain at least one item");
     if (!Array.isArray(demo?.verification) || demo.verification.length === 0) fail(sourceName, "verification must contain at least one item");
@@ -174,6 +187,11 @@ for (const directory of directories) {
       fail(sourceName, "cleanup must include an explanation and command when supplied");
     }
     (demo?.steps ?? []).forEach((step, stepIndex) => demoSteps.push({ demo, step, stepIndex }));
+  });
+  (lab.comparisons ?? []).forEach((comparison, index) => {
+    if (comparison.afterDemoId && !demoIds.has(comparison.afterDemoId)) {
+      fail(`${directory} comparison ${index + 1}`, `afterDemoId does not match a demo id: ${comparison.afterDemoId}`);
+    }
   });
 
   const imagePaths = [lab.coverImage, ...demoSteps.map(({ step }) => step.image)];
@@ -205,6 +223,16 @@ for (const directory of directories) {
       if (!nonEmptyString(step[key])) fail(sourceName, `${key} is required`);
     });
     if ((step.alt ?? "").length < 10) fail(sourceName, "alt text must be descriptive");
+    if (!Array.isArray(step.commands) || step.commands.length === 0) {
+      fail(sourceName, "commands must contain at least one explained command");
+    }
+    (step.commands ?? []).forEach((item, commandIndex) => {
+      if (!nonEmptyString(item?.command)) fail(sourceName, `commands[${commandIndex}].command is required`);
+      if (!nonEmptyString(item?.explanation) || item.explanation.trim().length < 20) {
+        fail(sourceName, `commands[${commandIndex}].explanation must provide a clear one- or two-line explanation`);
+      }
+      if (item?.explanation?.trim().length > 240) fail(sourceName, `commands[${commandIndex}].explanation must stay within 240 characters`);
+    });
     if (step.media) {
       if (step.media.type !== "terminal") fail(sourceName, `unsupported media type: ${step.media.type ?? "(missing)"}`);
       const assets = [

@@ -358,12 +358,20 @@ body > main > footer .brand-copy small { color: #8f8992; }
 .stage-guide h2 { font-size: clamp(34px, 3vw, 52px); margin: 0 0 22px; }
 .explanation { color: var(--muted); line-height: 1.65; margin: 0; }
 .command-block { background: #171619; color: #f5f2f6; margin-top: 28px; box-shadow: 5px 5px 0 #d6d0c9; }
-.command-block > div { display: flex; justify-content: space-between; align-items: center; padding: 10px 13px; border-bottom: 1px solid #3b383e; color: #aaa4ac; font-size: 10px; text-transform: uppercase; letter-spacing: .09em; }
-.command-block button { border: 0; background: transparent; color: #ff5d58; cursor: pointer; font-weight: 800; }
-.command-block pre { margin: 0; padding: 18px; white-space: pre-wrap; overflow-wrap: anywhere; font: 13px/1.7 var(--font-geist-mono); }
-.command-block code { display: grid; gap: 14px; }
-.command-line { display: block; }
-.command-line + .command-line { padding-top: 14px; border-top: 1px solid #3b383e; }
+.command-block > div:first-child { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(180px, .9fr); gap: 24px; padding: 10px 13px; border-bottom: 1px solid #3b383e; color: #aaa4ac; font-size: 10px; text-transform: uppercase; letter-spacing: .09em; }
+.command-rows { display: grid; }
+.command-row { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(180px, .9fr); gap: 24px; padding: 16px 13px; border-bottom: 1px solid #3b383e; }
+.command-row:last-child { border-bottom: 0; }
+.command-value { min-width: 0; }
+.command-value pre { margin: 0; padding: 0; white-space: pre-wrap; overflow-wrap: anywhere; font: 13px/1.7 var(--font-geist-mono); }
+.command-value button { margin-top: 10px; padding: 0; border: 0; background: transparent; color: #ff5d58; cursor: pointer; font-weight: 800; }
+.command-row > p { margin: 0; color: #c8c2ca; font-size: 12px; line-height: 1.6; }
+.command-block-stacked > div:first-child { grid-template-columns: 1fr; }
+.command-block-stacked .command-row { display: block; }
+.command-block-stacked .command-value { display: flex; align-items: flex-start; gap: 16px; }
+.command-block-stacked .command-value pre { flex: 1; }
+.command-block-stacked .command-value button { flex: 0 0 auto; margin-top: 2px; }
+.command-block-stacked .command-row > p { margin-top: 9px; }
 .expected { border-left: 3px solid #24a864; margin-top: 28px; padding: 3px 0 3px 16px; }
 .expected strong { text-transform: uppercase; letter-spacing: .1em; font-size: 10px; color: #168449; }
 .expected p { margin: 7px 0 0; color: var(--muted); line-height: 1.55; font-size: 14px; }
@@ -523,6 +531,8 @@ body > main > footer .brand-copy small { color: #8f8992; }
 .demo-modules-heading > p:last-child { max-width: 760px; margin: 0; color: var(--muted); line-height: 1.65; }
 .demo-module { scroll-margin-top: 92px; }
 .demo-module + .demo-module { margin-top: 92px; padding-top: 70px; border-top: 1px solid var(--line); }
+.interstitial-comparison { margin-top: 22px; }
+.interstitial-comparison + .demo-module { margin-top: 14px; }
 .demo-module-heading { max-width: 1400px; margin: 0 auto; padding: 0 clamp(22px, 5vw, 72px) 28px; display: grid; grid-template-columns: minmax(300px, .8fr) 1fr auto; align-items: end; gap: 26px 60px; }
 .demo-module-heading span { color: var(--red); text-transform: uppercase; letter-spacing: .12em; font-size: 10px; font-weight: 800; }
 .demo-module-heading h3 { margin: 8px 0 0; font-size: clamp(30px, 3vw, 46px); }
@@ -666,6 +676,10 @@ body > main > footer .brand-copy small { color: #8f8992; }
   .stage-media { min-height: 250px; }
   .terminal-replay-links { right: 10px; top: 10px; }
   .stage-guide { padding: 28px 22px 105px; }
+  .command-block > div:first-child { display: none; }
+  .command-row { grid-template-columns: 1fr; gap: 12px; padding: 18px 14px; }
+  .command-row > p { padding-top: 12px; border-top: 1px solid #3b383e; }
+  .command-block-stacked .command-row > p { padding-top: 0; border-top: 0; }
   .image-link { right: 10px; bottom: 10px; }
   .stage-number { left: 10px; bottom: 10px; }
   .player-footer { grid-template-columns: 1fr 1fr; }

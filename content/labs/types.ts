@@ -3,8 +3,11 @@ export type LabStep = {
   title: string;
   image: string;
   alt: string;
-  command?: string;
   explanation: string;
+  commands: Array<{
+    command: string;
+    explanation: string;
+  }>;
   expected: string;
   note?: string;
   troubleshooting: string;
@@ -69,6 +72,7 @@ export type LabOverview = {
 export type LabComparison = {
   title: string;
   introduction: string;
+  afterDemoId?: string;
   eyebrow?: string;
   notesLabel?: string;
   notes?: Array<{
@@ -101,6 +105,7 @@ export type LabComparison = {
 
 export type LabDemo = {
   id: string;
+  demoId: string;
   title: string;
   objective: string;
   outcomes?: string[];
@@ -117,6 +122,7 @@ export type LabDemo = {
 
 export type Lab = {
   schemaVersion: 2;
+  hodId: string;
   slug: string;
   title: string;
   shortDescription: string;
@@ -153,6 +159,7 @@ export type Lab = {
 };
 
 export type LabSummary = Pick<Lab,
+  | "hodId"
   | "slug"
   | "title"
   | "shortDescription"

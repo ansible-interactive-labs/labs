@@ -1,4 +1,6 @@
 [rajat@demo ~]$ sudo dnf repolist --enabled
+Authentication completed securely
+
 Updating Subscription Management repositories.
 repo id                                          repo name
 rhel-9-for-aarch64-appstream-rpms                Red Hat Enterprise Linux 9 for ARM 64 - AppStream (RPMs)
@@ -6,7 +8,11 @@ rhel-9-for-aarch64-baseos-rpms                   Red Hat Enterprise Linux 9 for 
 
 [rajat@demo ~]$ sudo dnf list --available python3.12 python3.12-pip
 Updating Subscription Management repositories.
-Last metadata expiration check: 0:04:10 ago on Tue 25 Aug 2026 12:36:46 AM.
+Red Hat Enterprise Linux 9 for ARM 64 - BaseOS (RPMs)                                    11 kB/s | 4.1 kB     00:00
+Red Hat Enterprise Linux 9 for ARM 64 - BaseOS (RPMs)                                    26 MB/s | 180 MB     00:06
+Red Hat Enterprise Linux 9 for ARM 64 - AppStream (RPMs)                                 16 kB/s | 4.5 kB     00:00
+Red Hat Enterprise Linux 9 for ARM 64 - AppStream (RPMs)                                 34 MB/s | 122 MB     00:03
+Last metadata expiration check: 0:00:13 ago on Fri 11 Sep 2026 01:09:30 AM.
 Available Packages
 python3.12.aarch64                            3.12.14-1.el9_8                          rhel-9-for-aarch64-appstream-rpms
 python3.12-pip.noarch                         23.2.1-5.el9                             rhel-9-for-aarch64-appstream-rpms

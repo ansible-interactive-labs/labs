@@ -1,9 +1,10 @@
-[rajat@demo ~]$ sudo dnf repoquery --latest-limit 1 --info ansible-core
+[rajat@demo ~]$ sudo dnf info ansible-core
 Authentication completed securely
 
 Updating Subscription Management repositories.
-Red Hat Enterprise Linux 9 for ARM 64 - BaseOS (RPMs)                                    41 MB/s | 174 MB     00:04
-Red Hat Enterprise Linux 9 for ARM 64 - AppStream (RPMs)                                 34 MB/s | 119 MB     00:03
+Red Hat Enterprise Linux 9 for ARM 64 - BaseOS (RPMs)                                    28 MB/s | 180 MB     00:06
+Red Hat Enterprise Linux 9 for ARM 64 - AppStream (RPMs)                                 34 MB/s | 122 MB     00:03
+Available Packages
 Name         : ansible-core
 Epoch        : 1
 Version      : 2.14.18
@@ -20,4 +21,5 @@ Description  : Ansible is a radically simple model-driven configuration manageme
              : over SSH and does not require any software or daemons to be installed
              : on remote nodes. Extension modules can be written in any language and
              : are transferred to managed machines automatically.
+
 [rajat@demo ~]$

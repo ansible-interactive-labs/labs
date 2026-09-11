@@ -10,5 +10,3 @@ export const brand = {
   creatorFocus: "Secure automation for hybrid infrastructure",
   disclaimer: "Rajat’s Applied Technology Lab is an independent educational project. Product names and trademarks belong to their respective owners; their use does not imply affiliation or endorsement.",
 } as const;
-
-export const formatHodNumber = (value: number) => `HOD ${String(value).padStart(3, "0")}`;

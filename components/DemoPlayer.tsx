@@ -6,27 +6,13 @@
 import { useEffect, useRef, useState } from "react";
 import type { Lab, LabDemo } from "@/content/labs/types";
 import TerminalReplay from "@/components/TerminalReplay";
-import { brand, formatHodNumber } from "@/lib/brand";
+import { brand } from "@/lib/brand";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
-const splitCommands = (value: string) => {
-  const commands: string[] = [];
-  let current: string[] = [];
-  value.split("\n").forEach((line) => {
-    current.push(line);
-    if (!line.trimEnd().endsWith("\\")) {
-      commands.push(current.join("\n"));
-      current = [];
-    }
-  });
-  if (current.length) commands.push(current.join("\n"));
-  return commands;
-};
-
 export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
   const [stepIndex, setStepIndex] = useState(0);
-  const [copied, setCopied] = useState(false);
+  const [copiedCommand, setCopiedCommand] = useState<number | null>(null);
   const [completed, setCompleted] = useState(false);
   const [started, setStarted] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
@@ -35,6 +21,7 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
   const playerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const step = demo.steps[stepIndex];
+  const usesStackedCommands = demo.demoId === "HOD-001-D01";
 
   useEffect(() => {
     if (started) {
@@ -86,11 +73,11 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [demo.steps.length, fullscreen, started]);
 
-  const copyCommand = async (value: string) => {
+  const copyCommand = async (value: string, commandIndex: number) => {
     try {
       await navigator.clipboard.writeText(value);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1600);
+      setCopiedCommand(commandIndex);
+      window.setTimeout(() => setCopiedCommand(null), 1600);
     } catch {
       setAnnouncement("Copy failed. Select the text manually.");
     }
@@ -127,7 +114,7 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
   const closePlayer = () => {
     if (document.fullscreenElement) document.exitFullscreen().catch(() => undefined);
     setStepIndex(0);
-    setCopied(false);
+    setCopiedCommand(null);
     setCompleted(false);
     setStarted(false);
     setAnnouncement("Demo closed. Progress was reset and focus returned to this demonstration.");
@@ -154,7 +141,7 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
       <p className="sr-only" aria-live="polite">{announcement}</p>
       <header className="player-header">
         <div>
-          <span className="player-kicker">{formatHodNumber(lab.hodNumber)} · Demo module</span>
+          <span className="player-kicker">{demo.demoId}</span>
           <strong>{demo.title}</strong>
         </div>
         <div className="player-tools">
@@ -196,12 +183,23 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
           <p className="step-label">Step {stepIndex + 1} of {demo.steps.length} · {step.label}</p>
           <h2 ref={titleRef} tabIndex={-1}>{step.title}</h2>
           <p className="explanation">{step.explanation}</p>
-          {step.command && (
-            <div className="command-block">
-              <div><span>Run in your environment</span><button type="button" onClick={() => copyCommand(step.command ?? "")} aria-live="polite">{copied ? "Copied!" : "Copy"}</button></div>
-              <pre tabIndex={0}><code>{splitCommands(step.command).map((command, index) => <span className="command-line" key={`${command}-${index}`}>{command}</span>)}</code></pre>
+          <div className={`command-block${usesStackedCommands ? " command-block-stacked" : ""}`}>
+            <div>
+              <span>Run in your environment</span>
+              {!usesStackedCommands && <span>What the command does</span>}
             </div>
-          )}
+            <div className="command-rows">
+              {step.commands.map((item, commandIndex) => (
+                <article className="command-row" key={`${item.command}-${commandIndex}`}>
+                  <div className="command-value">
+                    <pre tabIndex={0}><code>{item.command}</code></pre>
+                    <button type="button" onClick={() => copyCommand(item.command, commandIndex)} aria-label={`Copy command: ${item.command}`} aria-live="polite">{copiedCommand === commandIndex ? "Copied!" : "Copy"}</button>
+                  </div>
+                  <p>{item.explanation}</p>
+                </article>
+              ))}
+            </div>
+          </div>
           <div className="expected"><strong>Expected result</strong><p>{step.expected}</p></div>
           {step.note && <p className="step-note">ⓘ {step.note}</p>}
           <details className="step-troubleshooting">
@@ -243,7 +241,7 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
       ) : (
         <div className="player-ready">
           <div className="player-ready-visual"><img src={`${basePath}${lab.coverImage}`} alt={lab.coverAlt} /></div>
-          <aside><p className="step-label">{formatHodNumber(lab.hodNumber)} · Ready when you are</p><h2>{demo.title}</h2><p>{demo.objective}</p><p className="player-creator">Created and verified by <a href={brand.linkedin} target="_blank" rel="noreferrer">{brand.creator} ↗</a></p><ul>{(demo.outcomes ?? lab.outcomes).map((outcome) => <li key={outcome}>{outcome}</li>)}</ul></aside>
+          <aside><p className="step-label">{demo.demoId} · Ready when you are</p><h2>{demo.title}</h2><p>{demo.objective}</p><p className="player-creator">Created and verified by <a href={brand.linkedin} target="_blank" rel="noreferrer">{brand.creator} ↗</a></p><ul>{(demo.outcomes ?? lab.outcomes).map((outcome) => <li key={outcome}>{outcome}</li>)}</ul></aside>
         </div>
       )}
 

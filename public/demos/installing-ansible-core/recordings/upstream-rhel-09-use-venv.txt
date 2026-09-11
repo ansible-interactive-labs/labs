@@ -1,14 +1,22 @@
-[rajat@demo ~]$ command -v ansible || echo "ansible is not on PATH outside the virtual environment"
-ansible is not on PATH outside the virtual environment
-
-[rajat@demo ~]$ source ~/.venvs/ansible-core-2.21/bin/activate
-
-(ansible-core-2.21) [rajat@demo ~]$ ansible --version | head -1
-ansible [core 2.21.2]
-
 (ansible-core-2.21) [rajat@demo ~]$ deactivate
 
 [rajat@demo ~]$ command -v ansible || echo "ansible is not on PATH outside the virtual environment"
 ansible is not on PATH outside the virtual environment
 
-[rajat@demo ~]$
+[rajat@demo ~]$ source ~/.venvs/ansible-core-2.21/bin/activate
+
+(ansible-core-2.21) [rajat@demo ~]$ command -v ansible
+/home/rajat/.venvs/ansible-core-2.21/bin/ansible
+
+(ansible-core-2.21) [rajat@demo ~]$ ansible --version
+ansible [core 2.21.4]
+  config file = None
+  configured module search path = ['/home/rajat/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /home/rajat/.venvs/ansible-core-2.21/lib64/python3.12/site-packages/ansible
+  ansible collection location = /home/rajat/.ansible/collections:/usr/share/ansible/collections
+  executable location = /home/rajat/.venvs/ansible-core-2.21/bin/ansible
+  python version = 3.12.14 (main, Aug 13 2026, 00:00:00) [GCC 11.5.0 20240719 (Red Hat 11.5.0-14)] (/home/rajat/.venvs/ansible-core-2.21/bin/python)
+  jinja version = 3.1.6
+  pyyaml version = 6.0.3 (with libyaml v0.2.5)
+
+(ansible-core-2.21) [rajat@demo ~]$
