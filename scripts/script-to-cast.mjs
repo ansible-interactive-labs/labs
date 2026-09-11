@@ -124,7 +124,10 @@ function replaceAcrossEvents(pattern, replacement) {
   }
 }
 
-replaceAcrossEvents(/\[sudo\] password for [^:\r\n]+: /g, "Authentication completed securely\r\n");
+// Do not expose or narrate the local sudo authentication prompt. Input is not
+// captured, and removing the complete prompt line keeps the replay focused on
+// the command's actual output.
+replaceAcrossEvents(/\[sudo\] password for [^:\r\n]+: \r?\n/g, "");
 replaceAcrossEvents(/Username: [^\r\n]*/g, "Username: [entered securely]");
 replaceAcrossEvents(/Password: [^\r\n]*\r?\n/g, "Password: [entered securely]\r\n");
 // `script` records the final `exit` used to close its child shell. Remove only

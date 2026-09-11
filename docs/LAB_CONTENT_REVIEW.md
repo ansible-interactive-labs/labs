@@ -19,6 +19,7 @@ If no gaps are found, say so explicitly rather than omitting the review.
 Review each lab through all of these lenses:
 
 - The title, objective, outcomes, and final verification describe the same skill.
+- Every HOD uses a dedicated 16:9 editorial cover that represents its subject; recording frames and step screenshots are not used as catalog artwork.
 - Each HOD may contain one or more demo modules. Every module has its own objective, duration, steps, verification checks, recovery guide, and optional cleanup.
 - Prerequisites state the operating system, privileges, access, accounts or subscriptions, connectivity, and starting state.
 - No setup action is implied or hidden between recorded steps.
@@ -30,7 +31,7 @@ Review each lab through all of these lenses:
 - Each learner-visible command has its own one- or two-line explanation. Separate commands render as distinct rows while multiline commands remain grouped as one command.
 - Credential entry and other secrets are excluded rather than simulated in the recording.
 - Terminal prompts intentionally preserve the public demonstration username `rajat`; private infrastructure, credentials, and subscription identifiers remain prohibited.
-- Every shell prompt begins on a new line; command output and the next prompt must never be joined in a replay or transcript.
+- Every shell prompt begins on a new line, with no more than one blank terminal row between completed output and the returned prompt.
 - The replay freezes on the final returned prompt. No newline, carriage return, terminal reset, or other output may move the cursor onto an empty line before playback ends.
 - Every step introduction describes the purpose and context without narrating its command sequence. Command rows explain what each command does, while expected results and troubleshooting cover success and recovery.
 - Commands are safe to copy and do not expose credentials, local addresses, account identifiers, or destructive shortcuts.

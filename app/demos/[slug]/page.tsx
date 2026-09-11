@@ -9,7 +9,12 @@ import { getLab, getLabSlugs } from "@/content/labs/loader";
 import type { LabComparison } from "@/content/labs/types";
 import { brand } from "@/lib/brand";
 
+/* Native images keep public asset paths compatible with static deployment paths. */
+/* eslint-disable @next/next/no-img-element */
+
 export const dynamicParams = false;
+
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 export function generateStaticParams() {
   return getLabSlugs().map((slug) => ({ slug }));
@@ -51,18 +56,24 @@ function ComparisonSection({ labSlug, comparison, index }: { labSlug: string; co
         <p>{comparison.introduction}</p>
       </div>
       {comparison.notes?.length ? (
-        <>
-          {comparison.notesLabel ? <h3 className="comparison-notes-label">{comparison.notesLabel}</h3> : null}
+        <section className="comparison-notes-panel" aria-label={comparison.notesLabel ?? "Important comparison notes"}>
+          <header className="comparison-notes-heading">
+            <span>Key context</span>
+            <h3>{comparison.notesLabel ?? "Important distinctions"}</h3>
+          </header>
           <div className="comparison-notes">
-            {comparison.notes.map((note) => (
+            {comparison.notes.map((note, noteIndex) => (
               <aside className="comparison-note" key={note.title}>
-                <strong>{note.title}</strong>
-                <p>{note.detail}</p>
-                {note.reference ? <a href={note.reference.href} target="_blank" rel="noreferrer">{note.reference.label} ↗</a> : null}
+                <span className="comparison-note-number" aria-hidden="true">{String(noteIndex + 1).padStart(2, "0")}</span>
+                <div>
+                  <strong>{note.title}</strong>
+                  <p>{note.detail}</p>
+                  {note.reference ? <a href={note.reference.href} target="_blank" rel="noreferrer">{note.reference.label} ↗</a> : null}
+                </div>
               </aside>
             ))}
           </div>
-        </>
+        </section>
       ) : null}
       <details className="comparison-deep-dive">
         <summary>{comparison.summaryLabel ?? "Read the detailed comparison"}</summary>
@@ -113,8 +124,6 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
   const lab = getLab(slug);
   if (!lab) notFound();
 
-  const genericIssueTitle = encodeURIComponent(`[Lab feedback] ${lab.title}`);
-  const genericIssueUrl = `https://github.com/ansible-interactive-labs/labs/issues/new?title=${genericIssueTitle}`;
   const totalSteps = lab.demos.reduce((count, demo) => count + demo.steps.length, 0);
 
   return (
@@ -130,20 +139,27 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
           <div className="lab-facts" aria-label="Lab facts">
             <span><small>Duration</small>{lab.duration}</span>
             <span><small>Platform</small>{lab.platform}</span>
-            <span><small>Demonstrations</small>{lab.demos.length}</span>
-            <span><small>Total steps</small>{totalSteps}</span>
-            <span><small>Last verified</small>{lab.verified.date}</span>
+            <span><small>Demonstrations</small>{lab.demos.length || "In preparation"}</span>
+            <span><small>Total steps</small>{totalSteps || "Not recorded"}</span>
+            <span><small>{lab.demos.length ? "Last verified" : "Last reviewed"}</small>{lab.verified.date}</span>
           </div>
         </div>
-        <aside className="verification-card">
-          <span>Verified environment</span>
-          <dl>
-            <div><dt>Operating system</dt><dd>{lab.verified.os}</dd></div>
-            <div><dt>Architecture</dt><dd>{lab.verified.architecture}</dd></div>
-            <div><dt>Captured package</dt><dd>{lab.verified.package}</dd></div>
-          </dl>
-          <p>Package versions can change as Red Hat publishes updates. Match the expected behavior, not an exact version string.</p>
-        </aside>
+        <div className="lab-hero-side">
+          <figure className="lab-cover-art">
+            <img src={`${basePath}${lab.coverImage}`} alt={lab.coverAlt} />
+          </figure>
+          <aside className="verification-card">
+            <span>{lab.demos.length ? "Verified environment" : "Research basis"}</span>
+            <dl>
+              <div><dt>{lab.demos.length ? "Operating system" : "Community source"}</dt><dd>{lab.verified.os}</dd></div>
+              <div><dt>{lab.demos.length ? "Architecture" : "Red Hat source"}</dt><dd>{lab.verified.architecture}</dd></div>
+              <div><dt>{lab.demos.length ? "Captured package" : "Package snapshot"}</dt><dd>{lab.verified.package}</dd></div>
+            </dl>
+            <p>{lab.demos.length
+              ? "Package versions can change as Red Hat publishes updates. Match the expected behavior, not an exact version string."
+              : "Tool membership and package versions change over time. Use the linked official references when choosing an installation path."}</p>
+          </aside>
+        </div>
       </header>
 
       {lab.overview && (
@@ -232,7 +248,11 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
               <strong>{lab.accessCallout.title}</strong>
               <p>{lab.accessCallout.detail}</p>
             </div>
-            <a href={lab.accessCallout.href} target="_blank" rel="noreferrer">{lab.accessCallout.linkLabel} <span>↗</span></a>
+            <div className="prerequisite-callout-actions">
+              {lab.accessCallout.links.map((link) => (
+                <a href={link.href} target="_blank" rel="noreferrer" key={link.href}>{link.label} <span>↗</span></a>
+              ))}
+            </div>
           </aside>
         ) : null}
       </section>
@@ -241,7 +261,7 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
         comparison.afterDemoId ? null : <ComparisonSection labSlug={lab.slug} comparison={comparison} index={comparisonIndex} key={comparison.title} />
       ))}
 
-      <section className="demo-modules" aria-labelledby="demonstrations-title">
+      {lab.demos.length ? <section className="demo-modules" aria-labelledby="demonstrations-title">
         <div className="demo-modules-heading">
           <p className="eyebrow"><span /> Watch it. Run it. Verify it.</p>
           <h2 id="demonstrations-title">{lab.demos.length === 1 ? "Demonstration" : "Demonstrations"}</h2>
@@ -266,11 +286,19 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
             ))}
           </Fragment>
         ))}
-      </section>
+      </section> : (
+        <section className="demo-modules" aria-labelledby="demonstrations-title">
+          <div className="demo-modules-heading">
+            <p className="eyebrow"><span /> Demonstrations in preparation</p>
+            <h2 id="demonstrations-title">The reference page is ready</h2>
+            <p>The recorded installation and workflow demonstrations will be added after their commands, environments, and expected results have been tested.</p>
+          </div>
+        </section>
+      )}
 
       <section className="feedback-band">
-        <div><strong>Keep this HOD accurate.</strong><p>Tell Rajat which result differed so the demonstration can stay current.</p></div>
-        <div className="feedback-actions"><a href={genericIssueUrl} target="_blank" rel="noreferrer">Report a lab issue ↗</a><a href={brand.linkedin} target="_blank" rel="noreferrer">Follow Rajat ↗</a></div>
+        <div><strong>Keep this HOD accurate.</strong><p>{lab.demos.length ? "Tell Rajat which result differed so the demonstration can stay current." : "Tell Rajat if a package, tool, requirement, or support detail has changed."}</p></div>
+        <div className="feedback-actions"><a href={brand.linkedin} target="_blank" rel="noreferrer">Share feedback with Rajat ↗</a></div>
       </section>
 
       <SiteFooter />

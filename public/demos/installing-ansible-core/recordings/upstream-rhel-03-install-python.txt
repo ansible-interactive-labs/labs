@@ -1,6 +1,4 @@
 [rajat@demo ~]$ sudo dnf install python3.12 python3.12-pip
-Authentication completed securely
-
 Updating Subscription Management repositories.
 Last metadata expiration check: 0:00:45 ago on Fri 11 Sep 2026 01:09:30 AM.
 Dependencies resolved.

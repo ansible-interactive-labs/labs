@@ -1,0 +1,11 @@
+[rajat@demo ~]$ echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+
+[rajat@demo ~]$ source ~/.bashrc
+
+[rajat@demo ~]$ command -v pipx
+/home/rajat/.local/bin/pipx
+
+[rajat@demo ~]$ pipx --version
+1.17.2
+
+[rajat@demo ~]$

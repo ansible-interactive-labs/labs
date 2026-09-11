@@ -1,6 +1,4 @@
 [rajat@demo ~]$ sudo dnf info ansible-core
-Authentication completed securely
-
 Updating Subscription Management repositories.
 Red Hat Enterprise Linux 9 for ARM 64 - BaseOS (RPMs)                                    28 MB/s | 180 MB     00:06
 Red Hat Enterprise Linux 9 for ARM 64 - AppStream (RPMs)                                 34 MB/s | 122 MB     00:03

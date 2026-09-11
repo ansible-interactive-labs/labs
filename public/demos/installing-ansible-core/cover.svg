@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title description">
+  <title id="title">Installing ansible-core</title>
+  <desc id="description">RHEL RPM and upstream PyPI installation paths converge on ansible-core, followed by package inspection and a successful validation.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#17090d"/>
+      <stop offset="0.52" stop-color="#351018"/>
+      <stop offset="1" stop-color="#0b1724"/>
+    </linearGradient>
+    <linearGradient id="core" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff655d"/>
+      <stop offset="1" stop-color="#c31d2b"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="48%" r="52%">
+      <stop offset="0" stop-color="#ff4940" stop-opacity=".34"/>
+      <stop offset="1" stop-color="#ff4940" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="54" height="54" patternUnits="userSpaceOnUse">
+      <path d="M54 0H0V54" fill="none" stroke="#ffffff" stroke-opacity=".04"/>
+    </pattern>
+    <filter id="soft-glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="900" rx="48" fill="url(#background)"/>
+  <rect width="1600" height="900" rx="48" fill="url(#grid)"/>
+  <circle cx="800" cy="470" r="390" fill="url(#glow)"/>
+
+  <text x="90" y="104" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="31" font-weight="700">HOD-001</text>
+  <text x="90" y="146" fill="#d6aeb4" font-family="Inter, Arial, sans-serif" font-size="20" letter-spacing="2">RAJAT’S APPLIED TECHNOLOGY LAB</text>
+
+  <g fill="none" stroke="#ff8b84" stroke-opacity=".5" stroke-width="4">
+    <path d="M476 360H620C674 360 690 407 690 442"/>
+    <path d="M1124 360H980C926 360 910 407 910 442"/>
+    <path d="M800 590V678"/>
+  </g>
+  <g fill="#ff655d">
+    <circle cx="620" cy="360" r="7"/>
+    <circle cx="980" cy="360" r="7"/>
+    <circle cx="800" cy="678" r="7"/>
+  </g>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+    <rect x="210" y="276" width="266" height="168" rx="28" fill="#111b27" stroke="#5a6878" stroke-width="2"/>
+    <text x="244" y="323" fill="#aebcca" font-size="17" letter-spacing="3">VENDOR PATH</text>
+    <text x="244" y="372" fill="#ffffff" font-size="30" font-weight="700">RHEL RPM</text>
+    <text x="244" y="409" fill="#ff8b84" font-size="19">dnf install</text>
+
+    <rect x="1124" y="276" width="266" height="168" rx="28" fill="#111b27" stroke="#5a6878" stroke-width="2"/>
+    <text x="1158" y="323" fill="#aebcca" font-size="17" letter-spacing="3">UPSTREAM PATH</text>
+    <text x="1158" y="372" fill="#ffffff" font-size="30" font-weight="700">PYPI</text>
+    <text x="1158" y="409" fill="#8fded2" font-size="19">python -m pip</text>
+  </g>
+
+  <circle cx="800" cy="480" r="154" fill="#ff4940" fill-opacity=".2" filter="url(#soft-glow)"/>
+  <rect x="620" y="368" width="360" height="224" rx="38" fill="#100e14" stroke="url(#core)" stroke-width="4"/>
+  <rect x="648" y="396" width="304" height="50" rx="14" fill="url(#core)"/>
+  <circle cx="680" cy="421" r="7" fill="#ffffff" fill-opacity=".9"/>
+  <circle cx="706" cy="421" r="7" fill="#ffffff" fill-opacity=".58"/>
+  <circle cx="732" cy="421" r="7" fill="#ffffff" fill-opacity=".3"/>
+  <text x="800" y="508" text-anchor="middle" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="43" font-weight="750">ansible-core</text>
+  <text x="800" y="552" text-anchor="middle" fill="#d6c1c5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" letter-spacing="3">MINIMAL AUTOMATION ENGINE</text>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+    <rect x="484" y="678" width="632" height="112" rx="24" fill="#071b18" stroke="#49c9ae" stroke-width="2"/>
+    <circle cx="530" cy="718" r="8" fill="#49c9ae"/>
+    <text x="554" y="725" fill="#8be5d3" font-size="19">$ ansible localhost -m ansible.builtin.ping</text>
+    <text x="554" y="762" fill="#ffffff" font-size="22" font-weight="700">localhost | SUCCESS  →  pong</text>
+  </g>
+
+  <g font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" text-anchor="middle">
+    <text x="604" y="842" fill="#d6aeb4">INSTALL</text>
+    <circle cx="696" cy="836" r="4" fill="#ff655d"/>
+    <text x="800" y="842" fill="#d6aeb4">INSPECT</text>
+    <circle cx="904" cy="836" r="4" fill="#ff655d"/>
+    <text x="1010" y="842" fill="#d6aeb4">VALIDATE</text>
+  </g>
+</svg>

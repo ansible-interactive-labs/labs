@@ -1,0 +1,50 @@
+[rajat@demo ~]$ pipx list
+venvs are in /home/rajat/.local/share/pipx/venvs
+apps are exposed on your $PATH at /home/rajat/.local/bin
+manual pages are exposed at /home/rajat/.local/share/man
+shell completions are exposed at /home/rajat/.local/share
+   package ansible-core 2.21.4, installed using Python 3.12.14
+    - ansible
+    - ansible-config
+    - ansible-console
+    - ansible-doc
+    - ansible-galaxy
+    - ansible-inventory
+    - ansible-playbook
+    - ansible-pull
+    - ansible-test
+    - ansible-vault
+
+[rajat@demo ~]$ rpm -q ansible-core
+package ansible-core is not installed
+
+[rajat@demo ~]$ command -v ansible
+/home/rajat/.local/bin/ansible
+
+[rajat@demo ~]$ pipx runpip ansible-core show ansible-core
+Name: ansible-core
+Version: 2.21.4
+Summary: Radically simple IT automation
+Home-page: https://ansible.com/
+Author: Ansible Project
+Author-email:
+License-Expression: GPL-3.0-or-later
+Location: /home/rajat/.local/share/pipx/venvs/ansible-core/lib64/python3.12/site-packages
+Requires: cryptography, jinja2, packaging, PyYAML, resolvelib
+Required-by:
+
+[rajat@demo ~]$ pipx runpip ansible-core check
+No broken requirements found.
+
+[rajat@demo ~]$ ansible --version
+ansible [core 2.21.4]
+  config file = None
+  configured module search path = ['/home/rajat/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /home/rajat/.local/share/pipx/venvs/ansible-core/lib64/python3.12/site-packages/ansible
+  ansible collection location = /home/rajat/.ansible/collections:/usr/share/ansible/collections
+  executable location = /home/rajat/.local/bin/ansible
+  python version = 3.12.14 (main, Aug 13 2026, 00:00:00) [GCC 11.5.0 20240719 (Red Hat 11.5.0-14)] (/home/rajat/.local/share/pipx/venvs/ansible-core/bin/python)
+  jinja version = 3.1.6
+  pyyaml version = 6.0.3 (with libyaml v0.2.5)
+
+[rajat@demo ~]$

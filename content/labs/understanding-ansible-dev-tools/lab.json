@@ -1,0 +1,273 @@
+{
+  "$schema": "../schema.json",
+  "schemaVersion": 2,
+  "hodId": "HOD-002",
+  "slug": "understanding-ansible-dev-tools",
+  "title": "Understanding ansible-dev-tools",
+  "shortDescription": "Learn what ansible-dev-tools installs and how the upstream and Red Hat delivery paths differ.",
+  "description": "Map the tools used to create and test Ansible content, then compare the upstream Python distribution with Red Hat-supported packages and development environments.",
+  "coverImage": "/demos/understanding-ansible-dev-tools/cover.svg",
+  "coverAlt": "Ansible development workflow showing connected create, lint, test, build, run, and sign stages",
+  "duration": "8 min read",
+  "durationMinutes": 8,
+  "difficulty": "Beginner",
+  "topic": "Ansible development tools",
+  "platform": "Linux · macOS · Windows",
+  "status": "Coming soon",
+  "hodNumber": 2,
+  "publishedOrder": 2,
+  "tags": [
+    "ansible-dev-tools",
+    "content development",
+    "testing",
+    "execution environments",
+    "Red Hat Ansible Automation Platform"
+  ],
+  "outcomes": [
+    "Explain the purpose of the ansible-dev-tools package",
+    "Identify the role of each user-facing tool in the suite",
+    "Choose between the upstream and Red Hat delivery paths"
+  ],
+  "overview": {
+    "title": "What is ansible-dev-tools?",
+    "introduction": "ansible-dev-tools, commonly shortened to ADT, is a curated development toolkit for people who create and test Ansible content. It brings project scaffolding, linting, execution-environment builds, local execution, signing, and several test frameworks into one installable toolset. The package also provides the adt command, which can report the versions of the tools available in the current development environment.",
+    "itemsLabel": "User-facing tools in the curated suite",
+    "items": [
+      {
+        "title": "ansible-core",
+        "detail": "The minimal automation engine and command-line runtime. It parses inventories and playbooks, loads plugins and modules, and executes automation from a control node."
+      },
+      {
+        "title": "ansible-builder",
+        "detail": "Builds containerized execution environments from a definition file. It resolves Ansible collections plus Python and operating-system dependencies into a repeatable image."
+      },
+      {
+        "title": "ansible-creator",
+        "detail": "Scaffolds playbook projects, collections, roles, plugins, and related files. It gives new content a consistent structure instead of making authors assemble it by hand."
+      },
+      {
+        "title": "ansible-dev-environment",
+        "detail": "Creates and manages isolated workspaces for Ansible content development. Its ade command installs collections and Python dependencies so Ansible and test tools can discover them together."
+      },
+      {
+        "title": "ansible-lint",
+        "detail": "Checks playbooks, roles, and collections for syntax problems, risky patterns, and practices that reduce maintainability. Some findings can be corrected automatically."
+      },
+      {
+        "title": "ansible-navigator",
+        "detail": "Provides a terminal interface for running and inspecting Ansible content, especially with execution environments. It can show play results, inventories, configuration, documentation, and images."
+      },
+      {
+        "title": "ansible-sign",
+        "detail": "Signs and verifies Ansible project content. It helps establish whether protected files still match a trusted signing record before the content is used."
+      },
+      {
+        "title": "Molecule",
+        "detail": "Runs scenario-based functional tests for roles, playbooks, and collections. A scenario can create test instances, apply automation, verify the result, and clean up."
+      },
+      {
+        "title": "pytest-ansible",
+        "detail": "Extends pytest for Ansible development. It supports collection unit tests, Ansible-aware fixtures, and Python tests for modules and plugins."
+      },
+      {
+        "title": "tox-ansible",
+        "detail": "Builds tox test matrices across Python and ansible-core versions. Collection authors use it to run sanity, unit, and integration tests in isolated combinations."
+      }
+    ]
+  },
+  "prerequisites": [
+    {
+      "label": "Community install",
+      "value": "Python 3.11 or later",
+      "detail": "The current PyPI package metadata requires Python 3.11 or later. Install it in an isolated Python environment rather than the operating system's managed Python environment.",
+      "href": "https://pypi.org/project/ansible-dev-tools/"
+    },
+    {
+      "label": "Red Hat RPM",
+      "value": "RHEL 9 and an AAP entitlement",
+      "detail": "The Red Hat account used to register the system must provide an Ansible Automation Platform subscription or product trial. A RHEL-only subscription does not expose the versioned repository containing the Red Hat ansible-dev-tools RPM.",
+      "href": "https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.7/install-proc_devtools_install_rpm"
+    },
+    {
+      "label": "Container workflows",
+      "value": "Podman on RHEL",
+      "detail": "This demonstration installs Podman so ansible-navigator can pull and run execution-environment images. Other platforms can use a container engine supported by ansible-navigator.",
+      "href": "https://docs.ansible.com/projects/navigator/installation/"
+    }
+  ],
+  "accessCallout": {
+    "title": "Don’t have a Red Hat subscription?",
+    "detail": "This demonstration requires access to both RHEL 9 and Red Hat Ansible Automation Platform. Eligible individuals can use the no-cost Red Hat Developer Subscription for RHEL. Apply separately for an AAP product trial, then use a Red Hat account with the required entitlements when registering the system so Subscription Manager can expose the RHEL and versioned AAP repositories.",
+    "links": [
+      {
+        "href": "https://developers.redhat.com/register",
+        "label": "Get no-cost RHEL access"
+      },
+      {
+        "href": "https://www.redhat.com/en/technologies/management/ansible/trial",
+        "label": "Apply for an AAP product trial"
+      }
+    ]
+  },
+  "comparisons": [
+    {
+      "title": "Community ansible-dev-tools vs Red Hat Ansible development tools",
+      "introduction": "Both paths use the Ansible development-tools ecosystem. The practical differences are how the software is delivered, which versions are selected and tested together, where it can run, and who supports the resulting installation.",
+      "eyebrow": "Understand the distribution paths",
+      "notesLabel": "Package boundaries that matter",
+      "notes": [
+        {
+          "title": "Curated tools are not the complete dependency graph",
+          "detail": "The ten tools above are the user-facing suite named by the upstream documentation. Package managers also install supporting Python libraries, and those transitive dependencies can change between releases.",
+          "reference": {
+            "label": "Review the upstream project metadata",
+            "href": "https://github.com/ansible/ansible-dev-tools/blob/main/pyproject.toml"
+          }
+        },
+        {
+          "title": "ansible-core is documented differently",
+          "detail": "Upstream ADT documentation includes ansible-core in the curated toolkit. Red Hat's development-workspace documentation lists ansible-core as a preinstalled runtime alongside the ADT package, then lists the remaining development tools under ADT. Do not assume that every delivery method has an identical direct dependency graph.",
+          "reference": {
+            "label": "Review the Red Hat workspace components",
+            "href": "https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.7/develop-assembly_workspaces_intro"
+          }
+        },
+        {
+          "title": "Podman package or container-tools?",
+          "detail": "On RHEL 9, the podman package installs the container engine and its required dependencies. The container-tools meta-package installs Podman together with a broader toolkit that includes Buildah, Skopeo, CRIU, and Udica. They are not two editions of Podman. This demonstration installs podman because a working container engine is sufficient for ansible-navigator to use execution environments; install container-tools when the additional container utilities are also needed.",
+          "reference": {
+            "label": "Review the RHEL container-tools packages",
+            "href": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/building_running_and_managing_containers/index"
+          }
+        },
+        {
+          "title": "Product support does not cover custom content",
+          "detail": "Red Hat support applies to shipped products and supported usage within the published scope. The AAP support policy lists custom content and custom collection development or debugging outside standard product support.",
+          "reference": {
+            "label": "Review the AAP scope of support",
+            "href": "https://access.redhat.com/support/policy/updates/ansible-automation-platform"
+          }
+        }
+      ],
+      "summaryLabel": "Compare community and Red Hat delivery",
+      "rowHeader": "Area",
+      "columns": [
+        "Community distribution",
+        "Red Hat distribution"
+      ],
+      "rows": [
+        {
+          "aspect": "Primary artifact",
+          "values": [
+            "A Python distribution published on PyPI. The upstream project also publishes the community-ansible-dev-tools container image through GitHub Container Registry.",
+            "An RPM delivered through versioned Ansible Automation Platform repositories, plus Red Hat development-container and development-workspace options."
+          ]
+        },
+        {
+          "aspect": "Installation",
+          "values": [
+            "Install ansible-dev-tools from PyPI into an isolated Python environment. The current package metadata requires Python 3.11 or later.",
+            "Install the ansible-dev-tools RPM with DNF on supported RHEL, or use the downstream development container selected by the Ansible VS Code extension."
+          ]
+        },
+        {
+          "aspect": "Access",
+          "values": [
+            "PyPI packages, upstream source, and the community container are publicly available without an Ansible Automation Platform subscription.",
+            "RPM repositories and authenticated images require the appropriate Red Hat access. Product support requires an active Ansible Automation Platform subscription."
+          ]
+        },
+        {
+          "aspect": "Version selection",
+          "values": [
+            "Upstream releases follow the community project's cadence. Python resolves the declared requirements and compatible transitive dependencies at installation time.",
+            "Red Hat selects, builds, tests, and updates a compatible package set for an Ansible Automation Platform release. Its versions do not have to match the newest PyPI releases."
+          ]
+        },
+        {
+          "aspect": "Operating environment",
+          "values": [
+            "The Python distribution is described as operating-system independent, subject to Python and individual tool requirements. The community container is based on Fedora Minimal.",
+            "The local RPM path targets supported RHEL. The downstream VS Code development container uses a supported Red Hat base image and can be launched from supported Linux, macOS, or Windows hosts."
+          ]
+        },
+        {
+          "aspect": "Dependency management",
+          "values": [
+            "pip or another Python installer resolves packages from Python indexes. Use a virtual environment, pipx, or another isolated workflow to avoid mixing them with system Python packages.",
+            "DNF installs Red Hat-built RPM dependencies from enabled repositories. The downstream container and development workspace arrive with a preconfigured, tested tool environment."
+          ]
+        },
+        {
+          "aspect": "Updates",
+          "values": [
+            "Choose when to upgrade the Python package or pull a new community image. Read upstream release notes and retest projects when the toolchain changes.",
+            "Consume updates through Red Hat RPM or image channels appropriate to the selected AAP release, following the applicable Red Hat lifecycle and update guidance."
+          ]
+        },
+        {
+          "aspect": "Support",
+          "values": [
+            "Community support is provided through upstream documentation, forums, Matrix, and project issue trackers. There is no Red Hat product-support entitlement for this installation path.",
+            "Red Hat supports the productized packages and supported development environments within the scope and lifecycle of the customer's Ansible Automation Platform subscription. This does not extend product support to custom automation content."
+          ]
+        },
+        {
+          "aspect": "Good fit",
+          "values": [
+            "Useful for contributors, evaluation, cross-platform development, and teams that prefer the current upstream toolchain and manage their own compatibility testing.",
+            "Useful when an organization needs Red Hat-tested package combinations, controlled repositories or images, documented platform requirements, and vendor support."
+          ]
+        }
+      ],
+      "takeawayLabel": "Choose by delivery and support requirements",
+      "takeaway": "Choose the upstream distribution when you want the community release cadence and will own environment compatibility. Choose the Red Hat distribution when you have an Ansible Automation Platform subscription and need Red Hat-tested artifacts, lifecycle guidance, and product support. The commands may look familiar in either environment, but package provenance and support coverage are not interchangeable.",
+      "sources": [
+        {
+          "label": "Upstream Ansible Development Tools documentation",
+          "href": "https://docs.ansible.com/projects/dev-tools/"
+        },
+        {
+          "label": "ansible-dev-tools on PyPI",
+          "href": "https://pypi.org/project/ansible-dev-tools/"
+        },
+        {
+          "label": "Community development-container documentation",
+          "href": "https://docs.ansible.com/projects/dev-tools/container/"
+        },
+        {
+          "label": "ansible-navigator installation requirements",
+          "href": "https://docs.ansible.com/projects/navigator/installation/"
+        },
+        {
+          "label": "RHEL 9 container tools documentation",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/building_running_and_managing_containers/index"
+        },
+        {
+          "label": "Red Hat ADT installation options",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.7/install-assembly_devtools_install"
+        },
+        {
+          "label": "Red Hat RPM installation guide",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.7/install-proc_devtools_install_rpm"
+        },
+        {
+          "label": "Red Hat development-workspace components",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.7/develop-assembly_workspaces_intro"
+        },
+        {
+          "label": "Ansible Automation Platform lifecycle",
+          "href": "https://access.redhat.com/support/policy/updates/ansible-automation-platform"
+        }
+      ]
+    }
+  ],
+  "verified": {
+    "date": "September 11, 2026",
+    "dateISO": "2026-09-11",
+    "os": "Official upstream ADT documentation and package metadata",
+    "architecture": "Red Hat Ansible Automation Platform 2.7 documentation",
+    "package": "PyPI 26.8.0 · Red Hat RPM example 25.8.3"
+  },
+  "demos": []
+}

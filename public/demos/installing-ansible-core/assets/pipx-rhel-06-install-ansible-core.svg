@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Install ansible-core with pipx</title>
+  <desc id="desc">Static fallback generated from pipx-rhel-06-install-ansible-core.txt</desc>
+  <defs>
+    <linearGradient id="terminal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#17151a"/>
+      <stop offset="1" stop-color="#252129"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="#0d0c10"/>
+  <rect x="24" y="24" width="1552" height="852" rx="22" fill="url(#terminal)" stroke="#49434c" stroke-width="2"/>
+  <circle cx="66" cy="66" r="9" fill="#ff5f57"/>
+  <circle cx="96" cy="66" r="9" fill="#febc2e"/>
+  <circle cx="126" cy="66" r="9" fill="#28c840"/>
+  <text x="800" y="72" fill="#bdb6c0" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22">Install ansible-core with pipx</text>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">
+    <text x="68" y="134" fill="#ff8d80">[rajat@demo ~]$ pipx install --python python3.12 'ansible-core==2.21.*'</text>
+    <text x="68" y="161" fill="#e8e4ea">…</text>
+    <text x="68" y="188" fill="#e8e4ea"> </text>
+    <text x="68" y="215" fill="#e8e4ea">Downloading cryptography-50.0.1-cp311-abi3-manylinux_2_34_aarch64.whl (4.7 MB)</text>
+    <text x="68" y="242" fill="#e8e4ea">   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.7/4.7 MB 20.9 MB/s  0:00:00</text>
+    <text x="68" y="269" fill="#e8e4ea"> </text>
+    <text x="68" y="296" fill="#e8e4ea">Downloading cffi-2.1.1-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.whl (222 kB)</text>
+    <text x="68" y="323" fill="#e8e4ea">Downloading packaging-26.3-py3-none-any.whl (129 kB)</text>
+    <text x="68" y="350" fill="#e8e4ea">Downloading pycparser-3.0-py3-none-any.whl (48 kB)</text>
+    <text x="68" y="377" fill="#e8e4ea">Installing collected packages: resolvelib, PyYAML, pycparser, packaging, MarkupSafe, jinja2, cffi, cryptograp…</text>
+    <text x="68" y="404" fill="#e8e4ea"> </text>
+    <text x="68" y="431" fill="#e8e4ea">Successfully installed MarkupSafe-3.0.3 PyYAML-6.0.3 ansible-core-2.21.4 cffi-2.1.1 cryptography-50.0.1 jinja…</text>
+    <text x="68" y="458" fill="#e8e4ea">  installed package ansible-core 2.21.4, installed using Python 3.12.14</text>
+    <text x="68" y="485" fill="#e8e4ea">  These apps are now available</text>
+    <text x="68" y="512" fill="#e8e4ea">    - ansible</text>
+    <text x="68" y="539" fill="#e8e4ea">    - ansible-config</text>
+    <text x="68" y="566" fill="#e8e4ea">    - ansible-console</text>
+    <text x="68" y="593" fill="#e8e4ea">    - ansible-doc</text>
+    <text x="68" y="620" fill="#e8e4ea">    - ansible-galaxy</text>
+    <text x="68" y="647" fill="#e8e4ea">    - ansible-inventory</text>
+    <text x="68" y="674" fill="#e8e4ea">    - ansible-playbook</text>
+    <text x="68" y="701" fill="#e8e4ea">    - ansible-pull</text>
+    <text x="68" y="728" fill="#e8e4ea">    - ansible-test</text>
+    <text x="68" y="755" fill="#e8e4ea">    - ansible-vault</text>
+    <text x="68" y="782" fill="#e8e4ea">done! ✨ 🌟 ✨</text>
+    <text x="68" y="809" fill="#e8e4ea"> </text>
+    <text x="68" y="836" fill="#ff8d80">[rajat@demo ~]$</text>
+  </g>
+</svg>

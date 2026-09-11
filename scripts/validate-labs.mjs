@@ -7,7 +7,7 @@ const publicRoot = join(root, "public");
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const hodIdPattern = /^HOD-[0-9]{3,}$/;
 const demoIdPattern = /^HOD-[0-9]{3,}-D[0-9]{2,}$/;
-const imagePattern = /^\/demos\/.+\.(png|jpe?g|webp)$/i;
+const imagePattern = /^\/demos\/.+\.(png|jpe?g|webp|svg)$/i;
 const maxImageBytes = 2 * 1024 * 1024;
 const maxLabImageBytes = 12 * 1024 * 1024;
 const maxRecordingBytes = 1024 * 1024;
@@ -82,12 +82,14 @@ for (const directory of directories) {
   if (lab.hodId !== expectedHodId) fail(directory, `hodId must match hodNumber (${expectedHodId})`);
   if (orders.has(lab.publishedOrder)) warn(directory, `publishedOrder ${lab.publishedOrder} is shared with another lab`);
   orders.add(lab.publishedOrder);
-  if (!["Beginner", "Intermediate", "Advanced"].includes(lab.difficulty)) fail(directory, "difficulty is invalid");
+  if (!["Beginner", "Intermediate", "Expert"].includes(lab.difficulty)) fail(directory, "difficulty is invalid");
   if (!["Available", "Coming soon"].includes(lab.status)) fail(directory, "status is invalid");
 
-  ["tags", "outcomes", "prerequisites", "demos"].forEach((key) => {
+  ["tags", "outcomes", "prerequisites"].forEach((key) => {
     if (!Array.isArray(lab[key]) || lab[key].length === 0) fail(directory, `${key} must contain at least one item`);
   });
+  if (!Array.isArray(lab.demos)) fail(directory, "demos must be an array");
+  if (lab.status === "Available" && lab.demos?.length === 0) fail(directory, "an available HOD must contain at least one demo");
   if (!lab.verified || !nonEmptyString(lab.verified.dateISO) || Number.isNaN(Date.parse(lab.verified.dateISO))) fail(directory, "verified.dateISO must be a valid date");
   ["date", "os", "architecture", "package"].forEach((key) => {
     if (!nonEmptyString(lab.verified?.[key])) fail(directory, `verified.${key} is required`);
@@ -200,7 +202,7 @@ for (const directory of directories) {
   imagePaths.forEach((image, index) => {
     const label = index === 0 ? "coverImage" : `step ${index} image`;
     if (!imagePattern.test(image ?? "")) {
-      fail(directory, `${label} must be a PNG, JPG, or WebP path under /demos`);
+      fail(directory, `${label} must be a PNG, JPG, WebP, or SVG path under /demos`);
       return;
     }
     const file = join(publicRoot, image.replace(/^\//, ""));
@@ -290,13 +292,25 @@ for (const directory of directories) {
                 lastPromptEnd = eventStart + offset + match[0].length;
               }
               joinedOutput += data;
-              previousOutputEndsWithNewline = /[\r\n]$/.test(data);
-              previousOutputEndsWithVenvPrefix = /\([^)\r\n]+\) $/.test(data);
+              if (data.length > 0) {
+                previousOutputEndsWithNewline = /[\r\n]$/.test(data);
+                previousOutputEndsWithVenvPrefix = /\([^)\r\n]+\) $/.test(data);
+              }
             }
             const visibleEnding = joinedOutput
               .replace(/\u001b\][^\u0007]*(?:\u0007|\u001b\\)/g, "")
               .replace(/\u001b\[[0-?]*[ -/]*[@-~]/g, "")
               .trimEnd();
+            const visibleOutput = joinedOutput
+              .replace(/\u001b\][^\u0007]*(?:\u0007|\u001b\\)/g, "")
+              .replace(/\u001b\[[0-?]*[ -/]*[@-~]/g, "");
+            for (const match of visibleOutput.matchAll(/((?:\r?\n)+)(?=(?:\([^\r\n)]+\) )?\[(?:rajat|learner)@[^\]\r\n]+\][#$] )/g)) {
+              const lineBreaks = match[1].match(/\n/g)?.length ?? 0;
+              if (lineBreaks > 2) {
+                fail(sourceName, "terminal source must use exactly one blank row before each returned prompt");
+                break;
+              }
+            }
             if (!/(?:\([^)\r\n]+\) )?\[(?:rajat|learner)@[^\]\r\n]+\][#$]$/.test(visibleEnding)) {
               fail(sourceName, "terminal source must end on a returned shell prompt");
             }

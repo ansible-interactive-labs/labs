@@ -1,0 +1,54 @@
+[rajat@demo ~]$ pipx install --python python3.12 'ansible-core==2.21.*'
+WARNING: Skipping setuptools as it is not installed.
+installing ansible-core from spec 'ansible-core==2.21.*'...
+Collecting ansible-core==2.21.*
+  Downloading ansible_core-2.21.4-py3-none-any.whl.metadata (7.8 kB)
+Collecting jinja2>=3.1.0 (from ansible-core==2.21.*)
+  Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting PyYAML>=5.1 (from ansible-core==2.21.*)
+  Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (2.4 kB)
+Collecting cryptography (from ansible-core==2.21.*)
+  Downloading cryptography-50.0.1-cp311-abi3-manylinux_2_34_aarch64.whl.metadata (4.3 kB)
+Collecting packaging (from ansible-core==2.21.*)
+  Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+Collecting resolvelib<2.0.0,>=0.8.0 (from ansible-core==2.21.*)
+  Downloading resolvelib-1.2.1-py3-none-any.whl.metadata (3.7 kB)
+Collecting MarkupSafe>=2.0 (from jinja2>=3.1.0->ansible-core==2.21.*)
+  Downloading markupsafe-3.0.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (2.7 kB)
+Collecting cffi>=2.0.0 (from cryptography->ansible-core==2.21.*)
+  Downloading cffi-2.1.1-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.whl.metadata (2.5 kB)
+Collecting pycparser (from cffi>=2.0.0->cryptography->ansible-core==2.21.*)
+  Downloading pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
+Downloading ansible_core-2.21.4-py3-none-any.whl (2.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.5/2.5 MB 12.5 MB/s  0:00:00
+
+Downloading resolvelib-1.2.1-py3-none-any.whl (18 kB)
+Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+Downloading markupsafe-3.0.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (24 kB)
+Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (775 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 775.1/775.1 kB 18.7 MB/s  0:00:00
+
+Downloading cryptography-50.0.1-cp311-abi3-manylinux_2_34_aarch64.whl (4.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.7/4.7 MB 20.9 MB/s  0:00:00
+
+Downloading cffi-2.1.1-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.whl (222 kB)
+Downloading packaging-26.3-py3-none-any.whl (129 kB)
+Downloading pycparser-3.0-py3-none-any.whl (48 kB)
+Installing collected packages: resolvelib, PyYAML, pycparser, packaging, MarkupSafe, jinja2, cffi, cryptography, ansible-core
+
+Successfully installed MarkupSafe-3.0.3 PyYAML-6.0.3 ansible-core-2.21.4 cffi-2.1.1 cryptography-50.0.1 jinja2-3.1.6 packaging-26.3 pycparser-3.0 resolvelib-1.2.1
+  installed package ansible-core 2.21.4, installed using Python 3.12.14
+  These apps are now available
+    - ansible
+    - ansible-config
+    - ansible-console
+    - ansible-doc
+    - ansible-galaxy
+    - ansible-inventory
+    - ansible-playbook
+    - ansible-pull
+    - ansible-test
+    - ansible-vault
+done! ✨ 🌟 ✨
+
+[rajat@demo ~]$

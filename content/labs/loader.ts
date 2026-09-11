@@ -17,7 +17,8 @@ const assertLab = (value: unknown, source: string): Lab => {
   });
   if (lab.schemaVersion !== 2) throw new Error(`${source}: unsupported schemaVersion`);
   if (!slugPattern.test(lab.slug ?? "")) throw new Error(`${source}: slug must use lowercase words separated by hyphens`);
-  if (!Array.isArray(lab.demos) || lab.demos.length === 0) throw new Error(`${source}: at least one demo is required`);
+  if (!Array.isArray(lab.demos)) throw new Error(`${source}: demos must be an array`);
+  if (lab.status === "Available" && lab.demos.length === 0) throw new Error(`${source}: an available HOD requires at least one demo`);
   lab.demos.forEach((demo, index) => {
     if (typeof demo.demoId !== "string" || !demo.demoId.trim()) throw new Error(`${source}: demo ${index + 1} requires a demoId`);
     if (!Array.isArray(demo.steps) || demo.steps.length === 0) throw new Error(`${source}: demo ${index + 1} requires at least one step`);

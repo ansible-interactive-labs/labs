@@ -1,9 +1,7 @@
 {"version":2,"width":120,"height":34,"idle_time_limit":1.25,"title":"package info","env":{"SHELL":"/bin/bash","TERM":"xterm-256color"}}
 [0,"o","\r\n"]
-[0.000119,"o","[rajat@demo ~]$ "]
+[0.000119,"o","\r\n[rajat@demo ~]$ "]
 [1.250119,"o","sudo dnf info ansible-core\r\n"]
-[1.268145,"o","Authentication completed securely\r\n"]
-[2.518145,"o","\r\n"]
 [2.706415,"o","Updating Subscription Management repositories.\r\n"]
 [2.778371,"o","\u001b[?25l| Checking server status\r"]
 [2.929129,"o","\u001b[0K\r/ Checking server status\r"]
@@ -44,6 +42,6 @@
 [13.625104,"o","Red Hat Enterprise Linux 9 for ARM 64 - AppStream (RPMs)                                 34 MB/s | 122 MB     00:03    \r\n"]
 [14.162014,"o","Available Packages\r\n"]
 [14.16231,"o","Name         : ansible-core\r\nEpoch        : 1\r\nVersion      : 2.14.18\r\nRelease      : 3.el9_8.1\r\nArchitecture : aarch64\r\nSize         : 2.6 M\r\nSource       : ansible-core-2.14.18-3.el9_8.1.src.rpm\r\nRepository   : rhel-9-for-aarch64-appstream-rpms\r\nSummary      : SSH-based configuration management, deployment, and task execution system\r\nURL          : http://ansible.com\r\nLicense      : GPLv3+\r\nDescription  : Ansible is a radically simple model-driven configuration management,\r\n             : multi-node deployment, and remote task execution system. Ansible works\r\n             : over SSH and does not require any software or daemons to be installed\r\n             : on remote nodes. Extension modules can be written in any language and\r\n             : are transferred to managed machines automatically.\r\n\r\n"]
-[14.211957,"o","\r\n"]
+[14.211957,"o",""]
 [14.211961,"o","[rajat@demo ~]$ "]
 [15.461961,"o",""]

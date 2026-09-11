@@ -1,0 +1,10 @@
+{"version":2,"width":120,"height":34,"idle_time_limit":1.25,"title":"pipx rhel 09 smoke test","env":{"SHELL":"/bin/bash","TERM":"xterm-256color"}}
+[0,"o","\r\n\r\n"]
+[0.0001,"o","[rajat@demo ~]$ "]
+[1.2501,"o","ansible localhost -i localhost, \\\r\n"]
+[1.250351,"o","> "]
+[1.250516,"o","  -m ansible.builtin.ping -c local \\\r\n>   -e ansible_python_interpreter=/usr/bin/python3\r\n"]
+[1.659684,"o","localhost | SUCCESS => {\r\n    \"changed\": false,\r\n    \"ping\": \"pong\"\r\n}\r\n\r\n"]
+[1.696467,"o",""]
+[1.696473,"o","[rajat@demo ~]$ "]
+[2.946473,"o",""]

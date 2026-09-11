@@ -131,7 +131,7 @@ export type Lab = {
   coverAlt: string;
   duration: string;
   durationMinutes: number;
-  difficulty: "Beginner" | "Intermediate" | "Advanced";
+  difficulty: "Beginner" | "Intermediate" | "Expert";
   topic: string;
   platform: string;
   status: "Available" | "Coming soon";
@@ -144,8 +144,10 @@ export type Lab = {
   accessCallout?: {
     title: string;
     detail: string;
-    href: string;
-    linkLabel: string;
+    links: Array<{
+      href: string;
+      label: string;
+    }>;
   };
   comparisons?: LabComparison[];
   verified: {

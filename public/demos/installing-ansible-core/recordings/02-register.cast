@@ -17,8 +17,6 @@
 [1.15918,"o","c"]
 [1.169871,"o","t"]
 [1.19444,"o","\r\n\u001b[?2004l\r"]
-[1.205201,"o","Authentication completed securely\r\n"]
-[2.455201,"o","\r\n"]
 [2.479057,"o","Connecting demo.ansible.com to Red Hat.\r\nThis might take a few seconds.\r\n\r\n"]
 [2.482022,"o","Username: [entered securely]"]
 [3.732022,"o","\r\n"]

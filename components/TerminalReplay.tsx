@@ -1,6 +1,6 @@
 "use client";
 
-/* Native images provide a resilient fallback for static GitHub Pages hosting. */
+/* Native images provide a resilient fallback for static deployments. */
 /* eslint-disable @next/next/no-img-element */
 
 import { useEffect, useRef, useState } from "react";
@@ -9,13 +9,12 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 type TerminalReplayProps = {
   source: string;
-  transcript: string;
   title: string;
   fallbackImage: string;
   fallbackAlt: string;
 };
 
-export default function TerminalReplay({ source, transcript, title, fallbackImage, fallbackAlt }: TerminalReplayProps) {
+export default function TerminalReplay({ source, title, fallbackImage, fallbackAlt }: TerminalReplayProps) {
   const mountRef = useRef<HTMLDivElement>(null);
   const [failed, setFailed] = useState(false);
 
@@ -56,10 +55,6 @@ export default function TerminalReplay({ source, transcript, title, fallbackImag
           <p>The terminal replay could not load. The verified screenshot is shown instead.</p>
         </div>
       )}
-      <div className="terminal-replay-links">
-        <a href={`${basePath}${transcript}`} target="_blank" rel="noreferrer">Read transcript ↗</a>
-        <a href={`${basePath}${fallbackImage}`} target="_blank" rel="noreferrer">View screenshot ↗</a>
-      </div>
     </div>
   );
 }

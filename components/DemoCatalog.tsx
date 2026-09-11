@@ -1,6 +1,6 @@
 "use client";
 
-/* Native images keep screenshot URLs compatible with GitHub Pages project paths. */
+/* Native images keep screenshot URLs compatible with static deployment paths. */
 /* eslint-disable @next/next/no-img-element */
 
 import Link from "next/link";
@@ -77,21 +77,21 @@ export default function DemoCatalog({ labs }: { labs: LabSummary[] }) {
         {visibleLabs.map((lab) => {
           return (
             <article className="demo-card" key={lab.slug}>
-              <Link className="demo-visual" href={`/demos/${lab.slug}/`} aria-label={`Open ${lab.title} interactive demo`}>
+              <Link className="demo-visual" href={`/demos/${lab.slug}/`} aria-label={`Open ${lab.title} ${lab.stepCount ? "interactive demo" : "reference page"}`}>
                 <img src={`${basePath}${lab.coverImage}`} alt={lab.coverAlt} loading="lazy" decoding="async" />
                 <span className="hod-badge">{lab.hodId}</span>
-                <span className="play-button" aria-hidden="true">▶</span>
+                <span className="play-button" aria-hidden="true">{lab.stepCount ? "▶" : "→"}</span>
                 <span className="duration">{lab.duration}</span>
               </Link>
               <div className="demo-content">
-                <div className="tags"><span>{lab.difficulty}</span><span>{lab.platform}</span><span>{lab.stepCount} steps</span></div>
+                <div className="tags"><span>{lab.difficulty}</span></div>
                 <h3>{lab.title}</h3>
                 <p>{lab.description}</p>
                 <ul className="outcomes">
                   {lab.outcomes.slice(0, 3).map((outcome) => <li key={outcome}>{outcome}</li>)}
                 </ul>
                 <Link className="button button-dark" href={`/demos/${lab.slug}/`}>
-                  Start Demo
+                  Explore HOD
                 </Link>
               </div>
             </article>

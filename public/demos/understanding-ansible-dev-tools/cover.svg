@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title description">
+  <title id="title">Understanding ansible-dev-tools</title>
+  <desc id="description">The ansible-dev-tools toolset connects content creation, linting, testing, execution, building, and signing workflows.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#071426"/>
+      <stop offset=".55" stop-color="#102b43"/>
+      <stop offset="1" stop-color="#1b1338"/>
+    </linearGradient>
+    <linearGradient id="toolset" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#67e4d0"/>
+      <stop offset="1" stop-color="#8d72ed"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="49%" r="52%">
+      <stop offset="0" stop-color="#69e6d1" stop-opacity=".32"/>
+      <stop offset="1" stop-color="#69e6d1" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="54" height="54" patternUnits="userSpaceOnUse">
+      <path d="M54 0H0V54" fill="none" stroke="#ffffff" stroke-opacity=".035"/>
+    </pattern>
+    <filter id="soft-glow" x="-70%" y="-70%" width="240%" height="240%">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="900" rx="48" fill="url(#background)"/>
+  <rect width="1600" height="900" rx="48" fill="url(#grid)"/>
+  <circle cx="800" cy="478" r="390" fill="url(#glow)"/>
+
+  <text x="90" y="104" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="31" font-weight="700">HOD-002</text>
+  <text x="90" y="146" fill="#adc7d3" font-family="Inter, Arial, sans-serif" font-size="20" letter-spacing="2">RAJAT’S APPLIED TECHNOLOGY LAB</text>
+
+  <g fill="none" stroke="#75ead6" stroke-opacity=".42" stroke-width="3">
+    <path d="M492 318H625C670 318 690 360 690 392"/>
+    <path d="M1108 318H975C930 318 910 360 910 392"/>
+    <path d="M492 594H625C670 594 690 558 690 536"/>
+    <path d="M1108 594H975C930 594 910 558 910 536"/>
+    <path d="M800 282V352"/>
+    <path d="M800 576V650"/>
+  </g>
+  <g fill="#75ead6">
+    <circle cx="625" cy="318" r="6"/>
+    <circle cx="975" cy="318" r="6"/>
+    <circle cx="625" cy="594" r="6"/>
+    <circle cx="975" cy="594" r="6"/>
+    <circle cx="800" cy="282" r="6"/>
+    <circle cx="800" cy="650" r="6"/>
+  </g>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="21" font-weight="700" text-anchor="middle">
+    <g>
+      <rect x="272" y="268" width="220" height="100" rx="24" fill="#102334" stroke="#75ead6" stroke-width="2"/>
+      <text x="382" y="326" fill="#ffffff">CREATE</text>
+    </g>
+    <g>
+      <rect x="1108" y="268" width="220" height="100" rx="24" fill="#102334" stroke="#75ead6" stroke-width="2"/>
+      <text x="1218" y="326" fill="#ffffff">LINT</text>
+    </g>
+    <g>
+      <rect x="272" y="544" width="220" height="100" rx="24" fill="#171d39" stroke="#ca9cff" stroke-width="2"/>
+      <text x="382" y="602" fill="#ffffff">TEST</text>
+    </g>
+    <g>
+      <rect x="1108" y="544" width="220" height="100" rx="24" fill="#171d39" stroke="#ca9cff" stroke-width="2"/>
+      <text x="1218" y="602" fill="#ffffff">RUN</text>
+    </g>
+    <g>
+      <rect x="690" y="182" width="220" height="100" rx="24" fill="#102334" stroke="#75ead6" stroke-width="2"/>
+      <text x="800" y="240" fill="#ffffff">BUILD</text>
+    </g>
+    <g>
+      <rect x="690" y="650" width="220" height="100" rx="24" fill="#171d39" stroke="#ca9cff" stroke-width="2"/>
+      <text x="800" y="708" fill="#ffffff">SIGN</text>
+    </g>
+  </g>
+
+  <rect x="575" y="352" width="450" height="224" rx="38" fill="#061621" stroke="#75ead6" stroke-opacity=".28" stroke-width="10" filter="url(#soft-glow)"/>
+  <rect x="575" y="352" width="450" height="224" rx="38" fill="#081725" stroke="url(#toolset)" stroke-width="4"/>
+  <rect x="604" y="381" width="392" height="48" rx="14" fill="url(#toolset)"/>
+  <circle cx="638" cy="405" r="7" fill="#ffffff" fill-opacity=".9"/>
+  <circle cx="664" cy="405" r="7" fill="#ffffff" fill-opacity=".58"/>
+  <circle cx="690" cy="405" r="7" fill="#ffffff" fill-opacity=".3"/>
+  <text x="800" y="490" text-anchor="middle" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="41" font-weight="750">ansible-dev-tools</text>
+  <text x="800" y="532" text-anchor="middle" fill="#adc7d3" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" letter-spacing="3">DEVELOPER TOOLSET</text>
+
+  <g font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" text-anchor="middle">
+    <text x="557" y="824" fill="#adc7d3">CREATE</text>
+    <circle cx="648" cy="818" r="4" fill="#75ead6"/>
+    <text x="748" y="824" fill="#adc7d3">CHECK</text>
+    <circle cx="842" cy="818" r="4" fill="#75ead6"/>
+    <text x="954" y="824" fill="#adc7d3">PACKAGE</text>
+    <circle cx="1069" cy="818" r="4" fill="#ca9cff"/>
+    <text x="1150" y="824" fill="#adc7d3">RUN</text>
+  </g>
+</svg>

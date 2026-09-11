@@ -1,0 +1,46 @@
+[rajat@demo ~]$ python3.12 -m pip install --user pipx
+Collecting pipx
+  Obtaining dependency information for pipx from https://files.pythonhosted.org/packages/a1/60/0af16a54fca9f92ed244291a6458046508f4f4821e561c16f335a8473107/pipx-1.17.2-py3-none-any.whl.metadata
+  Downloading pipx-1.17.2-py3-none-any.whl.metadata (4.4 kB)
+Collecting argcomplete>=1.9.4 (from pipx)
+  Obtaining dependency information for argcomplete>=1.9.4 from https://files.pythonhosted.org/packages/46/bd/551ee6af426af84ca33e02622be722925c196608e9127d731ef17c47f06e/argcomplete-3.7.2-py3-none-any.whl.metadata
+  Downloading argcomplete-3.7.2-py3-none-any.whl.metadata (16 kB)
+Collecting filelock>=3.16 (from pipx)
+  Obtaining dependency information for filelock>=3.16 from https://files.pythonhosted.org/packages/cc/06/4f138f618dbea66803291274f228f01daf29f306fe8b96bc30dab765df75/filelock-3.32.6-py3-none-any.whl.metadata
+  Downloading filelock-3.32.6-py3-none-any.whl.metadata (2.0 kB)
+Collecting packaging>=26 (from pipx)
+  Obtaining dependency information for packaging>=26 from https://files.pythonhosted.org/packages/63/34/ba1c580383c9eada3711951fef0795c80b829a078d72188184bcab9dd527/packaging-26.3-py3-none-any.whl.metadata
+  Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+Collecting platformdirs>=4.6 (from pipx)
+  Obtaining dependency information for platformdirs>=4.6 from https://files.pythonhosted.org/packages/f4/e1/5b7b8bbb55084d1425bcb9bc823ff519e1b2be05f6ebb0089e2eacc38413/platformdirs-4.11.8-py3-none-any.whl.metadata
+  Downloading platformdirs-4.11.8-py3-none-any.whl.metadata (5.5 kB)
+Collecting userpath!=1.9,>=1.6 (from pipx)
+  Obtaining dependency information for userpath!=1.9,>=1.6 from https://files.pythonhosted.org/packages/43/99/3ec6335ded5b88c2f7ed25c56ffd952546f7ed007ffb1e1539dc3b57015a/userpath-1.9.2-py3-none-any.whl.metadata
+  Downloading userpath-1.9.2-py3-none-any.whl.metadata (3.0 kB)
+Collecting click (from userpath!=1.9,>=1.6->pipx)
+  Obtaining dependency information for click from https://files.pythonhosted.org/packages/58/50/6c0d534c5f134586a8e1ba4e330569e32f057e33372ae556463212fb4cd3/click-8.5.0-py3-none-any.whl.metadata
+  Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+Downloading pipx-1.17.2-py3-none-any.whl (153 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 153.8/153.8 kB 5.3 MB/s eta 0:00:00
+
+Downloading argcomplete-3.7.2-py3-none-any.whl (43 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.3/43.3 kB 31.5 MB/s eta 0:00:00
+
+Downloading filelock-3.32.6-py3-none-any.whl (100 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100.2/100.2 kB 20.3 MB/s eta 0:00:00
+
+Downloading packaging-26.3-py3-none-any.whl (129 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 130.0/130.0 kB 30.5 MB/s eta 0:00:00
+
+Downloading platformdirs-4.11.8-py3-none-any.whl (24 kB)
+Downloading userpath-1.9.2-py3-none-any.whl (9.1 kB)
+Downloading click-8.5.0-py3-none-any.whl (125 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 125.3/125.3 kB 15.1 MB/s eta 0:00:00
+
+Installing collected packages: platformdirs, packaging, filelock, click, argcomplete, userpath, pipx
+Successfully installed argcomplete-3.7.2 click-8.5.0 filelock-3.32.6 packaging-26.3 pipx-1.17.2 platformdirs-4.11.8 userpath-1.9.2
+
+[rajat@demo ~]$ python3.12 -m pipx --version
+1.17.2
+
+[rajat@demo ~]$

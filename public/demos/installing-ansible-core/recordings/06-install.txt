@@ -1,6 +1,4 @@
 [rajat@demo ~]$ sudo dnf install ansible-core
-Authentication completed securely
-
 Updating Subscription Management repositories.
 Last metadata expiration check: 0:00:28 ago on Fri 11 Sep 2026 12:09:53 AM.
 Dependencies resolved.

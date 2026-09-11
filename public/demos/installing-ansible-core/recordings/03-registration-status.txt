@@ -1,6 +1,4 @@
 [rajat@demo ~]$ sudo rhc status
-Authentication completed securely
-
 Connection status for demo.ansible.com:
 
 ● Connected to Red Hat Subscription Management

@@ -1,6 +1,6 @@
 "use client";
 
-/* Native images keep screenshot URLs compatible with GitHub Pages project paths. */
+/* Native images keep screenshot URLs compatible with static deployment paths. */
 /* eslint-disable @next/next/no-img-element */
 
 import { useEffect, useRef, useState } from "react";
@@ -19,6 +19,7 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
   const [fullscreenSupported, setFullscreenSupported] = useState(false);
   const [announcement, setAnnouncement] = useState("");
   const playerRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const step = demo.steps[stepIndex];
 
@@ -31,6 +32,19 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
       return () => window.clearTimeout(announceTimer);
     }
   }, [demo.steps.length, started, step.title, stepIndex]);
+
+  useEffect(() => {
+    if (!started) return;
+    const progress = progressRef.current;
+    const activeStep = progress?.querySelector<HTMLElement>(`[data-step-index="${stepIndex}"]`);
+    if (!progress || !activeStep) return;
+
+    const left = activeStep.offsetLeft - (progress.clientWidth - activeStep.offsetWidth) / 2;
+    progress.scrollTo({
+      left: Math.max(0, left),
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
+    });
+  }, [started, stepIndex]);
 
   useEffect(() => {
     if (!started && !completed) return;
@@ -131,10 +145,6 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
     });
   };
 
-  const issueTitle = encodeURIComponent(`[Lab feedback] ${lab.title} — step ${stepIndex + 1}`);
-  const issueBody = encodeURIComponent(`Lab: ${lab.title}\nStep: ${stepIndex + 1} — ${step.title}\n\nWhat happened?\n\nWhat result did you expect?\n`);
-  const issueUrl = `https://github.com/ansible-interactive-labs/labs/issues/new?title=${issueTitle}&body=${issueBody}`;
-
   return (
     <div className={`demo-player route-player${started || completed ? " is-running" : ""}`} ref={playerRef} aria-label={`${demo.title} interactive demonstration`}>
       <p className="sr-only" aria-live="polite">{announcement}</p>
@@ -149,14 +159,24 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
         </div>
       </header>
 
-      <div className="player-progress" style={{ gridTemplateColumns: `repeat(${demo.steps.length}, 1fr)` }} aria-label={`Step ${stepIndex + 1} of ${demo.steps.length}`}>
+      <div
+        className="player-progress"
+        ref={progressRef}
+        aria-label={`Step ${stepIndex + 1} of ${demo.steps.length}`}
+        onWheel={(event) => {
+          const progress = event.currentTarget;
+          if (progress.scrollWidth <= progress.clientWidth || Math.abs(event.deltaX) >= Math.abs(event.deltaY)) return;
+          event.preventDefault();
+          progress.scrollBy({ left: event.deltaY, behavior: "auto" });
+        }}
+      >
         {demo.steps.map((item, index) => (
           started ? (
-            <button className={index === stepIndex ? "current" : index < stepIndex || completed ? "complete" : ""} type="button" key={item.label} onClick={() => setStepIndex(index)} aria-current={index === stepIndex ? "step" : undefined} aria-label={`Go to step ${index + 1}: ${item.label}`}>
+            <button className={index === stepIndex ? "current" : index < stepIndex || completed ? "complete" : ""} type="button" key={`${index}-${item.label}`} data-step-index={index} onClick={() => setStepIndex(index)} aria-current={index === stepIndex ? "step" : undefined} aria-label={`Go to step ${index + 1}: ${item.label}`}>
               <span>{index < stepIndex || completed ? "✓" : index + 1}</span><small>{item.label}</small>
             </button>
           ) : (
-            <div className="progress-step" key={item.label} aria-hidden="true"><span>{index + 1}</span><small>{item.label}</small></div>
+            <div className="progress-step" key={`${index}-${item.label}`} aria-hidden="true"><span>{index + 1}</span><small>{item.label}</small></div>
           )
         ))}
       </div>
@@ -167,7 +187,6 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
             <TerminalReplay
               key={step.media.source}
               source={step.media.source}
-              transcript={step.media.transcript}
               title={step.title}
               fallbackImage={step.image}
               fallbackAlt={step.alt}
@@ -216,8 +235,7 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
               ))}
             </div>
           </details>
-          <a className="step-feedback" href={issueUrl} target="_blank" rel="noreferrer">This step didn’t work? Report it ↗</a>
-          <div className="stage-guide-utilities"><button type="button" onClick={resetProgress}>Restart demo</button><a href={issueUrl} target="_blank" rel="noreferrer">Report outdated content ↗</a></div>
+          <div className="stage-guide-utilities"><button type="button" onClick={resetProgress}>Restart demo</button></div>
         </aside>
       </div> : completed ? (
         <div className="player-complete">

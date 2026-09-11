@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Inspect the content boundary</title>
+  <desc id="desc">Static fallback generated from pipx-rhel-08-content-boundary.txt</desc>
+  <defs>
+    <linearGradient id="terminal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#17151a"/>
+      <stop offset="1" stop-color="#252129"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="#0d0c10"/>
+  <rect x="24" y="24" width="1552" height="852" rx="22" fill="url(#terminal)" stroke="#49434c" stroke-width="2"/>
+  <circle cx="66" cy="66" r="9" fill="#ff5f57"/>
+  <circle cx="96" cy="66" r="9" fill="#febc2e"/>
+  <circle cx="126" cy="66" r="9" fill="#28c840"/>
+  <text x="800" y="72" fill="#bdb6c0" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22">Inspect the content boundary</text>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">
+    <text x="68" y="134" fill="#ff8d80">[rajat@demo ~]$ mkdir -p ~/.ansible/collections/ansible_collections</text>
+    <text x="68" y="161" fill="#e8e4ea">…</text>
+    <text x="68" y="188" fill="#e8e4ea">ansible.builtin.stat                   Retrieve file or file system status</text>
+    <text x="68" y="215" fill="#e8e4ea">ansible.builtin.subversion             Deploys a subversion repository</text>
+    <text x="68" y="242" fill="#e8e4ea">ansible.builtin.systemd                Manage systemd units</text>
+    <text x="68" y="269" fill="#e8e4ea">ansible.builtin.systemd_service        Manage systemd units</text>
+    <text x="68" y="296" fill="#e8e4ea">ansible.builtin.sysvinit               Manage SysV services</text>
+    <text x="68" y="323" fill="#e8e4ea">ansible.builtin.tempfile               Creates temporary files and directories</text>
+    <text x="68" y="350" fill="#e8e4ea">ansible.builtin.template               Template a file out to a target host</text>
+    <text x="68" y="377" fill="#e8e4ea">ansible.builtin.unarchive              Unpacks an archive after (optionally) copying it from the local machine</text>
+    <text x="68" y="404" fill="#e8e4ea">ansible.builtin.uri                    Interacts with webservices</text>
+    <text x="68" y="431" fill="#e8e4ea">ansible.builtin.user                   Manage user accounts</text>
+    <text x="68" y="458" fill="#e8e4ea">ansible.builtin.validate_argument_spec Validate role argument specs</text>
+    <text x="68" y="485" fill="#e8e4ea">ansible.builtin.wait_for               Waits for a condition before continuing</text>
+    <text x="68" y="512" fill="#e8e4ea">ansible.builtin.wait_for_connection    Waits until remote system is reachable/usable</text>
+    <text x="68" y="539" fill="#e8e4ea">ansible.builtin.yum_repository         Add or remove YUM repositories</text>
+    <text x="68" y="566" fill="#e8e4ea"> </text>
+    <text x="68" y="593" fill="#ff8d80">[rajat@demo ~]$ ansible-doc --list 2&gt;/dev/null | wc -l</text>
+    <text x="68" y="620" fill="#e8e4ea">71</text>
+    <text x="68" y="647" fill="#e8e4ea"> </text>
+    <text x="68" y="674" fill="#ff8d80">[rajat@demo ~]$ PAGER=cat ansible-doc -s ansible.builtin.ping</text>
+    <text x="68" y="701" fill="#e8e4ea">- name: Try to connect to host, verify a usable python and return `pong' on success</text>
+    <text x="68" y="728" fill="#e8e4ea">  ping:</text>
+    <text x="68" y="755" fill="#e8e4ea">      data:                  # Data to return for the `ping' return value. If this parameter is set to `crash…</text>
+    <text x="68" y="782" fill="#e8e4ea">                             # module will cause an exception.</text>
+    <text x="68" y="809" fill="#e8e4ea"> </text>
+    <text x="68" y="836" fill="#ff8d80">[rajat@demo ~]$</text>
+  </g>
+</svg>

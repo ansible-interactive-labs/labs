@@ -2,8 +2,6 @@
 [0,"o","\r\n"]
 [0.000116,"o","[rajat@demo ~]$ "]
 [1.250116,"o","sudo rhc status\r\n"]
-[1.26435,"o","Authentication completed securely\r\n"]
-[2.51435,"o","\r\n"]
 [2.538888,"o","Connection status for demo.ansible.com:\r\n\r\n"]
 [2.540897,"o","\u001b[32m●\u001b[0m Connected to Red Hat Subscription Management\r\n\u001b[?25l"]
 [2.541021,"o","\r\u001b[K\r| Checking Red Hat Insights..."]

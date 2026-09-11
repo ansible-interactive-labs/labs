@@ -1,6 +1,4 @@
 [rajat@demo ~]$ sudo dnf repolist --enabled
-Authentication completed securely
-
 Updating Subscription Management repositories.
 repo id                                          repo name
 rhel-9-for-aarch64-appstream-rpms                Red Hat Enterprise Linux 9 for ARM 64 - AppStream (RPMs)

@@ -2,8 +2,6 @@
 [0,"o","\r\n"]
 [0.000125,"o","[rajat@demo ~]$ "]
 [1.250125,"o","sudo dnf install ansible-core\r\n"]
-[1.268544,"o","Authentication completed securely\r\n"]
-[2.518544,"o","\r\n"]
 [2.728658,"o","Updating Subscription Management repositories.\r\n"]
 [2.816227,"o","\u001b[?25l| Checking server status\r"]
 [2.967374,"o","\u001b[0K\r/ Checking server status\r"]

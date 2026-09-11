@@ -1,6 +1,4 @@
 [rajat@demo ~]$ sudo subscription-manager repos --list-enabled
-Authentication completed securely
-
 +----------------------------------------------------------+
     Available Repositories in /etc/yum.repos.d/redhat.repo
 +----------------------------------------------------------+

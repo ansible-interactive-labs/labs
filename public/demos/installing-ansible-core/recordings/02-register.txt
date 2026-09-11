@@ -1,6 +1,4 @@
 [rajat@demo ~]$ sudo rhc connect
-Authentication completed securely
-
 Connecting demo.ansible.com to Red Hat.
 This might take a few seconds.
 

@@ -54,6 +54,49 @@ const rebasedEvents = trimmedEvents.map(([time, type, data]) => {
   return rebasedEvent;
 });
 
+function replaceAcrossOutputEvents(pattern, replacement) {
+  const outputIndexes = rebasedEvents
+    .map((event, index) => event[1] === "o" ? index : -1)
+    .filter((index) => index >= 0);
+  const originalData = outputIndexes.map((index) => rebasedEvents[index][2]);
+  const starts = [];
+  let cursor = 0;
+  for (const data of originalData) {
+    starts.push(cursor);
+    cursor += data.length;
+  }
+  const edits = originalData.map(() => []);
+  for (const match of originalData.join("").matchAll(pattern)) {
+    const matchStart = match.index ?? 0;
+    const matchEnd = matchStart + match[0].length;
+    for (let index = 0; index < originalData.length; index += 1) {
+      const eventStart = starts[index];
+      const eventEnd = eventStart + originalData[index].length;
+      if (eventEnd <= matchStart || eventStart >= matchEnd) continue;
+      edits[index].push({
+        start: Math.max(0, matchStart - eventStart),
+        end: Math.min(originalData[index].length, matchEnd - eventStart),
+        replacement: eventStart <= matchStart && matchStart < eventEnd ? replacement : "",
+      });
+    }
+  }
+  for (let index = 0; index < originalData.length; index += 1) {
+    let data = originalData[index];
+    for (const edit of edits[index].sort((left, right) => right.start - left.start)) {
+      data = data.slice(0, edit.start) + edit.replacement + data.slice(edit.end);
+    }
+    rebasedEvents[outputIndexes[index]][2] = data;
+  }
+}
+
+// One blank terminal row between a completed command and the returned prompt
+// is represented by two CRLF sequences. Recorders can emit an additional
+// newline while the shell redraws; remove only that excess prompt spacing.
+replaceAcrossOutputEvents(
+  /(?:\r?\n(?:\u001b\[[0-?]*[ -/]*[@-~])*){3,}(?=(?:\([^\r\n)]+\) )?\[(?:rajat|learner)@[^\]\r\n]+\][#$] )/g,
+  "\r\n\r\n",
+);
+
 // Freeze the published replay on the final returned prompt. Stopping a shell
 // can emit bracketed-paste resets, carriage returns, or newlines after that
 // prompt; those teardown bytes move the visible cursor onto an empty line.

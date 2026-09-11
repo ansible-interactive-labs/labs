@@ -1,0 +1,9 @@
+[rajat@demo ~]$ ansible localhost -i localhost, \
+>   -m ansible.builtin.ping -c local \
+>   -e ansible_python_interpreter=/usr/bin/python3
+localhost | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+
+[rajat@demo ~]$
