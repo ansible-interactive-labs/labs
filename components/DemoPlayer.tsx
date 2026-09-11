@@ -21,7 +21,6 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
   const playerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const step = demo.steps[stepIndex];
-  const usesStackedCommands = demo.demoId === "HOD-001-D01";
 
   useEffect(() => {
     if (started) {
@@ -183,10 +182,9 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
           <p className="step-label">Step {stepIndex + 1} of {demo.steps.length} · {step.label}</p>
           <h2 ref={titleRef} tabIndex={-1}>{step.title}</h2>
           <p className="explanation">{step.explanation}</p>
-          <div className={`command-block${usesStackedCommands ? " command-block-stacked" : ""}`}>
+          <div className="command-block command-block-stacked">
             <div>
               <span>Run in your environment</span>
-              {!usesStackedCommands && <span>What the command does</span>}
             </div>
             <div className="command-rows">
               {step.commands.map((item, commandIndex) => (
