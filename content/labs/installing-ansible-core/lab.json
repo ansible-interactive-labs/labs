@@ -22,6 +22,8 @@
     "Understand BaseOS and AppStream",
     "Install and inspect the RHEL-provided ansible-core RPM",
     "Select a maintained upstream ansible-core and compatible Python release",
+    "Choose between the RHEL RPM, pip with a virtual environment, and pipx",
+    "Pin ansible-core and its related dependencies at the right level",
     "Install upstream ansible-core from PyPI without replacing RHEL's system Python",
     "Use pipx to manage ansible-core as an isolated command-line application",
     "Identify the collection namespace available from ansible-core",
@@ -401,47 +403,50 @@
       ]
     },
     {
-      "title": "pip with venv or pipx?",
-      "introduction": "Both approaches install the upstream ansible-core Python distribution from PyPI while keeping it separate from the operating system's managed Python packages. The difference is who creates the isolated environment, how you enter it, and how the Ansible commands reach your shell.",
-      "afterDemoId": "install-and-validate",
-      "eyebrow": "Choose an upstream installation workflow",
+      "title": "Choose your installation method",
+      "introduction": "Choose the installation method from the way the control node will be used and maintained. The RHEL RPM favors operating-system integration, a manually created virtual environment favors project-level control, and pipx favors a user-scoped command-line application that does not need manual activation.",
+      "eyebrow": "Architecture decision",
       "notes": [
         {
-          "title": "Same package source",
-          "detail": "pip and pipx can install the same ansible-core release from PyPI. Changing the environment manager does not change the upstream project that publishes the package."
-        },
-        {
-          "title": "Isolation in both workflows",
-          "detail": "Demo 02 creates a virtual environment explicitly and runs pip inside it. Demo 03 uses pipx to automate that pattern on RHEL 9; neither workflow needs to modify the operating system's Python package directories."
+          "title": "pipx isolates the application, not the complete Ansible runtime",
+          "detail": "pipx installs ansible-core and its Python dependencies in a managed virtual environment, then exposes the Ansible commands on the user's PATH. Ansible configuration, inventory, playbooks, roles, and collections can still be loaded from paths outside that environment. If a collection or plugin needs an additional controller-side Python library, install that library into the ansible-core environment with pipx inject or pipx runpip. Required operating-system libraries must still be managed separately. For a portable runtime that packages ansible-core, collections, Python libraries, and system dependencies together, use an execution environment.",
+          "reference": {
+            "label": "Read Ansible's pipx dependency guidance",
+            "href": "https://docs.ansible.com/projects/ansible/latest/installation_guide/intro_installation.html#installing-extra-python-dependencies"
+          }
         }
       ],
-      "summaryLabel": "Compare pip with venv and pipx",
-      "rowHeader": "Workflow detail",
-      "columns": ["pip with venv", "pipx"],
+      "summaryLabel": "Compare all three installation methods",
+      "rowHeader": "Decision factor",
+      "columns": ["RHEL AppStream RPM", "pip with a virtual environment", "pipx"],
       "rows": [
         {
-          "aspect": "Primary role",
-          "values": ["pip installs Python distributions into the currently selected Python environment.", "pipx installs Python command-line applications and manages an isolated environment for each application."]
+          "aspect": "Package source and owner",
+          "values": ["Red Hat builds and signs the RPM. DNF owns its files, dependencies, updates, and removal.", "The upstream project publishes ansible-core on PyPI. You create and own the virtual environment, then use that environment's pip to manage packages.", "The upstream project publishes ansible-core on PyPI. pipx creates and owns a dedicated application environment for it."]
         },
         {
-          "aspect": "Environment creation",
-          "values": ["You select the interpreter, create the virtual environment, activate it, and then run pip.", "pipx selects or accepts an interpreter, creates the environment, and installs the application for you."]
+          "aspect": "Command availability",
+          "values": ["Commands are normally available system-wide without activating an environment.", "Commands are available after activating the selected virtual environment. Deactivation restores the previous shell PATH.", "pipx exposes application launchers on the user's PATH, so the managed environment normally does not need to be activated."]
         },
         {
-          "aspect": "Using Ansible commands",
-          "values": ["Activate the environment before running ansible, ansible-playbook, or the other installed commands.", "pipx exposes the installed commands on your user PATH, so you normally run them without activating the managed environment."]
+          "aspect": "Python and package control",
+          "values": ["DNF selects the RHEL-integrated Python dependencies. Do not add PyPI packages to RHEL's platform Python.", "You select the supported Python interpreter and can manage ansible-core plus related Python libraries together in the same environment.", "You select or accept a Python interpreter. Add extra Python libraries to the ansible-core environment with pipx inject or pipx runpip."]
         },
         {
-          "aspect": "Additional Python dependencies",
-          "values": ["Install them with python -m pip while the intended environment is active.", "Add them to the managed application environment with pipx inject, or use pipx runpip when direct package-manager access is needed."]
+          "aspect": "Version strategy",
+          "values": ["The enabled RHEL Application Stream determines the feature line. Red Hat can backport fixes without changing that feature version.", "Separate environments can hold different tested ansible-core and dependency combinations. Record exact versions in project requirements or constraints when repeatability matters.", "A package specification can select an ansible-core version, but the environment remains a user-managed application installation rather than a project artifact."]
         },
         {
-          "aspect": "Good fit",
-          "values": ["Choose this when you want direct control over the interpreter, environment location, activation, and Python dependencies.", "Choose this when you want ansible-core to behave like a user-installed command-line application with automated environment management."]
+          "aspect": "Support boundary",
+          "values": ["A RHEL subscription covers the documented Red Hat use cases for the AppStream RPM. Broader ansible-core support requires the applicable Ansible Automation Platform entitlement.", "Installing from PyPI does not create Red Hat product support. Maintenance follows the upstream ansible-core lifecycle.", "Installing from PyPI through pipx does not create Red Hat product support. Maintenance follows the upstream ansible-core and pipx lifecycles."]
+        },
+        {
+          "aspect": "Best fit",
+          "values": ["Choose this for RHEL-integrated use where DNF ownership and the documented Red Hat support scope are the priorities.", "Choose this for project development, testing, or CI when the interpreter and Python dependencies must be controlled together.", "Choose this for an individual's command-line environment when convenient isolation and no manual activation are the priorities."]
         }
       ],
-      "takeawayLabel": "How the demonstrations use them",
-      "takeaway": "Demo 02 uses pip inside a manually created Python 3.12 virtual environment. Demo 03 uses pipx to create and manage the isolated application environment. Both demonstrations run on RHEL 9 and install the same upstream distribution from PyPI.",
+      "takeawayLabel": "Decision boundary",
+      "takeaway": "Use the RHEL RPM for operating-system integration, pip with a virtual environment for project-level dependency control, and pipx for a convenient user-scoped Ansible CLI. None of these workstation installations alone provides an immutable team runtime, centralized credentials, access control, scheduling, or audit history. Use an execution environment and an appropriate controller or orchestration platform when those production requirements apply.",
       "sources": [
         {
           "label": "Ansible installation guide for pip and pipx",
@@ -452,8 +457,224 @@
           "href": "https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/"
         },
         {
-          "label": "How pipx works",
-          "href": "https://pipx.pypa.io/stable/explanation/"
+          "label": "pipx application-environment model",
+          "href": "https://pipx.pypa.io/latest/explanation/scope.html"
+        },
+        {
+          "label": "pipx injection guidance",
+          "href": "https://pipx.pypa.io/latest/how-to/inject-packages.html"
+        },
+        {
+          "label": "Ansible collection installation and project-local paths",
+          "href": "https://docs.ansible.com/projects/ansible/latest/collections_guide/collections_installing.html"
+        },
+        {
+          "label": "Red Hat ansible-core RPM support scope",
+          "href": "https://access.redhat.com/articles/6325611"
+        }
+      ]
+    },
+    {
+      "title": "Plan the operational lifecycle",
+      "introduction": "An installation method also establishes an ownership and change model. Decide who monitors updates, records the approved baseline, tests feature-line changes, performs recovery, and removes retired installations before the control node becomes shared or long-lived.",
+      "eyebrow": "Operate and maintain",
+      "notesLabel": "Lifecycle rules",
+      "notes": [
+        {
+          "title": "Treat maintenance updates and feature-line changes differently",
+          "detail": "A maintenance update stays within an ansible-core X.Y line. Moving to another feature line can change controller and managed-host Python requirements, remove deprecated behavior, and require content changes. Review the matching porting guide and test inventories, playbooks, roles, plugins, collections, and representative managed hosts before switching.",
+          "reference": {
+            "label": "Read the ansible-core porting guides",
+            "href": "https://docs.ansible.com/projects/ansible/latest/porting_guides/core_porting_guides.html"
+          }
+        },
+        {
+          "title": "ansible-core and collections have separate lifecycles",
+          "detail": "Updating ansible-core does not automatically update collections installed with ansible-galaxy. Record and test collection versions separately, together with any Python or operating-system libraries they require. A requirements file can describe collection versions, but it does not replace the Python dependency record for the selected runtime.",
+          "reference": {
+            "label": "Read the collection installation guidance",
+            "href": "https://docs.ansible.com/projects/ansible/latest/collections_guide/collections_installing.html"
+          }
+        }
+      ],
+      "summaryLabel": "Compare lifecycle operations",
+      "rowHeader": "Lifecycle activity",
+      "cellLayout": "stacked",
+      "columns": ["RHEL AppStream RPM", "pip with a virtual environment", "pipx"],
+      "rows": [
+        {
+          "aspect": "Operational owner",
+          "values": ["The RHEL system owner controls the enabled repositories and DNF transactions.", "The project or environment owner controls the interpreter, virtual environment, requirements, and package changes.", "The individual user owns the pipx installation, managed application environment, exposed commands, and injected packages."]
+        },
+        {
+          "aspect": "Inspect the current state",
+          "values": ["rpm -q ansible-core\ndnf list --installed ansible-core\nansible --version", "python -m pip show ansible-core\npython -m pip check\npython -m pip freeze\nansible --version", "pipx list --include-injected\npipx runpip ansible-core check\nansible --version"]
+        },
+        {
+          "aspect": "Apply a maintenance update",
+          "values": ["Use dnf check-update ansible-core to review availability. Apply the approved RPM and its dependencies with dnf upgrade ansible-core. Red Hat can backport fixes while retaining the stream's feature version.", "Prefer building and testing a replacement environment from reviewed requirements. For an intentional in-place update, activate the environment, update within the approved X.Y constraint, and run python -m pip check afterward.", "Use pipx upgrade ansible-core for the main application. Add --include-injected only when the injected Python packages should be upgraded in the same change, then run pipx list and the Ansible validation tests."]
+        },
+        {
+          "aspect": "Move to another feature line",
+          "values": ["Follow the feature streams made available and supported for the RHEL release. Do not overwrite the RPM-owned installation with pip to obtain another feature line.", "Create a new virtual environment with a compatible Python, install the proposed exact versions, and test it alongside the current environment before changing the team's activation or launcher path.", "Confirm Python compatibility, change the recorded package specification, and recreate the pipx environment after testing. Keep the former specification available until the new runtime is accepted."]
+        },
+        {
+          "aspect": "Record a reproducible baseline",
+          "values": ["Record the RPM name, epoch, version, release, architecture, repository, and applicable Red Hat advisory. Reproduction depends on the required RPM remaining available through the approved repository or content-management system.", "Pin direct and transitive Python packages to exact versions in a reviewed requirements file. Add hashes when stronger artifact verification is required, and record the Python version and collection requirements separately.", "Record the ansible-core package specification, Python interpreter, pipx version, and injected packages. pipx pin can prevent pipx upgrade operations, but it is not a lock for collections, configuration, inventory, or system libraries."]
+        },
+        {
+          "aspect": "Recover or roll back",
+          "values": ["Use dnf history and dnf history info to inspect the transaction. An undo can restore an earlier package only when the required RPMs remain available and dependency resolution permits it; do not treat transaction history as a guaranteed downgrade mechanism.", "Retain the last accepted environment until its replacement passes validation. Recovery then means restoring the prior activation or launcher path instead of repairing a partially upgraded environment.", "pipx stores metadata used by reinstall operations, but that metadata is not a complete runtime snapshot. Reliable recovery requires the previously recorded package specification, interpreter, injected dependencies, collections, and external configuration."]
+        },
+        {
+          "aspect": "Remove the installation",
+          "values": ["Run sudo dnf remove ansible-core and review the proposed dependency changes before accepting the transaction.", "Deactivate the environment, confirm that no workflow still references its path, and remove only that virtual-environment directory.", "Run pipx uninstall ansible-core. pipx removes the managed environment and its exposed application links; separately installed collections and project files remain outside it."]
+        }
+      ],
+      "takeawayLabel": "Recommended operating model",
+      "takeaway": "Assign one owner and one change channel to each installation. Apply maintenance updates on a planned cadence, build a parallel candidate environment for feature-line changes, preserve the last accepted baseline until validation passes, and track ansible-core, collections, Python packages, and system dependencies as related but independently versioned components.",
+      "sources": [
+        {
+          "label": "RHEL 9 package update guidance",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/managing_software_with_the_dnf_tool/assembly_updating-rhel-9-content_managing-software-with-the-dnf-tool"
+        },
+        {
+          "label": "RHEL 9 DNF transaction history and recovery",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/managing_software_with_the_dnf_tool/assembly_handling-package-management-history_managing-software-with-the-dnf-tool"
+        },
+        {
+          "label": "ansible-core releases and maintenance",
+          "href": "https://docs.ansible.com/projects/ansible/latest/reference_appendices/release_and_maintenance.html"
+        },
+        {
+          "label": "ansible-core porting guides",
+          "href": "https://docs.ansible.com/projects/ansible/latest/porting_guides/core_porting_guides.html"
+        },
+        {
+          "label": "pip repeatable installation guidance",
+          "href": "https://pip.pypa.io/en/stable/topics/repeatable-installs/"
+        },
+        {
+          "label": "pip install and upgrade behavior",
+          "href": "https://pip.pypa.io/en/stable/cli/pip_install/"
+        },
+        {
+          "label": "pipx lifecycle command reference",
+          "href": "https://pipx.pypa.io/stable/reference/cli.html"
+        },
+        {
+          "label": "pipx on-disk metadata",
+          "href": "https://pipx.pypa.io/stable/reference/metadata.html"
+        }
+      ]
+    },
+    {
+      "title": "Pin versions for a repeatable environment",
+      "introduction": "A version choice becomes an operational baseline only after it is recorded at the right level. Pin what has been tested, keep the source of each component visible, and change the baseline deliberately rather than allowing a fresh installation to resolve a different set of packages.",
+      "eyebrow": "Version-pinning guidance",
+      "notesLabel": "Read the version rules first",
+      "notes": [
+        {
+          "title": "A feature-line constraint is not an exact pin",
+          "detail": "The expression ansible-core==2.21.* allows any published maintenance release in the 2.21 feature line. It is useful while learning or selecting the newest compatible maintenance build, but separate installations performed at different times can resolve different versions. Use an exact value such as ansible-core==2.21.4 after that release has passed your tests.",
+          "reference": {
+            "label": "Read pip's requirement specifier guidance",
+            "href": "https://pip.pypa.io/en/stable/reference/requirement-specifiers/"
+          }
+        },
+        {
+          "title": "Requirements and constraints do different jobs",
+          "detail": "A requirements file tells pip what to install. A constraints file limits versions selected for packages required by that installation, but naming a package in a constraints file does not install it. Keep the direct installation requirement visible and use constraints when several environments must obey the same version limits.",
+          "reference": {
+            "label": "Read pip's constraints-file guidance",
+            "href": "https://pip.pypa.io/en/stable/user_guide/#constraints-files"
+          }
+        },
+        {
+          "title": "Pinning ansible-core alone does not pin the runtime",
+          "detail": "A repeatable baseline also records the control-node Python, transitive Python packages, collections, controller-side libraries, and relevant operating-system dependencies. Inventory, configuration, credentials, and managed-host requirements are operational inputs rather than Python packages and must be governed separately.",
+          "reference": {
+            "label": "Read pip's repeatable-install guidance",
+            "href": "https://pip.pypa.io/en/stable/topics/repeatable-installs/"
+          }
+        }
+      ],
+      "summaryLabel": "Compare what must be pinned",
+      "rowHeader": "Installation or content layer",
+      "cellLayout": "stacked",
+      "columns": ["Record in the baseline", "Pinning approach", "Boundary to remember"],
+      "rows": [
+        {
+          "aspect": "RHEL AppStream RPM",
+          "values": ["Installed RPM version and release\nArchitecture\nSource repository\nRelevant Red Hat advisory", "Use the package supplied through the approved RHEL repository or managed content snapshot. Continue taking approved maintenance builds because Red Hat can backport fixes without changing the upstream feature version.", "The upstream ansible-core number is not the complete RPM identity. The RPM release and Red Hat advisory identify backported fixes. A local hold can also prevent future security fixes, so do not freeze the package without an update owner and review date."],
+          "reference": {
+            "label": "Read how RHEL lists package versions and repositories",
+            "href": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/managing_software_with_the_dnf_tool/assembly_searching-for-rhel-9-content_managing-software-with-the-dnf-tool"
+          }
+        },
+        {
+          "aspect": "pip with a virtual environment",
+          "values": ["Exact ansible-core version\nControl-node Python version\nExact direct and transitive Python packages\nPackage index or approved artifact source", "Put exact package versions in a reviewed requirements file. A tested environment can be captured with python -m pip freeze --all. When stronger artifact verification is needed, use fully pinned requirements with hashes and require those hashes during installation.", "A freeze file records the packages resolved in one environment; it does not guarantee that the same wheels or system libraries exist on another operating system or architecture. Rebuild and test the environment on every supported platform."],
+          "reference": {
+            "label": "Read pip's repeatable-install guidance",
+            "href": "https://pip.pypa.io/en/stable/topics/repeatable-installs/"
+          }
+        },
+        {
+          "aspect": "pipx",
+          "values": ["Exact ansible-core package specification\nSelected Python interpreter\npipx version and backend\nExact injected packages", "Install ansible-core and injected Python libraries with exact package specifications. pipx pin ansible-core prevents pipx upgrade and reinstall operations from changing the current environment until it is unpinned. Use pipx list --include-injected to review the application and its additions.", "pipx pin holds the existing application environment; it is not a portable lock for collections, configuration, inventory, credentials, or operating-system libraries. Keep those records beside the automation project or build definition."],
+          "reference": {
+            "label": "Read how pipx pin works",
+            "href": "https://pipx.pypa.io/latest/how-to/pin-packages.html"
+          }
+        },
+        {
+          "aspect": "Ansible collections",
+          "values": ["Collection name\nExact collection version\nApproved distribution server\nSignature policy when applicable", "Declare required collections in requirements.yml and use an exact version such as ==1.2.3 for an accepted baseline. Store the file with the automation content and install it with ansible-galaxy collection install -r requirements.yml.", "Updating ansible-core does not update collections installed with ansible-galaxy. A collection requirement also does not capture every controller-side Python or operating-system dependency required by its plugins."],
+          "reference": {
+            "label": "Read the collection requirements guidance",
+            "href": "https://docs.ansible.com/projects/ansible/latest/collections_guide/collections_installing.html#install-multiple-collections-with-a-requirements-file"
+          }
+        }
+      ],
+      "takeawayLabel": "A practical pinning workflow",
+      "takeaway": "Choose a compatible feature line, build a candidate environment, capture the exact resolved versions, test representative automation and managed hosts, and then approve that record as the baseline. For the next update, create a new candidate and retain the last accepted baseline until the replacement has passed validation. Use an execution environment when the team needs ansible-core, collections, Python packages, and system dependencies packaged and promoted as one immutable artifact.",
+      "sources": [
+        {
+          "label": "pip requirement specifiers",
+          "href": "https://pip.pypa.io/en/stable/reference/requirement-specifiers/"
+        },
+        {
+          "label": "pip requirements and constraints",
+          "href": "https://pip.pypa.io/en/stable/user_guide/#constraints-files"
+        },
+        {
+          "label": "pip repeatable installations",
+          "href": "https://pip.pypa.io/en/stable/topics/repeatable-installs/"
+        },
+        {
+          "label": "pip secure and hash-checked installations",
+          "href": "https://pip.pypa.io/en/stable/topics/secure-installs/"
+        },
+        {
+          "label": "pipx pin behavior",
+          "href": "https://pipx.pypa.io/latest/how-to/pin-packages.html"
+        },
+        {
+          "label": "pipx environment metadata",
+          "href": "https://pipx.pypa.io/stable/reference/metadata.html"
+        },
+        {
+          "label": "Ansible collection version requirements",
+          "href": "https://docs.ansible.com/projects/ansible/latest/collections_guide/collections_installing.html"
+        },
+        {
+          "label": "RHEL package version and repository inspection",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/managing_software_with_the_dnf_tool/assembly_searching-for-rhel-9-content_managing-software-with-the-dnf-tool"
+        },
+        {
+          "label": "Red Hat security backporting practice",
+          "href": "https://access.redhat.com/security/updates/backporting"
         }
       ]
     }
