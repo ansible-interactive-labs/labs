@@ -15,11 +15,12 @@
     "lint": "eslint . --ignore-pattern out --ignore-pattern .next"
   },
   "browserslist": [
-    "chrome 111",
-    "edge 111",
-    "firefox 128",
-    "safari 16.4",
-    "ios_saf 16.4"
+    "chrome 125",
+    "edge 125",
+    "firefox 124",
+    "safari 17.3",
+    "last 1 ios_saf version",
+    "last 1 and_chr version"
   ],
   "dependencies": {
     "asciinema-player": "^3.17.0",

@@ -10,10 +10,11 @@ Each published lab receives a stable `HOD NNN` identifier. Public website attrib
 
 The information architecture separates three content families—`HOD` Hands-On Demos, `SOL` Solutions, and `CASE` Consulting Cases—and connects each family through a shared technology directory. The dedicated author profile at `/author/rajat-agrawal/` connects Rajat’s professional focus, teaching approach, and public LinkedIn profile to the complete platform.
 
-HOD 001 covers two independently playable ways to install `ansible-core` on RHEL 9:
+HOD 001 covers three independently playable ways to install `ansible-core` on RHEL 9:
 
-1. Install and validate the Red Hat-provided ansible-core RPM from RHEL AppStream.
+1. Install the Red Hat-provided ansible-core RPM from RHEL AppStream and validate it locally.
 2. Install a compatible RHEL Python, create a virtual environment, and install upstream ansible-core from PyPI without installing the RHEL ansible-core RPM.
+3. Install a compatible RHEL Python and use pipx to install upstream ansible-core from PyPI in an application-specific environment.
 
 The introduction keeps three compatibility decisions separate: the RHEL 9 AppStream RPM/runtime combination, upstream ansible-core control-node and managed-node Python support, and Red Hat Ansible Automation Platform execution-environment coverage. Each matrix links to its official lifecycle or compatibility source.
 
@@ -60,12 +61,17 @@ The project explicitly targets Chrome 111+, Edge 111+, Firefox 128+, Safari 16.4
 
 1. Copy an existing `content/labs/<demo-slug>/lab.json` into a new directory and update every field. The included `schema.json` provides editor validation.
 2. Create `public/demos/<demo-slug>/assets/`.
-3. Record every terminal workflow as an asciicast v2 file at exactly 120 columns × 34 rows, generate a text transcript, and retain a clean 16:9 screenshot as a resilient fallback. Use sequential names and reference all media from the lab JSON.
-4. Give every step a descriptive introduction that explains its purpose and context without narrating individual commands. Store each learner-visible command separately with its own one- or two-line explanation, then include the expected result and troubleshooting guidance.
-5. Record the tested OS, architecture, package or image version, and verification date.
-6. Complete the instructional audit in `docs/LAB_CONTENT_REVIEW.md`, save the findings as `content/labs/<demo-slug>/review.md`, and share them even when no gaps are found.
-7. Add a source-backed `comparisons` block whenever learners may confuse related tools, packages, commands, or support models.
-8. Sanitize recordings with `node scripts/sanitize-cast.mjs <file.cast>`, then run `pnpm validate:labs`, `pnpm lint`, and `pnpm build`. Test the exported root and dedicated demo route over local HTTP.
+3. Create a dedicated 16:9 editorial cover for every demo module. A demo cover must represent that module's specific workflow, differ from the HOD cover, differ from every other demo cover in the HOD, and never reuse a step screenshot. This rule also applies when the HOD contains only one demo.
+4. Record every terminal workflow as an asciicast v2 file at exactly 120 columns × 34 rows, generate a text transcript, and retain a clean 16:9 screenshot as a resilient fallback. Use sequential names and reference all media from the lab JSON.
+5. Give every step a concise, descriptive action-and-object label of at least two words, such as `Check Repositories` or `Verify Installation`; avoid single-word labels such as `Check` or `Verify`. Follow it with an introduction that explains the step's purpose and context without narrating individual commands. Store each learner-visible command separately with its own one- or two-line explanation, then include the expected result and troubleshooting guidance.
+6. Use the fully qualified collection name for every Ansible module, plugin, role, and other collection-provided object whenever an FQCN exists. Apply this rule to commands, prose, headings, alternative text, expected results, and troubleshooting—for example, write `ansible.builtin.ping`, not `ping` or `the built-in ping module`.
+7. When two demos contain the same ordered command sequence, reuse the same step label, heading, alternative text, introduction, command explanations, expected result, note, and recovery guidance. Only the replay and fallback image may differ when the environment shown is different.
+8. Review every demo title and Start Demo objective against the complete recorded workflow. Review every top-bar label, step heading, introduction, expected result, note, per-step recovery message, and general troubleshooting item against the commands and replay before publishing.
+9. Do not add a per-step Restart Demo action. Closing or refreshing an anonymous demo resets it; the next launch begins at step 1.
+10. Record the tested OS, architecture, package or image version, and verification date.
+11. Complete the instructional audit in `docs/LAB_CONTENT_REVIEW.md`, save the findings as `content/labs/<demo-slug>/review.md`, and share them even when no gaps are found.
+12. Add a source-backed `comparisons` block whenever learners may confuse related tools, packages, commands, or support models. For a dependent choice, use `decisionGuide` to present the second decision without duplicating the first comparison.
+13. Sanitize recordings with `node scripts/sanitize-cast.mjs <file.cast>`, then run `pnpm validate:labs`, `pnpm lint`, and `pnpm build`. Test the exported root and dedicated demo route over local HTTP.
 
 Use this recording command for every terminal step:
 

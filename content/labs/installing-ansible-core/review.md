@@ -10,6 +10,8 @@ Ready. Three complete installation workflows were recorded on reset RHEL 9 envir
 
 Implemented in this review:
 
+- Consolidated the separate distribution and installation-method comparisons into one pre-demo “Choose your ansible-core installation path” section. It now separates the provider and support decision from the environment-management decision, retains the pipx runtime boundary, and removes repeated source, ownership, version, and support guidance.
+
 - Rewrote the Core concept introduction in direct language while retaining “minimal automation engine” as the primary definition of `ansible-core`.
 - Revised all five capability cards to explain what learners receive and how built-in `ansible.builtin` content differs from collections installed separately.
 - Replaced the “Keep in mind” aside with explicit development and production guidance that applies to both demonstrations in HOD 001.
@@ -23,6 +25,7 @@ Implemented in this review:
 - Kept the visible package-access note brief and moved Red Hat's documented coverage, examples, and source link into the detailed Support coverage row. Comparison rows now accept an optional reference link for future HODs.
 - Removed the “When to use it” comparison row because it repeated the visible “Which should you choose?” guidance below the table.
 - Added Demo 02 for upstream ansible-core installed with pip from PyPI. The RHEL subscription supplies only the supported Python 3.12 prerequisite; ansible-core itself is installed from PyPI into `/home/rajat/.venvs/ansible-core-2.21`.
+- Made Demo 02 independently runnable by adding the same RHEL registration, connection-confirmation, and enabled-repository steps used by Demo 01 before checking the Python packages.
 - Made the no-cost learner path explicit in a dedicated access callout beneath the lab prerequisites and on the homepage: eligible individuals can join Red Hat Developer for free and obtain the self-supported Developer Subscription for Individuals used to access RHEL and applicable BaseOS/AppStream repositories. The call to action links directly to Red Hat Developer registration.
 - Kept the prerequisite cards focused on actionable environment requirements by moving the longer subscription explanation into a reusable lab-level access callout. The callout preserves the distinction between repository access and broader Ansible Automation Platform product support.
 - Added a source-backed upstream Python matrix covering the complete published 2.10–2.21 history, with distinct control-node and managed-host ranges plus lifecycle status. Version 2.10 is correctly identified as `ansible-base`, and each lifecycle milestone occupies its own visual line instead of being compressed into semicolon-separated prose. This prevents pip from silently selecting an obsolete release merely to fit RHEL 9's default Python 3.9.
@@ -49,6 +52,7 @@ Implemented in this review:
 - Prevented the empty collection-path warning by creating the standard user collection directory before running `ansible-galaxy collection list`. The empty result and 71 embedded module-documentation entries are explained separately.
 - Used an explicit `/usr/bin/python3` managed-host interpreter in the localhost test, removing the interpreter-discovery warning without changing the pipx-managed control-node runtime.
 - Added a reusable transcript-to-SVG fallback generator so future terminal demonstrations can provide crisp, lightweight evidence without copying an unrelated screenshot.
+- Audited collection-provided content across all three demonstrations and replaced shortened `ping` module wording with the `ansible.builtin.ping` FQCN in commands, explanations, expected results, and alternative text. The publishing checklist now requires FQCNs for modules, plugins, roles, and other collection objects whenever one exists.
 
 - Replaced the introductory comparison with a source-backed deep dive limited to the RHEL 9 AppStream and upstream `ansible-core` distributions.
 - Explained their shared core capabilities and their different artifact formats, installation ownership, runtime integration, version strategies, maintenance windows, security practices, lifecycles, and compatibility tradeoffs.
@@ -107,6 +111,19 @@ Official sources reviewed:
 
 ## Learner experience
 
+- Added distinct editorial covers for the RHEL AppStream RPM, pip virtual-environment, and pipx workflows. Each Start Demo screen now introduces its own installation architecture instead of repeating the HOD-level cover.
+- Made per-demo editorial artwork mandatory in the content schema and validator. Future single-demo and multi-demo HODs must use a demo cover that differs from the HOD cover, sibling demo covers, and step screenshots.
+- Reordered HOD 001 around the learner decision: the core concept and prerequisites now lead to the three-way installation-method comparison and then directly to the demos. Distribution detail, runtime matrices, lifecycle planning, version pinning, controller options, and related tools now follow Demo 03 as reference material.
+- Expanded prerequisites to include PyPI HTTPS access, proxy and certificate preparation, and a separate clean RHEL 9 starting environment for each workflow. The page now warns learners not to run all three installation methods sequentially on one unchanged VM.
+- Clarified that repository access does not itself create a Red Hat support entitlement, identified the RHEL managed-host table as technical compatibility rather than a complete support matrix, and replaced the dated upstream lifecycle column with the durable label “Maintenance milestones.”
+- Updated Automation Controller and automation content navigator references from AAP 2.6 to AAP 2.7 and linked the ansible-navigator card to the existing HOD 002 preview.
+- Updated the Core Concept note to describe what these demonstrations actually do—install, inspect, and validate a local ansible-core runtime—and added the missing maintained-version and Python-selection outcome to Demo 03.
+- Audited all three demo titles, pre-start objectives and outcomes, top-bar labels, step headings, introductions, command explanations, expected results, notes, “Result looks different?” guidance, and demo troubleshooting guides against the recorded command sequences.
+- Renamed Demo 01 to “Install Red Hat-provided ansible-core on RHEL 9” so the title identifies the AppStream RPM path as clearly as the pip and pipx titles identify theirs.
+- Standardized every learner-facing field for the six command-identical step groups shared across the demos: system baseline, RHEL registration, connection verification, repository review, Python installation, and upstream content inspection.
+- Added registration and repository recovery entries to the pip and pipx troubleshooting guides, and added the missing registration and repository outcomes to the pipx pre-start summary.
+- Removed the per-step Restart Demo action. Anonymous sessions still reset when learners close or refresh the player, so the next Start Demo begins at step 1.
+- Added validation that rejects command drift between a transcript and its documented single-line command sequence, as well as wording drift between command-identical steps in different demos.
 - Commands have explanations, expected results, and recovery guidance.
 - Credentials are entered only at the interactive prompt; neither the Red Hat account name nor its password is stored in lab content or replay media.
 - Version-sensitive output is identified.

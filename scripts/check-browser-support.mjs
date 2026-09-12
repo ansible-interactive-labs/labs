@@ -9,7 +9,14 @@ const player = read("components/DemoPlayer.tsx");
 const catalog = read("components/DemoCatalog.tsx");
 const layout = read("app/layout.tsx");
 
-const requiredTargets = ["chrome 111", "edge 111", "firefox 128", "safari 16.4", "ios_saf 16.4"];
+const requiredTargets = [
+  "chrome 125",
+  "edge 125",
+  "firefox 124",
+  "safari 17.3",
+  "last 1 ios_saf version",
+  "last 1 and_chr version",
+];
 const missingTargets = requiredTargets.filter((target) => !packageJson.browserslist?.includes(target));
 if (missingTargets.length) throw new Error(`Missing browser targets: ${missingTargets.join(", ")}`);
 

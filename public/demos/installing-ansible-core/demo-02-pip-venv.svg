@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title description">
+  <title id="title">Install upstream ansible-core with pip on RHEL 9</title>
+  <desc id="description">PyPI delivers ansible-core through pip into a Python 3.12 virtual environment isolated under the learner's home directory.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071528"/><stop offset=".54" stop-color="#162a55"/><stop offset="1" stop-color="#351747"/></linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#55d9ff"/><stop offset="1" stop-color="#ad71ff"/></linearGradient>
+    <pattern id="grid" width="56" height="56" patternUnits="userSpaceOnUse"><path d="M56 0H0V56" fill="none" stroke="#fff" stroke-opacity=".035"/></pattern>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="28"/></filter>
+  </defs>
+  <rect width="1600" height="900" rx="48" fill="url(#bg)"/><rect width="1600" height="900" rx="48" fill="url(#grid)"/>
+  <circle cx="875" cy="500" r="330" fill="#7a8cff" fill-opacity=".16" filter="url(#glow)"/>
+  <text x="90" y="100" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="30" font-weight="750">HOD-001-D02</text>
+  <text x="90" y="144" fill="#b6c7e5" font-family="Inter,Arial,sans-serif" font-size="19" letter-spacing="2">UPSTREAM · MANUAL VIRTUAL ENVIRONMENT</text>
+  <text x="90" y="238" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="54" font-weight="780">Project-level Python isolation</text>
+  <text x="92" y="283" fill="#b6c7e5" font-family="Inter,Arial,sans-serif" font-size="23">Python 3.12 · venv activation · pip ownership</text>
+  <g transform="translate(135 380)" font-family="ui-monospace,SFMono-Regular,Menlo,monospace">
+    <path d="M86 0h188l86 86-86 86H86L0 86z" fill="#0d2a42" stroke="#5bdcff" stroke-width="3"/>
+    <text x="180" y="75" text-anchor="middle" fill="#fff" font-size="28" font-weight="750">PYPI</text>
+    <text x="180" y="116" text-anchor="middle" fill="#6ee1ff" font-size="18">ansible-core</text>
+  </g>
+  <g fill="none" stroke="#6bdfff" stroke-width="5"><path d="M505 466h175"/><path d="m658 448 24 18-24 18"/></g>
+  <g transform="translate(670 345)" font-family="ui-monospace,SFMono-Regular,Menlo,monospace">
+    <circle cx="188" cy="180" r="176" fill="#111631" stroke="url(#accent)" stroke-width="4"/>
+    <circle cx="188" cy="180" r="139" fill="#121e3d" stroke="#879cff" stroke-opacity=".35" stroke-width="2" stroke-dasharray="10 12"/>
+    <text x="188" y="130" text-anchor="middle" fill="#8be8ff" font-size="19" letter-spacing="2">PYTHON 3.12</text>
+    <text x="188" y="183" text-anchor="middle" fill="#fff" font-size="34" font-weight="800">.venvs</text>
+    <text x="188" y="229" text-anchor="middle" fill="#cba7ff" font-size="21">ansible-core-2.21</text>
+    <rect x="73" y="279" width="230" height="55" rx="15" fill="#0b1225" stroke="#a778ff" stroke-width="2"/>
+    <text x="188" y="315" text-anchor="middle" fill="#d7bcff" font-size="18">python -m pip</text>
+  </g>
+  <g fill="none" stroke="#b485ff" stroke-width="5"><path d="M1048 466h120"/><path d="m1146 448 24 18-24 18"/></g>
+  <g transform="translate(1170 365)" font-family="ui-monospace,SFMono-Regular,Menlo,monospace">
+    <rect width="300" height="250" rx="30" fill="#111124" stroke="#ba8dff" stroke-width="3"/>
+    <rect x="23" y="23" width="254" height="46" rx="12" fill="#2d1e49"/>
+    <circle cx="49" cy="46" r="7" fill="#c59cff"/><circle cx="73" cy="46" r="7" fill="#c59cff" fill-opacity=".5"/>
+    <text x="150" y="126" text-anchor="middle" fill="#fff" font-size="27" font-weight="750">ansible-core</text>
+    <text x="150" y="169" text-anchor="middle" fill="#c9a8ff" font-size="18">VENV ACTIVE</text>
+    <text x="39" y="214" fill="#6ee1ff" font-size="17">SUCCESS</text><text x="147" y="214" fill="#fff" font-size="17">pong</text>
+  </g>
+  <g font-family="Inter,Arial,sans-serif" font-size="18" font-weight="750" text-anchor="middle">
+    <text x="590" y="823" fill="#b6c7e5">CREATE</text><circle cx="682" cy="817" r="4" fill="#64dfff"/>
+    <text x="792" y="823" fill="#b6c7e5">ACTIVATE</text><circle cx="900" cy="817" r="4" fill="#9b82ff"/>
+    <text x="1023" y="823" fill="#b6c7e5">VERIFY</text>
+  </g>
+</svg>

@@ -1,19 +1,10 @@
 [rajat@demo ~]$ rpm -q ansible-core
 ansible-core-2.14.18-3.el9_8.1.aarch64
 
-[rajat@demo ~]$ rpm -V ansible-core && echo "Package verification: passed"
-Package verification: passed
-
 [rajat@demo ~]$ dnf list --installed ansible-core
 Not root, Subscription Management repositories not updated
 Installed Packages
 ansible-core.aarch64                       1:2.14.18-3.el9_8.1                        @rhel-9-for-aarch64-appstream-rpms
-
-[rajat@demo ~]$ command -v ansible
-/usr/bin/ansible
-
-[rajat@demo ~]$ command -v ansible-playbook
-/usr/bin/ansible-playbook
 
 [rajat@demo ~]$ ansible --version
 ansible [core 2.14.18]

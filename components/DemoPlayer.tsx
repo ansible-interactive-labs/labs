@@ -117,13 +117,6 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
     setAnnouncement(`Demo started. Step 1 of ${demo.steps.length}.`);
   };
 
-  const resetProgress = () => {
-    if (!window.confirm("Restart this demo from step 1?")) return;
-    setStepIndex(0);
-    setCompleted(false);
-    setAnnouncement("Demo restarted at step 1.");
-  };
-
   const closePlayer = () => {
     if (document.fullscreenElement) document.exitFullscreen().catch(() => undefined);
     setStepIndex(0);
@@ -154,8 +147,8 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
           <strong>{demo.title}</strong>
         </div>
         <div className="player-tools">
-          {started && fullscreenSupported && <button type="button" onClick={openFullscreen} aria-label="Open demo in fullscreen">↗ <span>Fullscreen</span></button>}
-          <button className="player-close" type="button" onClick={closePlayer} aria-label={`Close demo and return to ${demo.title}`}>×</button>
+          {started && fullscreenSupported && <button className="player-fullscreen" type="button" onClick={openFullscreen} aria-label="Open demo in fullscreen"><span>Fullscreen</span></button>}
+          {(started || completed) && <button className="player-close" type="button" onClick={closePlayer} aria-label={`Close demo and return to ${demo.title}`}>×</button>}
         </div>
       </header>
 
@@ -173,7 +166,7 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
         {demo.steps.map((item, index) => (
           started ? (
             <button className={index === stepIndex ? "current" : index < stepIndex || completed ? "complete" : ""} type="button" key={`${index}-${item.label}`} data-step-index={index} onClick={() => setStepIndex(index)} aria-current={index === stepIndex ? "step" : undefined} aria-label={`Go to step ${index + 1}: ${item.label}`}>
-              <span>{index < stepIndex || completed ? "✓" : index + 1}</span><small>{item.label}</small>
+              <span>{index + 1}</span><small>{item.label}</small>
             </button>
           ) : (
             <div className="progress-step" key={`${index}-${item.label}`} aria-hidden="true"><span>{index + 1}</span><small>{item.label}</small></div>
@@ -235,7 +228,6 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
               ))}
             </div>
           </details>
-          <div className="stage-guide-utilities"><button type="button" onClick={resetProgress}>Restart demo</button></div>
         </aside>
       </div> : completed ? (
         <div className="player-complete">
@@ -256,7 +248,7 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
         </div>
       ) : (
         <div className="player-ready">
-          <div className="player-ready-visual"><img src={`${basePath}${lab.coverImage}`} alt={lab.coverAlt} /></div>
+          <div className="player-ready-visual"><img src={`${basePath}${demo.coverImage}`} alt={demo.coverAlt} /></div>
           <aside><p className="step-label">{demo.demoId} · Ready when you are</p><h2>{demo.title}</h2><p>{demo.objective}</p><p className="player-creator">Created and verified by <a href={brand.linkedin} target="_blank" rel="noreferrer">{brand.creator} ↗</a></p><ul>{(demo.outcomes ?? lab.outcomes).map((outcome) => <li key={outcome}>{outcome}</li>)}</ul></aside>
         </div>
       )}

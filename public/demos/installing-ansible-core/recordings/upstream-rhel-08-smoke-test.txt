@@ -1,5 +1,4 @@
-(ansible-core-2.21) [rajat@demo ~]$ ansible localhost -i localhost, -m ansible.builtin.ping -c local \
->   -e "ansible_python_interpreter=$(command -v python)"
+(ansible-core-2.21) [rajat@demo ~]$ ansible localhost -i localhost, -m ansible.builtin.ping -c local -e "ansible_python_interpreter=$(command -v python)"
 localhost | SUCCESS => {
     "changed": false,
     "ping": "pong"

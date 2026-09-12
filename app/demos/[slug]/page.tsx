@@ -104,6 +104,38 @@ function ComparisonSection({ labSlug, comparison, index }: { labSlug: string; co
           </table>
         </div>
       </details>
+      {comparison.decisionGuide ? (
+        <section className="decision-guide" aria-labelledby={`${headingId}-decision-guide`}>
+          <div className="decision-guide-heading">
+            <span>Decision 2</span>
+            <h3 id={`${headingId}-decision-guide`}>{comparison.decisionGuide.title}</h3>
+            <p>{comparison.decisionGuide.introduction}</p>
+          </div>
+          <div className="decision-option-grid">
+            {comparison.decisionGuide.options.map((option) => (
+              <article className="decision-option" key={option.title}>
+                <span>{option.label}</span>
+                <h4>{option.title}</h4>
+                <p>{option.detail}</p>
+                <div className="decision-option-fit"><strong>Best fit</strong><p>{option.bestFor}</p></div>
+                {option.note ? <p className="decision-option-note">{option.note}</p> : null}
+                {option.reference ? <a href={option.reference.href} target="_blank" rel="noreferrer">{option.reference.label} ↗</a> : null}
+              </article>
+            ))}
+          </div>
+          <div className="decision-path">
+            <h4>{comparison.decisionGuide.pathTitle}</h4>
+            <ol>
+              {comparison.decisionGuide.path.map((item) => (
+                <li key={item.condition}>
+                  <span>{item.condition}</span>
+                  <strong>{item.result}</strong>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+      ) : null}
       {comparison.takeaway ? (
         <div className="comparison-takeaway">
           <strong>{comparison.takeawayLabel ?? "Which should you choose?"}</strong>
@@ -163,67 +195,24 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
       </header>
 
       {lab.overview && (
-        <>
-          <section className="lab-overview" aria-labelledby="overview-title">
-            <div className="overview-heading">
-              <p className="eyebrow"><span /> Core concept</p>
-              <h2 id="overview-title">{lab.overview.title}</h2>
-              <p>{lab.overview.introduction}</p>
-            </div>
-            {lab.overview.itemsLabel && <p className="overview-items-label">{lab.overview.itemsLabel}</p>}
-            <div className="overview-grid">
-              {lab.overview.items.map((item, index) => (
-                <article key={item.title}>
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  <h3>{item.title}</h3>
-                  <p>{item.detail}</p>
-                </article>
-              ))}
-            </div>
-            {lab.overview.note && <p className="overview-note"><strong>For development and production:</strong> {lab.overview.note}</p>}
-          </section>
-          {lab.overview.orchestrationOptions ? (
-            <section className="overview-orchestration" aria-labelledby={`orchestration-${lab.slug}`}>
-              <div className="orchestration-heading">
-                <p>Running Ansible as a team</p>
-                <h2 id={`orchestration-${lab.slug}`}>{lab.overview.orchestrationOptions.title}</h2>
-                <p>{lab.overview.orchestrationOptions.introduction}</p>
-              </div>
-              <div className="orchestration-grid">
-                {lab.overview.orchestrationOptions.items.map((option) => (
-                  <article key={option.title}>
-                    <span>{option.category}</span>
-                    <h3>{option.title}</h3>
-                    <p>{option.detail}</p>
-                    <div>
-                      {option.href && <Link href={option.href}>{option.linkLabel ?? "Open the dedicated HOD"} →</Link>}
-                      <a href={option.reference.href} target="_blank" rel="noreferrer">{option.reference.label} ↗</a>
-                    </div>
-                  </article>
-                ))}
-              </div>
-              <p className="orchestration-note"><strong>Evaluate before adopting:</strong> {lab.overview.orchestrationOptions.note}</p>
-            </section>
-          ) : null}
-          {lab.overview.relatedTools?.length ? (
-            <section className="overview-related-tools" aria-label="Related developer tools">
-              {lab.overview.relatedTools.map((tool) => (
-                <article key={tool.title}>
-                  <div className="related-tool-heading">
-                    <p>Related developer tool</p>
-                    <span>{tool.status}</span>
-                  </div>
-                  <h2><code>{tool.title}</code></h2>
-                  <p>{tool.detail}</p>
-                  <div className="related-tool-links">
-                    {tool.href && <Link href={tool.href}>{tool.linkLabel ?? "Open the dedicated HOD"} →</Link>}
-                    <a href={tool.reference.href} target="_blank" rel="noreferrer">{tool.reference.label} ↗</a>
-                  </div>
-                </article>
-              ))}
-            </section>
-          ) : null}
-        </>
+        <section className="lab-overview" aria-labelledby="overview-title">
+          <div className="overview-heading">
+            <p className="eyebrow"><span /> Core concept</p>
+            <h2 id="overview-title">{lab.overview.title}</h2>
+            <p>{lab.overview.introduction}</p>
+          </div>
+          {lab.overview.itemsLabel && <p className="overview-items-label">{lab.overview.itemsLabel}</p>}
+          <div className="overview-grid">
+            {lab.overview.items.map((item, index) => (
+              <article key={item.title}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <h3>{item.title}</h3>
+                <p>{item.detail}</p>
+              </article>
+            ))}
+          </div>
+          {lab.overview.note && <p className="overview-note"><strong>For development and production:</strong> {lab.overview.note}</p>}
+        </section>
       )}
 
       <section className="lab-prerequisites" aria-labelledby="prerequisites-title">
@@ -295,6 +284,49 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
           </div>
         </section>
       )}
+
+      {lab.overview?.orchestrationOptions ? (
+        <section className="overview-orchestration" aria-labelledby={`orchestration-${lab.slug}`}>
+          <div className="orchestration-heading">
+            <p>Running Ansible as a team</p>
+            <h2 id={`orchestration-${lab.slug}`}>{lab.overview.orchestrationOptions.title}</h2>
+            <p>{lab.overview.orchestrationOptions.introduction}</p>
+          </div>
+          <div className="orchestration-grid">
+            {lab.overview.orchestrationOptions.items.map((option) => (
+              <article key={option.title}>
+                <span>{option.category}</span>
+                <h3>{option.title}</h3>
+                <p>{option.detail}</p>
+                <div>
+                  {option.href && <Link href={option.href}>{option.linkLabel ?? "Open the dedicated HOD"} →</Link>}
+                  <a href={option.reference.href} target="_blank" rel="noreferrer">{option.reference.label} ↗</a>
+                </div>
+              </article>
+            ))}
+          </div>
+          <p className="orchestration-note"><strong>Evaluate before adopting:</strong> {lab.overview.orchestrationOptions.note}</p>
+        </section>
+      ) : null}
+
+      {lab.overview?.relatedTools?.length ? (
+        <section className="overview-related-tools" aria-label="Related developer tools">
+          {lab.overview.relatedTools.map((tool) => (
+            <article key={tool.title}>
+              <div className="related-tool-heading">
+                <p>Related developer tool</p>
+                <span>{tool.status}</span>
+              </div>
+              <h2><code>{tool.title}</code></h2>
+              <p>{tool.detail}</p>
+              <div className="related-tool-links">
+                {tool.href && <Link href={tool.href}>{tool.linkLabel ?? "Open the dedicated HOD"} →</Link>}
+                <a href={tool.reference.href} target="_blank" rel="noreferrer">{tool.reference.label} ↗</a>
+              </div>
+            </article>
+          ))}
+        </section>
+      ) : null}
 
       <section className="feedback-band">
         <div><strong>Keep this HOD accurate.</strong><p>{lab.demos.length ? "Tell Rajat which result differed so the demonstration can stay current." : "Tell Rajat if a package, tool, requirement, or support detail has changed."}</p></div>

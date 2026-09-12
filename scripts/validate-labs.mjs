@@ -152,6 +152,35 @@ for (const directory of directories) {
         try { new URL(row.reference.href); } catch { fail(sourceName, `rows[${rowIndex}].reference.href must be a valid URL`); }
       }
     });
+    if (comparison?.decisionGuide) {
+      const guide = comparison.decisionGuide;
+      ["title", "introduction", "pathTitle"].forEach((key) => {
+        if (!nonEmptyString(guide?.[key])) fail(sourceName, `decisionGuide.${key} is required`);
+      });
+      if (!Array.isArray(guide.options) || guide.options.length < 2 || guide.options.length > 6) {
+        fail(sourceName, "decisionGuide.options must contain between two and six options");
+      }
+      (guide.options ?? []).forEach((option, optionIndex) => {
+        ["title", "label", "detail", "bestFor"].forEach((key) => {
+          if (!nonEmptyString(option?.[key])) fail(sourceName, `decisionGuide.options[${optionIndex}].${key} is required`);
+        });
+        if (option?.note !== undefined && !nonEmptyString(option.note)) {
+          fail(sourceName, `decisionGuide.options[${optionIndex}].note must be a non-empty string when provided`);
+        }
+        if (option?.reference) {
+          if (!nonEmptyString(option.reference.label)) fail(sourceName, `decisionGuide.options[${optionIndex}].reference.label is required`);
+          try { new URL(option.reference.href); } catch { fail(sourceName, `decisionGuide.options[${optionIndex}].reference.href must be a valid URL`); }
+        }
+      });
+      if (!Array.isArray(guide.path) || guide.path.length < 2 || guide.path.length > 6) {
+        fail(sourceName, "decisionGuide.path must contain between two and six decisions");
+      }
+      (guide.path ?? []).forEach((item, pathIndex) => {
+        ["condition", "result"].forEach((key) => {
+          if (!nonEmptyString(item?.[key])) fail(sourceName, `decisionGuide.path[${pathIndex}].${key} is required`);
+        });
+      });
+    }
     if (!Array.isArray(comparison?.sources) || comparison.sources.length === 0) fail(sourceName, "at least one official source is required");
     (comparison?.sources ?? []).forEach((source, sourceIndex) => {
       if (!nonEmptyString(source?.label)) fail(sourceName, `sources[${sourceIndex}].label is required`);
@@ -163,9 +192,10 @@ for (const directory of directories) {
   const demoSteps = [];
   (lab.demos ?? []).forEach((demo, demoIndex) => {
     const sourceName = `${directory} demo ${demoIndex + 1}`;
-    ["id", "demoId", "title", "objective", "duration"].forEach((key) => {
+    ["id", "demoId", "title", "objective", "coverImage", "coverAlt", "duration"].forEach((key) => {
       if (!nonEmptyString(demo?.[key])) fail(sourceName, `${key} is required`);
     });
+    if ((demo?.coverAlt ?? "").length < 10) fail(sourceName, "coverAlt must describe the demo artwork");
     if (!slugPattern.test(demo?.id ?? "")) fail(sourceName, "id must contain lowercase words separated by hyphens");
     if (demoIds.has(demo?.id)) fail(sourceName, `duplicate demo id ${demo.id}`);
     demoIds.add(demo?.id);
@@ -196,11 +226,50 @@ for (const directory of directories) {
     }
   });
 
-  const imagePaths = [lab.coverImage, ...demoSteps.map(({ step }) => step.image)];
+  const stepsByCommandSequence = new Map();
+  demoSteps.forEach(({ demo, step, stepIndex }) => {
+    if (!Array.isArray(step.commands) || step.commands.length === 0) return;
+    const commandSequence = JSON.stringify((step.commands ?? []).map((item) => item.command));
+    if (!stepsByCommandSequence.has(commandSequence)) stepsByCommandSequence.set(commandSequence, []);
+    stepsByCommandSequence.get(commandSequence).push({ demo, step, stepIndex });
+  });
+  const sharedStepFields = ["label", "title", "alt", "explanation", "expected", "note", "troubleshooting"];
+  stepsByCommandSequence.forEach((matchingSteps) => {
+    if (new Set(matchingSteps.map(({ demo }) => demo.id)).size < 2) return;
+    const baseline = matchingSteps[0];
+    const baselineCommandExplanations = baseline.step.commands.map((item) => item.explanation);
+    matchingSteps.slice(1).forEach((candidate) => {
+      const sourceName = `${directory} demos ${baseline.demo.id} and ${candidate.demo.id}`;
+      sharedStepFields.forEach((field) => {
+        if ((baseline.step[field] ?? "") !== (candidate.step[field] ?? "")) {
+          fail(sourceName, `steps with the same command sequence must use the same ${field}`);
+        }
+      });
+      const candidateCommandExplanations = candidate.step.commands.map((item) => item.explanation);
+      if (JSON.stringify(baselineCommandExplanations) !== JSON.stringify(candidateCommandExplanations)) {
+        fail(sourceName, "steps with the same command sequence must use the same command explanations");
+      }
+    });
+  });
+
+  const demoCoverSet = new Set();
+  (lab.demos ?? []).forEach((demo, demoIndex) => {
+    const sourceName = `${directory} demo ${demoIndex + 1}`;
+    if (demo.coverImage === lab.coverImage) fail(sourceName, "coverImage must differ from the HOD coverImage");
+    if (demoCoverSet.has(demo.coverImage)) fail(sourceName, "coverImage must be unique to this demo");
+    demoCoverSet.add(demo.coverImage);
+    if ((demo.steps ?? []).some((step) => step.image === demo.coverImage)) {
+      fail(sourceName, "coverImage must be editorial artwork, not a reused step image");
+    }
+  });
+  const imageAssets = [
+    { image: lab.coverImage, label: "coverImage" },
+    ...(lab.demos ?? []).map((demo, index) => ({ image: demo.coverImage, label: `demo ${index + 1} coverImage` })),
+    ...demoSteps.map(({ step }, index) => ({ image: step.image, label: `step ${index + 1} image` })),
+  ];
   const uniqueImages = new Set();
   let labImageBytes = 0;
-  imagePaths.forEach((image, index) => {
-    const label = index === 0 ? "coverImage" : `step ${index} image`;
+  imageAssets.forEach(({ image, label }) => {
     if (!imagePattern.test(image ?? "")) {
       fail(directory, `${label} must be a PNG, JPG, WebP, or SVG path under /demos`);
       return;
@@ -217,13 +286,17 @@ for (const directory of directories) {
     totalImages += 1;
   });
   if (labImageBytes > maxLabImageBytes) fail(directory, `unique screenshots exceed the 12 MiB per-lab asset budget`);
-  if (uniqueImages.size < imagePaths.length - 1) warn(directory, "multiple steps reuse the same screenshot");
+  const stepImagePaths = demoSteps.map(({ step }) => step.image);
+  if (new Set(stepImagePaths).size < stepImagePaths.length) warn(directory, "multiple steps reuse the same screenshot");
 
   demoSteps.forEach(({ demo, step, stepIndex }) => {
     const sourceName = `${directory} demo ${demo.id} step ${stepIndex + 1}`;
     ["label", "title", "alt", "explanation", "expected", "troubleshooting"].forEach((key) => {
       if (!nonEmptyString(step[key])) fail(sourceName, `${key} is required`);
     });
+    if (nonEmptyString(step.label) && step.label.trim().split(/\s+/).length < 2) {
+      fail(sourceName, "label must be a descriptive action-and-object phrase of at least two words");
+    }
     if ((step.alt ?? "").length < 10) fail(sourceName, "alt text must be descriptive");
     if (!Array.isArray(step.commands) || step.commands.length === 0) {
       fail(sourceName, "commands must contain at least one explained command");
@@ -234,6 +307,15 @@ for (const directory of directories) {
         fail(sourceName, `commands[${commandIndex}].explanation must provide a clear one- or two-line explanation`);
       }
       if (item?.explanation?.trim().length > 240) fail(sourceName, `commands[${commandIndex}].explanation must stay within 240 characters`);
+      const normalizedCommand = item?.command?.replace(/\\\s*\n/g, " ") ?? "";
+      const shortAdHocModule = normalizedCommand.match(/(?:^|\n)\s*(?:sudo\s+)?ansible\s+[^\n]*?(?:-m\s+|--module-name(?:=|\s+))([a-z_][a-z0-9_]*)(?=\s|$)/i);
+      if (shortAdHocModule) {
+        fail(sourceName, `commands[${commandIndex}] uses the short module name ${shortAdHocModule[1]}; use its FQCN`);
+      }
+      const shortDocumentedObject = normalizedCommand.match(/\bansible-doc\b[^\n|;&]*?\s([a-z_][a-z0-9_]*)(?=\s*(?:[|;&]|$))/i);
+      if (shortDocumentedObject && !normalizedCommand.includes("ansible-doc --list")) {
+        fail(sourceName, `commands[${commandIndex}] uses the short ansible-doc object name ${shortDocumentedObject[1]}; use its FQCN`);
+      }
     });
     if (step.media) {
       if (step.media.type !== "terminal") fail(sourceName, `unsupported media type: ${step.media.type ?? "(missing)"}`);
@@ -333,6 +415,15 @@ for (const directory of directories) {
           }
           if (!/(?:\([^)\r\n]+\) )?\[(?:rajat|learner)@[^\]\r\n]+\][#$]$/.test(contents.trimEnd())) {
             fail(sourceName, "transcript must end on a returned shell prompt");
+          }
+          if ((step.commands ?? []).every((item) => !item.command.includes("\n"))) {
+            const recordedCommands = [...contents.matchAll(/^(?:\([^\r\n)]*\) )?\[(?:rajat|learner)@[^\]\r\n]+\][#$] (.+)$/gm)]
+              .map((match) => match[1].trim())
+              .filter(Boolean);
+            const documentedCommands = step.commands.map((item) => item.command.trim());
+            if (JSON.stringify(recordedCommands) !== JSON.stringify(documentedCommands)) {
+              fail(sourceName, "transcript command sequence must exactly match the documented commands");
+            }
           }
         }
       });

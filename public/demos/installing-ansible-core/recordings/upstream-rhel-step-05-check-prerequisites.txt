@@ -1,8 +1,8 @@
-[rajat@demo ~]$ sudo dnf repolist --enabled
-Updating Subscription Management repositories.
-repo id                                          repo name
-rhel-9-for-aarch64-appstream-rpms                Red Hat Enterprise Linux 9 for ARM 64 - AppStream (RPMs)
-rhel-9-for-aarch64-baseos-rpms                   Red Hat Enterprise Linux 9 for ARM 64 - BaseOS (RPMs)
+[rajat@demo ~]$ command -v python3.12 || echo "Python 3.12 is not installed"
+Python 3.12 is not installed
+
+[rajat@demo ~]$ python3 -m pip --version
+/usr/bin/python3: No module named pip
 
 [rajat@demo ~]$ sudo dnf list --available python3.12 python3.12-pip
 Updating Subscription Management repositories.

@@ -230,6 +230,56 @@
             }
           },
           "takeaway": { "type": "string", "minLength": 20 },
+          "decisionGuide": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["title", "introduction", "options", "pathTitle", "path"],
+            "properties": {
+              "title": { "type": "string", "minLength": 5 },
+              "introduction": { "type": "string", "minLength": 20 },
+              "options": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 6,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["title", "label", "detail", "bestFor"],
+                  "properties": {
+                    "title": { "type": "string", "minLength": 3 },
+                    "label": { "type": "string", "minLength": 2 },
+                    "detail": { "type": "string", "minLength": 20 },
+                    "bestFor": { "type": "string", "minLength": 10 },
+                    "note": { "type": "string", "minLength": 20 },
+                    "reference": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": ["label", "href"],
+                      "properties": {
+                        "label": { "type": "string", "minLength": 3 },
+                        "href": { "type": "string", "format": "uri" }
+                      }
+                    }
+                  }
+                }
+              },
+              "pathTitle": { "type": "string", "minLength": 3 },
+              "path": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 6,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["condition", "result"],
+                  "properties": {
+                    "condition": { "type": "string", "minLength": 5 },
+                    "result": { "type": "string", "minLength": 3 }
+                  }
+                }
+              }
+            }
+          },
           "sources": {
             "type": "array",
             "minItems": 1,
@@ -264,12 +314,14 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "demoId", "title", "objective", "duration", "durationMinutes", "steps", "verification", "troubleshooting"],
+        "required": ["id", "demoId", "title", "objective", "coverImage", "coverAlt", "duration", "durationMinutes", "steps", "verification", "troubleshooting"],
         "properties": {
           "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
           "demoId": { "type": "string", "pattern": "^HOD-[0-9]{3,}-D[0-9]{2,}$" },
           "title": { "type": "string", "minLength": 5 },
           "objective": { "type": "string", "minLength": 20 },
+          "coverImage": { "type": "string", "pattern": "^/demos/.+\\.(png|jpg|jpeg|webp|svg)$" },
+          "coverAlt": { "type": "string", "minLength": 10 },
           "outcomes": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 5 } },
           "duration": { "type": "string", "minLength": 3 },
           "durationMinutes": { "type": "integer", "minimum": 1 },
@@ -281,7 +333,12 @@
               "additionalProperties": false,
               "required": ["label", "title", "image", "alt", "explanation", "commands", "expected", "troubleshooting"],
               "properties": {
-                "label": { "type": "string", "minLength": 2 },
+                "label": {
+                  "type": "string",
+                  "minLength": 3,
+                  "pattern": "^\\S+(?:\\s+\\S+)+$",
+                  "description": "A concise action-and-object phrase of at least two words, such as Check Repositories."
+                },
                 "title": { "type": "string", "minLength": 5 },
                 "image": { "type": "string", "pattern": "^/demos/.+\\.(png|jpg|jpeg|webp|svg)$" },
                 "alt": { "type": "string", "minLength": 10 },

@@ -1,4 +1,4 @@
-{"version":2,"width":120,"height":34,"idle_time_limit":1.25,"title":"upstream rhel 01 starting python","env":{"SHELL":"/bin/bash","TERM":"xterm-256color"}}
+{"version":2,"width":120,"height":34,"idle_time_limit":1.25,"title":"demo 2 step 01 system baseline","env":{"SHELL":"/bin/bash","TERM":"xterm-256color"}}
 [0,"o","\r\n\r\n"]
 [0.0001,"o","[rajat@demo ~]$ "]
 [1.2501,"o","cat /etc/redhat-release\r\n"]
@@ -16,11 +16,4 @@
 [5.018404,"o","Python 3.9.25\r\n\r\n"]
 [5.018757,"o",""]
 [5.018902,"o","[rajat@demo ~]$ "]
-[6.268902,"o","command -v python3.12 || echo \"Python 3.12 is not installed\"\r\n"]
-[6.269393,"o","Python 3.12 is not installed\r\n\r\n"]
-[6.269493,"o","[rajat@demo ~]$ "]
-[7.519493,"o","python3 -m pip --version\r\n"]
-[7.54179,"o","/usr/bin/python3: No module named pip\r\n\r\n"]
-[7.544883,"o",""]
-[7.544927,"o","[rajat@demo ~]$ "]
-[8.794927,"o",""]
+[6.268902,"o",""]

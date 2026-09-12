@@ -1,9 +1,7 @@
 {"version":2,"width":120,"height":34,"idle_time_limit":1.25,"title":"upstream rhel 08 smoke test","env":{"SHELL":"/bin/bash","TERM":"xterm-256color"}}
 [0,"o","\r\n"]
 [0.000129,"o","(ansible-core-2.21) [rajat@demo ~]$ "]
-[1.250129,"o","ansible localhost -i localhost, -m ansible.builtin.ping -c local \\\r\n"]
-[1.250459,"o","> "]
-[2.500459,"o","  -e \"ansible_python_interpreter=$(command -v python)\"\r\n"]
+[1.250129,"o","ansible localhost -i localhost, -m ansible.builtin.ping -c local -e \"ansible_python_interpreter=$(command -v python)\"\r\n"]
 [2.905686,"o","localhost | SUCCESS => {\r\n    \"changed\": false,\r\n    \"ping\": \"pong\"\r\n}\r\n"]
 [2.934261,"o","\r\n"]
 [2.934276,"o","(ansible-core-2.21) [rajat@demo ~]$ "]

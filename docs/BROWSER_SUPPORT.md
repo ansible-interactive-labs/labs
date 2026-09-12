@@ -4,14 +4,14 @@ Rajat’s Applied Technology Lab supports the modern-browser baseline documented
 
 | Browser family | Minimum supported version |
 | --- | ---: |
-| Google Chrome | 111 |
-| Microsoft Edge | 111 |
-| Mozilla Firefox | 128 |
-| Apple Safari | 16.4 |
-| Mobile Safari on iOS/iPadOS | 16.4 |
-| Chrome on Android | Uses the current Android Chrome engine |
+| Google Chrome | 125 |
+| Microsoft Edge | 125 |
+| Mozilla Firefox | 124 |
+| Apple Safari | 17.3 |
+| Mobile Safari on iOS/iPadOS | Latest released version |
+| Chrome on Android | Latest released version |
 
-The production target is declared in `package.json` through Browserslist. Next.js uses this configuration when compiling JavaScript and CSS.
+The production target is declared in `package.json` through Browserslist. Next.js uses this configuration when compiling JavaScript and CSS. Desktop targets establish minimum versions; the mobile targets follow the latest Mobile Safari and Chrome for Android releases available to Browserslist at build time.
 
 ## Required release checks
 

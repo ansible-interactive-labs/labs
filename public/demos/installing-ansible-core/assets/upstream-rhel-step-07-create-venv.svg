@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Create and activate a Python 3.12 virtual environment</title>
+  <desc id="desc">Static fallback generated from upstream-rhel-04-create-venv.txt</desc>
+  <defs>
+    <linearGradient id="terminal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#17151a"/>
+      <stop offset="1" stop-color="#252129"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="#0d0c10"/>
+  <rect x="24" y="24" width="1552" height="852" rx="22" fill="url(#terminal)" stroke="#49434c" stroke-width="2"/>
+  <circle cx="66" cy="66" r="9" fill="#ff5f57"/>
+  <circle cx="96" cy="66" r="9" fill="#febc2e"/>
+  <circle cx="126" cy="66" r="9" fill="#28c840"/>
+  <text x="800" y="72" fill="#bdb6c0" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22">Create and activate a Python 3.12 virtual environment</text>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">
+    <text x="68" y="134" fill="#ff8d80">[rajat@demo ~]$ mkdir -p ~/.venvs</text>
+    <text x="68" y="161" fill="#e8e4ea"> </text>
+    <text x="68" y="188" fill="#ff8d80">[rajat@demo ~]$ python3.12 -m venv --prompt ansible-core-2.21 ~/.venvs/ansible-core-2.21</text>
+    <text x="68" y="215" fill="#e8e4ea"> </text>
+    <text x="68" y="242" fill="#ff8d80">[rajat@demo ~]$ source ~/.venvs/ansible-core-2.21/bin/activate</text>
+    <text x="68" y="269" fill="#e8e4ea"> </text>
+    <text x="68" y="296" fill="#e8e4ea">(ansible-core-2.21) [rajat@demo ~]$ python --version</text>
+    <text x="68" y="323" fill="#e8e4ea">Python 3.12.14</text>
+    <text x="68" y="350" fill="#e8e4ea"> </text>
+    <text x="68" y="377" fill="#e8e4ea">(ansible-core-2.21) [rajat@demo ~]$ python -m pip --version</text>
+    <text x="68" y="404" fill="#e8e4ea">pip 23.2.1 from /home/rajat/.venvs/ansible-core-2.21/lib64/python3.12/site-packages/pip (python 3.12)</text>
+    <text x="68" y="431" fill="#e8e4ea"> </text>
+    <text x="68" y="458" fill="#e8e4ea">(ansible-core-2.21) [rajat@demo ~]$</text>
+  </g>
+</svg>

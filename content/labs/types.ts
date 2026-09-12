@@ -97,6 +97,26 @@ export type LabComparison = {
     };
   }>;
   takeaway?: string;
+  decisionGuide?: {
+    title: string;
+    introduction: string;
+    options: Array<{
+      title: string;
+      label: string;
+      detail: string;
+      bestFor: string;
+      note?: string;
+      reference?: {
+        label: string;
+        href: string;
+      };
+    }>;
+    pathTitle: string;
+    path: Array<{
+      condition: string;
+      result: string;
+    }>;
+  };
   sources: Array<{
     label: string;
     href: string;
@@ -108,6 +128,8 @@ export type LabDemo = {
   demoId: string;
   title: string;
   objective: string;
+  coverImage: string;
+  coverAlt: string;
   outcomes?: string[];
   duration: string;
   durationMinutes: number;

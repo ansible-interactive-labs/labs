@@ -64,4 +64,10 @@ Installed:
 
 Complete!
 
+[rajat@demo ~]$ python3.12 --version
+Python 3.12.14
+
+[rajat@demo ~]$ python3.12 -m pip --version
+pip 23.2.1 from /usr/lib/python3.12/site-packages/pip (python 3.12)
+
 [rajat@demo ~]$

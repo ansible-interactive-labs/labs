@@ -21,6 +21,8 @@ const assertLab = (value: unknown, source: string): Lab => {
   if (lab.status === "Available" && lab.demos.length === 0) throw new Error(`${source}: an available HOD requires at least one demo`);
   lab.demos.forEach((demo, index) => {
     if (typeof demo.demoId !== "string" || !demo.demoId.trim()) throw new Error(`${source}: demo ${index + 1} requires a demoId`);
+    if (typeof demo.coverImage !== "string" || !demo.coverImage.trim()) throw new Error(`${source}: demo ${index + 1} requires a coverImage`);
+    if (typeof demo.coverAlt !== "string" || !demo.coverAlt.trim()) throw new Error(`${source}: demo ${index + 1} requires coverAlt text`);
     if (!Array.isArray(demo.steps) || demo.steps.length === 0) throw new Error(`${source}: demo ${index + 1} requires at least one step`);
     if (!Array.isArray(demo.verification) || demo.verification.length === 0) throw new Error(`${source}: demo ${index + 1} requires verification checks`);
     if (!Array.isArray(demo.troubleshooting) || demo.troubleshooting.length === 0) throw new Error(`${source}: demo ${index + 1} requires troubleshooting guidance`);

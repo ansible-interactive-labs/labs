@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
   <title id="title">Run a functional localhost smoke test</title>
-  <desc id="desc">Static fallback generated from pipx-rhel-09-smoke-test.txt</desc>
+  <desc id="desc">Static fallback generated from upstream-rhel-08-smoke-test.txt</desc>
   <defs>
     <linearGradient id="terminal" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#17151a"/>
@@ -14,12 +14,12 @@
   <circle cx="126" cy="66" r="9" fill="#28c840"/>
   <text x="800" y="72" fill="#bdb6c0" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22">Run a functional localhost smoke test</text>
   <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">
-    <text x="68" y="134" fill="#ff8d80">[rajat@demo ~]$ ansible localhost -i localhost, -m ansible.builtin.ping -c local -e ansible_python_interprete…</text>
+    <text x="68" y="134" fill="#e8e4ea">(ansible-core-2.21) [rajat@demo ~]$ ansible localhost -i localhost, -m ansible.builtin.ping -c local -e &quot;ansi…</text>
     <text x="68" y="161" fill="#e8e4ea">localhost | SUCCESS =&gt; {</text>
     <text x="68" y="188" fill="#e8e4ea">    &quot;changed&quot;: false,</text>
     <text x="68" y="215" fill="#e8e4ea">    &quot;ping&quot;: &quot;pong&quot;</text>
     <text x="68" y="242" fill="#e8e4ea">}</text>
     <text x="68" y="269" fill="#e8e4ea"> </text>
-    <text x="68" y="296" fill="#ff8d80">[rajat@demo ~]$</text>
+    <text x="68" y="296" fill="#e8e4ea">(ansible-core-2.21) [rajat@demo ~]$</text>
   </g>
 </svg>
