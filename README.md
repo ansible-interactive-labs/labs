@@ -45,6 +45,12 @@ The deployable site is generated in `out/`. To test the production output locall
 python3 -m http.server 8080 --directory out
 ```
 
+## Optional aggregate analytics
+
+HOD pages emit a small, provider-neutral event set for page views, installation-path selections, demo starts, demo completions, official-reference links, next-HOD links, and author-profile links. The payload contains the event name, page path, HOD ID, and relevant demo or link label. It does not create a learner account, persistent session identifier, or browser cookie, and it is not emitted when the browser enables Global Privacy Control or Do Not Track.
+
+Analytics is disabled unless `NEXT_PUBLIC_ANALYTICS_ENDPOINT` is configured. The endpoint must accept JSON `POST` requests. GitHub Pages builds read the optional `ANALYTICS_ENDPOINT` repository variable. When an existing analytics integration supplies `window.plausible`, the same anonymous events are also forwarded through that function. Provider-side IP handling, retention, consent, and regional requirements remain the site owner's responsibility.
+
 ## Publish with GitHub Pages
 
 1. Push this project to the `main` branch of a GitHub repository.
@@ -68,10 +74,11 @@ The project explicitly targets Chrome 111+, Edge 111+, Firefox 128+, Safari 16.4
 7. When two demos contain the same ordered command sequence, reuse the same step label, heading, alternative text, introduction, command explanations, expected result, note, and recovery guidance. Only the replay and fallback image may differ when the environment shown is different.
 8. Review every demo title and Start Demo objective against the complete recorded workflow. Review every top-bar label, step heading, introduction, expected result, note, per-step recovery message, and general troubleshooting item against the commands and replay before publishing.
 9. Do not add a per-step Restart Demo action. Closing or refreshing an anonymous demo resets it; the next launch begins at step 1.
-10. Record the tested OS, architecture, package or image version, and verification date.
+10. Record the tested OS, architecture, and package or image version.
 11. Complete the instructional audit in `docs/LAB_CONTENT_REVIEW.md`, save the findings as `content/labs/<demo-slug>/review.md`, and share them even when no gaps are found.
-12. Add a source-backed `comparisons` block whenever learners may confuse related tools, packages, commands, or support models. For a dependent choice, use `decisionGuide` to present the second decision without duplicating the first comparison.
-13. Sanitize recordings with `node scripts/sanitize-cast.mjs <file.cast>`, then run `pnpm validate:labs`, `pnpm lint`, and `pnpm build`. Test the exported root and dedicated demo route over local HTTP.
+12. Add a source-backed `comparisons` block whenever learners may confuse related tools, packages, commands, or support models. Begin an ansible-core decision with the collections, platforms, and dependencies the automation requires. For a dependent choice, use `decisionGuide` to present the next decision without duplicating the first comparison. Use `followups` for short post-decision guardrails or validation boundaries that apply to the comparison as a whole.
+13. Add a `nextStep` card when the final check intentionally leaves a larger acceptance boundary untested. Describe the follow-on validation and link the future HOD only after its route exists.
+14. Sanitize recordings with `node scripts/sanitize-cast.mjs <file.cast>`, then run `pnpm validate:labs`, `pnpm lint`, and `pnpm build`. Test the exported root and dedicated demo route over local HTTP.
 
 Use this recording command for every terminal step:
 
@@ -115,6 +122,8 @@ No central registry or route file needs to be edited. The build discovers each `
 - Static routes and `sitemap.xml` are generated from discovered labs. Adding lab 101 follows exactly the same workflow as adding lab 2.
 - Lab JSON follows the versioned schema in `content/labs/schema.json`, allowing future content migrations without coupling content to UI components.
 - Optional comparison records render as accessible, mobile-scrollable tables with a practical decision takeaway and official references.
+- Reusable `prerequisiteCallouts` keep subscription, entitlement, and package-source explanations separate from concise prerequisite cards; comparison `followups` hold guardrails and validation boundaries without hard-coding them into a page component.
+- A reusable `nextStep` card can identify the next acceptance boundary without implying that the current HOD already validates it.
 - Demo modules can override the lab-level outcomes, so each Start Demo screen remains accurate as a single HOD grows to include multiple installation or operating-system workflows.
 
 ## Lab publishing standard
@@ -125,7 +134,8 @@ Every published lab must include:
 - One or more independently playable demo modules, each with a single Start Demo action and a viewport-contained player with fixed navigation and independently scrollable guidance
 - Searchable topic, platform, difficulty, tags, duration, and learning outcomes
 - Explicit OS, privilege, connectivity, subscription, and registry prerequisites
-- A tested environment record and visible last-verified date
+- Separate prerequisite callouts when learners need to distinguish product access, package provenance, or entitlement requirements
+- A tested environment record covering the operating system, architecture, and package or image version
 - Sanitized terminal replays branded with the `rajat` demonstration user, with text transcripts, screenshot fallbacks, meaningful alternative text, and no private infrastructure or credential data
 - A fixed 120×34 terminal canvas that fills the available media pane at desktop, tablet, and phone sizes without decorative inset padding
 - Copyable commands, expected results, and per-step troubleshooting

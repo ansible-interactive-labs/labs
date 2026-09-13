@@ -4,10 +4,15 @@
   "hodId": "HOD-001",
   "slug": "installing-ansible-core",
   "title": "Installing ansible-core",
-  "shortDescription": "Install and verify RHEL-provided and upstream ansible-core distributions.",
-  "description": "Compare supported Python combinations, install the RHEL-provided ansible-core RPM, and install upstream ansible-core from PyPI using both a virtual environment and pipx on RHEL 9.",
+  "shortDescription": "Choose and verify the right ansible-core installation path on RHEL 9 without mixing package ownership.",
+  "description": "Choose the right ansible-core installation path for RHEL 9, avoid replacing the platform Python, and verify exactly which package, executable, runtime, and built-in content you installed.",
+  "seoTitle": "Install ansible-core on RHEL 9 with DNF, pip, or pipx",
+  "seoDescription": "Compare Red Hat and upstream ansible-core, choose DNF, pip, or pipx, and follow verified RHEL 9 installation demonstrations.",
+  "audience": "For developers and automation content authors who are new to installing ansible-core, and for practitioners who must choose and maintain a supported installation path. The command workflows are beginner-friendly; the compatibility, lifecycle, and source-governance guidance provides the practitioner context behind the choice.",
+  "durationNote": "Choose one installation path and allow 13–18 minutes for its demonstration. Complete all three paths when you want the full 48-minute comparison.",
   "coverImage": "/demos/installing-ansible-core/cover.svg",
   "coverAlt": "RHEL RPM and upstream PyPI installation paths leading to ansible-core and a successful localhost validation",
+  "socialImage": "/demos/installing-ansible-core/social.png",
   "duration": "48 min",
   "durationMinutes": 48,
   "difficulty": "Beginner",
@@ -18,16 +23,10 @@
   "publishedOrder": 10,
   "tags": ["Getting started", "RHEL 9", "Installation"],
   "outcomes": [
-    "Connect RHEL to Red Hat services",
-    "Understand BaseOS and AppStream",
-    "Install and inspect the RHEL-provided ansible-core RPM",
-    "Select a maintained upstream ansible-core and compatible Python release",
-    "Choose between the RHEL RPM, pip with a virtual environment, and pipx",
-    "Pin ansible-core and its related dependencies at the right level",
-    "Install upstream ansible-core from PyPI without replacing RHEL's system Python",
-    "Use pipx to manage ansible-core as an isolated command-line application",
-    "Identify the collection namespace available from ansible-core",
-    "Validate a working Ansible control node"
+    "Choose an appropriate ansible-core distribution and installation model",
+    "Install ansible-core without mixing RPM and Python package ownership",
+    "Verify package provenance, runtime compatibility, and built-in content",
+    "Understand how to maintain and reproduce the selected environment"
   ],
   "overview": {
     "title": "What is ansible-core?",
@@ -101,15 +100,38 @@
     },
     "relatedTools": [
       {
-        "title": "ansible-navigator",
-        "detail": "ansible-navigator is installed separately from ansible-core. Red Hat documentation refers to it as automation content navigator. It gives developers command-line and interactive interfaces for running, inspecting, and troubleshooting Ansible content, often through execution environments. These environments normally contain ansible-core, the required collections, and their dependencies. HOD 002 introduces the ansible-dev-tools package that provides ansible-navigator through the Red Hat distribution path.",
-        "status": "Continue with HOD 002",
+        "title": "ansible-dev-tools",
+        "detail": "ansible-dev-tools is a curated toolkit installed separately from ansible-core for developing, linting, testing, building, signing, and running Ansible content. HOD 002 introduces the included tools, including ansible-navigator, and compares the upstream Python distribution with the Red Hat delivery path.",
+        "status": "Recommended next HOD",
         "href": "/demos/understanding-ansible-dev-tools/",
-        "linkLabel": "Preview HOD 002",
+        "linkLabel": "Continue to HOD 002",
+        "primary": true,
         "reference": {
-          "label": "Read the official overview",
-          "href": "https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.7/develop-con_about_ansible_navigator"
+          "label": "Read the official ansible-dev-tools documentation",
+          "href": "https://docs.ansible.com/projects/dev-tools/"
         }
+      }
+    ]
+  },
+  "proof": {
+    "title": "What makes this HOD practical",
+    "introduction": "The demonstrations pair the reasoning behind an installation choice with evidence captured from the environment where the commands were tested.",
+    "items": [
+      {
+        "title": "Recorded on RHEL",
+        "detail": "Terminal replays retain the command, complete output, and returned prompt from tested RHEL 9 environments."
+      },
+      {
+        "title": "Package provenance checked",
+        "detail": "Each workflow identifies the package owner, executable path, Python runtime, and installed package location."
+      },
+      {
+        "title": "Expected results included",
+        "detail": "Every step explains the command, the result to look for, and what to inspect when the result differs."
+      },
+      {
+        "title": "Architecture context retained",
+        "detail": "Source-backed compatibility, support, lifecycle, pinning, and content-boundary guidance surrounds the recorded workflow."
       }
     ]
   },
@@ -135,15 +157,94 @@
       "detail": "Begin each demonstration from a separate, fully updated RHEL 9 system where ansible-core is not already installed. Do not run the three workflows sequentially on the same unchanged VM."
     }
   ],
-  "accessCallout": {
-    "title": "Don’t have a Red Hat subscription?",
-    "detail": "You can join the Red Hat Developer program at no cost. Eligible members can activate the self-supported Red Hat Developer Subscription for Individuals, which provides access to RHEL and repositories such as BaseOS and AppStream. You do not need an Ansible Automation Platform subscription to complete this lab. Repository access does not create a Red Hat support entitlement for automation you create with ansible-core.",
-    "links": [
+  "prerequisiteCallouts": [
+    {
+      "title": "Don’t have a Red Hat subscription?",
+      "paragraphs": [
+        "You can join the Red Hat Developer program at no cost. Eligible members can activate the self-supported Red Hat Developer Subscription for Individuals, which provides access to RHEL and repositories such as BaseOS and AppStream. You do not need an Ansible Automation Platform subscription to complete this lab. Repository access does not create a Red Hat support entitlement for automation you create with ansible-core."
+      ],
+      "links": [
+        {
+          "href": "https://developers.redhat.com/register",
+          "label": "Join Red Hat Developer"
+        }
+      ]
+    },
+    {
+      "title": "Why do the upstream demonstrations register RHEL?",
+      "paragraphs": [
+        "Demo 02 and Demo 03 register RHEL only to obtain Python 3.12 and its pip package from supported RHEL repositories. The ansible-core package is downloaded separately from PyPI.",
+        "A Red Hat subscription is therefore required for the demonstrated RHEL package source, not for access to upstream ansible-core itself. On another Linux distribution, use that distribution’s supported method to install a compatible Python runtime."
+      ],
+      "links": [
+        {
+          "href": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/installing_and_using_dynamic_programming_languages/assembly_installing-and-using-python_installing-and-using-dynamic-programming-languages",
+          "label": "Read RHEL’s Python guidance"
+        },
+        {
+          "href": "https://docs.ansible.com/projects/ansible/latest/installation_guide/intro_installation.html",
+          "label": "Read the upstream installation guide"
+        }
+      ]
+    }
+  ],
+  "prerequisiteDetails": {
+    "title": "Enterprise environment considerations",
+    "introduction": "Open this guidance when the demonstration is being adapted for organization-managed, restricted, or disconnected systems.",
+    "items": [
       {
-        "href": "https://developers.redhat.com/register",
-        "label": "Join Red Hat Developer"
+        "title": "Registering systems in a managed environment",
+        "paragraphs": [
+          "The demonstrations use an interactive Red Hat account login because each learner is registering one disposable system. For repeatable provisioning at organizational scale, Red Hat also supports registering RHEL with an activation key and organization ID. Treat activation keys as protected provisioning credentials: do not place them in source control, reusable machine images, terminal recordings, or unprotected scripts.",
+          "The rhc workflow can connect a system to Subscription Management, Red Hat Lightspeed inventory, and remote host configuration. Before registering an organizational system, confirm which services are permitted and whether its inventory data, system-purpose settings, and remote-management capabilities meet your security, privacy, and operations policies."
+        ],
+        "links": [
+          {
+            "href": "https://docs.redhat.com/en/documentation/subscription_central/1-latest/html/getting_started_with_rhel_system_registration/con-basic-reg-rhel-cli",
+            "label": "Review activation-key registration"
+          },
+          {
+            "href": "https://docs.redhat.com/en/documentation/red_hat_lightspeed/1-latest/html/registering_rhel_systems_and_configuring_client_tools_with_red_hat_lightspeed/minimizing-data-collection",
+            "label": "Review data-privacy controls"
+          }
+        ]
+      },
+      {
+        "title": "Using controlled or disconnected content sources",
+        "paragraphs": [
+          "The recorded workflows use direct HTTPS connections to Red Hat services and, for the upstream installations, PyPI. Treat them as connected reference workflows. In a restricted or disconnected environment, use the sources approved by your organization, such as Satellite-managed RHEL content, a controlled Python package index, and an approved Galaxy or Automation Hub server.",
+          "The installation ownership and compatibility decisions remain the same, but repository registration, proxy, certificate, package-index, and collection-source configuration will differ. Validate the mirrored artifacts and dependencies before promoting them between development, test, and production environments."
+        ],
+        "links": [
+          {
+            "href": "https://docs.redhat.com/en/documentation/red_hat_satellite/6.19/html/managing_content/managing-content-views-and-content-view-environments",
+            "label": "Review Satellite content views"
+          },
+          {
+            "href": "https://docs.ansible.com/projects/ansible/latest/collections_guide/collections_installing.html#downloading-a-collection-for-offline-use",
+            "label": "Review offline collection installation"
+          }
+        ]
       }
     ]
+  },
+  "nextStep": {
+    "eyebrow": "Continue your validation",
+    "title": "Validate a Linux managed host",
+    "detail": "HOD 001 proves that the selected ansible-core runtime works locally. A planned follow-on HOD will validate the rest of the control path against a remote Linux host before the environment is treated as ready for managed-host development.",
+    "status": "Planned HOD",
+    "items": [
+      "Create an inventory containing a lab-managed Linux host",
+      "Verify SSH connectivity and establish the host’s identity",
+      "Confirm that the managed host has a compatible Python interpreter",
+      "Configure key-based authentication and the required become permissions",
+      "Run ansible.builtin.ping through the remote connection",
+      "Gather and inspect host facts with ansible.builtin.setup"
+    ],
+    "reference": {
+      "href": "https://docs.ansible.com/projects/ansible/latest/getting_started/index.html",
+      "label": "Review the Ansible control-node, inventory, and managed-node model"
+    }
   },
   "comparisons": [
     {
@@ -340,9 +441,17 @@
     },
     {
       "title": "Choose your ansible-core installation path",
-      "introduction": "Make this choice in two stages. First decide who will provide, maintain, and support ansible-core: Red Hat through a RHEL RPM or the upstream Ansible project through PyPI. If you choose the upstream distribution, then decide whether a project-owned virtual environment or a pipx-managed command-line environment better fits the way the control node will be used.",
+      "introduction": "Make this choice in three stages. First identify the collections, platforms, and controller-side dependencies required by your automation. Next decide who will provide, maintain, and support a compatible ansible-core: Red Hat through a RHEL RPM or the upstream Ansible project through PyPI. If you choose the upstream distribution, then select the environment model that fits the way the control node will be used.",
       "eyebrow": "Architecture decision",
       "notes": [
+        {
+          "title": "Start with the automation requirements",
+          "detail": "List the collections and platforms the control node must support before selecting ansible-core. Find their requirements in the collection documentation and release notes. A collection’s meta/runtime.yml file can declare its compatible ansible-core range through requires_ansible; other Python, system, and platform requirements are collection-specific. The newest ansible-core release is not automatically compatible with every collection or existing automation project.",
+          "reference": {
+            "label": "Read about the requires_ansible collection constraint",
+            "href": "https://docs.ansible.com/projects/ansible-core/devel/dev_guide/developing_collections_structure.html#meta-directory"
+          }
+        },
         {
           "title": "What stays the same",
           "detail": "Both distributions provide the ansible-core command-line tools, automation language, execution runtime, and embedded ansible.builtin collection. Other collections are installed and maintained separately."
@@ -356,7 +465,7 @@
           }
         }
       ],
-      "summaryLabel": "Decision 1: Compare distribution and support models",
+      "summaryLabel": "Decision 2: Compare distribution and support models",
       "rowHeader": "Decision factor",
       "columns": ["RHEL-provided AppStream RPM", "Upstream PyPI distribution"],
       "rows": [
@@ -390,6 +499,7 @@
         }
       ],
       "decisionGuide": {
+        "label": "Decision 3",
         "title": "Choose the environment model",
         "introduction": "After choosing the distribution, match its environment model to the way the control node will be maintained. The upstream distribution has two useful isolation patterns; they solve different operational problems.",
         "options": [
@@ -397,19 +507,25 @@
             "title": "RHEL AppStream RPM",
             "label": "Operating-system managed",
             "detail": "DNF manages the system-wide command, RHEL-integrated Python dependencies, signed updates, and removal. No environment activation is required.",
-            "bestFor": "RHEL-integrated use where DNF ownership and the documented Red Hat support scope are the priorities."
+            "bestFor": "RHEL-integrated use where DNF ownership and the documented Red Hat support scope are the priorities.",
+            "href": "#demo-install-and-validate",
+            "linkLabel": "Start the RPM demo"
           },
           {
             "title": "pip with a virtual environment",
             "label": "Project managed",
             "detail": "You choose the Python interpreter and manage ansible-core with related controller-side Python libraries in a project-owned environment. Activate that environment before using its commands.",
-            "bestFor": "Project development, testing, or CI where the interpreter and Python dependencies must be controlled and reproduced together."
+            "bestFor": "Project development, testing, or CI where the interpreter and Python dependencies must be controlled and reproduced together.",
+            "href": "#demo-install-upstream-from-pypi-rhel",
+            "linkLabel": "Start the virtual-environment demo"
           },
           {
             "title": "pipx",
             "label": "User managed",
             "detail": "pipx creates a dedicated application environment and exposes the Ansible commands on the user's PATH, so manual activation is normally unnecessary.",
             "bestFor": "An individual's command-line environment where convenient isolation and direct command access are the priorities.",
+            "href": "#demo-install-upstream-with-pipx-rhel",
+            "linkLabel": "Start the pipx demo",
             "note": "pipx isolates ansible-core and its Python dependencies, not the complete Ansible runtime. Configuration, inventory, playbooks, roles, and collections can remain outside the pipx environment. Add controller-side Python libraries with pipx inject or pipx runpip; manage required operating-system libraries separately.",
             "reference": {
               "label": "Read Ansible's pipx dependency guidance",
@@ -433,6 +549,65 @@
           }
         ]
       },
+      "followups": [
+        {
+          "title": "Before you continue",
+          "items": [
+            {
+              "title": "Content compatibility",
+              "detail": "Confirm that the collections required by the automation support the selected ansible-core version."
+            },
+            {
+              "title": "Runtime compatibility",
+              "detail": "Confirm that the selected ansible-core and control-node Python versions are compatible."
+            },
+            {
+              "title": "Installation ownership",
+              "detail": "Know whether DNF, a project virtual environment, or pipx owns and updates the installation."
+            },
+            {
+              "title": "Source and maintenance",
+              "detail": "Know where the packages come from and how the selected installation will receive updates."
+            }
+          ]
+        },
+        {
+          "title": "Avoid mixing installation paths",
+          "items": [
+            {
+              "title": "Keep one package owner",
+              "detail": "Allow DNF, a project virtual environment, or pipx to own a particular ansible-core installation. Do not let multiple package managers modify the same runtime."
+            },
+            {
+              "title": "Protect RHEL’s platform Python",
+              "detail": "Do not install ansible-core or additional PyPI packages into the Python environment used by the operating system."
+            },
+            {
+              "title": "Do not overwrite the RPM",
+              "detail": "Use a separate virtual environment or pipx when installing upstream ansible-core on a system that also contains the RHEL RPM."
+            },
+            {
+              "title": "Check command precedence",
+              "detail": "If more than one installation exists, use type -a ansible, command -v ansible, and ansible --version to confirm which executable and Python runtime are active."
+            },
+            {
+              "title": "Understand the pipx boundary",
+              "detail": "pipx isolates ansible-core and its Python dependencies. It does not automatically isolate Ansible configuration, inventory, playbooks, collections, credentials, or operating-system libraries."
+            },
+            {
+              "title": "Use independent environments for comparison",
+              "detail": "Perform the three demonstrations on separate clean systems or restored snapshots. They are alternative installation paths, not three installations that should normally be combined on one control node."
+            }
+          ]
+        },
+        {
+          "title": "What does the localhost test validate?",
+          "paragraphs": [
+            "The final ansible.builtin.ping command uses a local connection. It confirms that the selected Ansible executable starts, loads the module, and can execute it with the specified local Python interpreter.",
+            "This test does not validate connectivity to a managed host, inventory design, SSH, WinRM, network-device access, credentials, privilege escalation, DNS, firewall rules, or the runtime requirements of additional collections. Those checks belong to a managed-host demonstration."
+          ]
+        }
+      ],
       "takeawayLabel": "Production boundary",
       "takeaway": "These installation methods create a local control-node runtime. They do not provide an immutable team runtime, centralized credentials, role-based access, scheduling, or audit history. Use an execution environment and an appropriate controller or orchestration platform when those production requirements apply.",
       "sources": [
@@ -603,6 +778,14 @@
             "label": "Read pip's repeatable-install guidance",
             "href": "https://pip.pypa.io/en/stable/topics/repeatable-installs/"
           }
+        },
+        {
+          "title": "Use approved artifact sources",
+          "detail": "Direct access to the Red Hat CDN, PyPI, and Ansible Galaxy is suitable for many individual learning environments. An organization may instead require approved RPM repositories, a controlled Python package index, approved collection sources, trusted certificate authorities, artifact scanning, and promotion between development, test, and production repositories. Record both the package version and its approved source. A version pin controls which release is selected; it does not establish that the downloaded artifact came from a trusted or organization-approved repository.",
+          "reference": {
+            "label": "Read pip's secure-install guidance",
+            "href": "https://pip.pypa.io/en/stable/topics/secure-installs/"
+          }
         }
       ],
       "summaryLabel": "Compare what must be pinned",
@@ -643,6 +826,42 @@
           }
         }
       ],
+      "followups": [
+        {
+          "title": "Apply minimum source controls",
+          "items": [
+            {
+              "title": "RHEL AppStream RPM",
+              "detail": "Use an approved RHEL repository or content snapshot, keep DNF package-signature verification enabled, and record the complete RPM identity and applicable Red Hat advisory."
+            },
+            {
+              "title": "pip and pipx",
+              "detail": "Use an approved Python package index through a trusted certificate chain. Pin accepted versions and require hashes when organizational policy calls for artifact-level verification."
+            },
+            {
+              "title": "Ansible collections",
+              "detail": "Use an approved Galaxy or Automation Hub server, record exact collection versions and sources, keep certificate validation enabled, and enforce signature verification when the distribution server supports it."
+            }
+          ]
+        },
+        {
+          "title": "Monitor the selected distribution",
+          "items": [
+            {
+              "title": "RHEL-provided RPM",
+              "detail": "Follow Red Hat Security, Bug, and Enhancement Advisories and configure Customer Portal errata notifications. Review applicable advisories before approving a package update."
+            },
+            {
+              "title": "Upstream ansible-core",
+              "detail": "Review the upstream maintenance matrix and changelog for maintenance releases. Before changing feature lines, read the matching ansible-core porting guide and rerun the accepted tests."
+            },
+            {
+              "title": "Installed collections",
+              "detail": "Monitor each collection separately because collections do not share the ansible-core release cycle. Review its changelog, support statement, dependencies, and requires_ansible constraint before updating it."
+            }
+          ]
+        }
+      ],
       "takeawayLabel": "A practical pinning workflow",
       "takeaway": "Choose a compatible feature line, build a candidate environment, capture the exact resolved versions, test representative automation and managed hosts, and then approve that record as the baseline. For the next update, create a new candidate and retain the last accepted baseline until the replacement has passed validation. Use an execution environment when the team needs ansible-core, collections, Python packages, and system dependencies packaged and promoted as one immutable artifact.",
       "sources": [
@@ -671,8 +890,16 @@
           "href": "https://pipx.pypa.io/stable/reference/metadata.html"
         },
         {
-          "label": "Ansible collection version requirements",
+          "label": "Ansible collection sources and signature verification",
           "href": "https://docs.ansible.com/projects/ansible/latest/collections_guide/collections_installing.html"
+        },
+        {
+          "label": "Red Hat Satellite content views and lifecycle promotion",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_satellite/6.19/html/managing_content/managing-content-views-and-content-view-environments"
+        },
+        {
+          "label": "pip configuration and package-index settings",
+          "href": "https://pip.pypa.io/en/stable/topics/configuration/"
         },
         {
           "label": "RHEL package version and repository inspection",
@@ -681,13 +908,23 @@
         {
           "label": "Red Hat security backporting practice",
           "href": "https://access.redhat.com/security/updates/backporting"
+        },
+        {
+          "label": "Red Hat errata notifications and advisories",
+          "href": "https://access.redhat.com/security/updates/advisory"
+        },
+        {
+          "label": "Upstream ansible-core releases and maintenance",
+          "href": "https://docs.ansible.com/projects/ansible-core/devel/reference_appendices/release_and_maintenance.html"
+        },
+        {
+          "label": "ansible-core porting guides",
+          "href": "https://docs.ansible.com/projects/ansible/latest/porting_guides/porting_guides.html"
         }
       ]
     }
   ],
   "verified": {
-    "date": "September 11, 2026",
-    "dateISO": "2026-09-11",
     "os": "Red Hat Enterprise Linux 9.8 (Plow)",
     "architecture": "aarch64",
     "package": "RHEL RPM 2.14.18-3.el9_8.1 · upstream PyPI 2.21.4 · pipx 1.17.2"
@@ -736,12 +973,12 @@
       "label": "Register RHEL",
       "title": "Register RHEL with Red Hat services",
       "image": "/demos/installing-ansible-core/assets/02-registration-complete.png",
-      "alt": "RHEL terminal confirming successful connections to Red Hat Subscription Management and Insights",
+      "alt": "RHEL terminal confirming successful connections to Red Hat services",
       "explanation": "A registered RHEL system can retrieve protected content from Red Hat repositories. This demonstration uses an interactive Red Hat account login and keeps all credential input outside the published replay.",
       "commands": [
         { "command": "sudo rhc connect", "explanation": "Runs the Red Hat connector with administrative privileges. It registers the system with Subscription Management and connects it to Red Hat Lightspeed." }
       ],
-      "expected": "rhc reports successful connections to Red Hat Subscription Management and Insights and activates remote host configuration.",
+      "expected": "rhc reports successful connections to Red Hat Subscription Management and Red Hat Lightspeed and activates remote host configuration. The recorded client uses the former Red Hat Insights name in its output.",
       "note": "Credential input is excluded from the replay. The neutral placeholders show where learners interact without exposing an account name or password.",
       "troubleshooting": "If no credential prompt appears, make sure rhc connect is running in an interactive terminal. If registration fails, verify network, DNS, proxy, system time, and the account's RHEL entitlement.",
       "media": {
@@ -754,12 +991,12 @@
       "label": "Verify Connection",
       "title": "Verify the Red Hat connection",
       "image": "/demos/installing-ansible-core/assets/03-registration-status.png",
-      "alt": "RHEL terminal showing active Subscription Management and Red Hat Insights connections",
+      "alt": "RHEL terminal showing active Subscription Management and Red Hat hosted inventory connections",
       "explanation": "Registration should be confirmed independently before relying on protected repositories. The connection status separates a successful login from a usable registered system.",
       "commands": [
         { "command": "sudo rhc status", "explanation": "Reports the system's current connections to Subscription Management, Red Hat Lightspeed, and remote host configuration services." }
       ],
-      "expected": "The system is connected to Red Hat Subscription Management and Red Hat Insights.",
+      "expected": "The system is connected to Red Hat Subscription Management and Red Hat Lightspeed. The recorded client uses the former Red Hat Insights name in its output.",
       "note": "The remote host configuration daemon may later report inactive. That optional daemon state does not prevent DNF from installing packages from subscribed repositories.",
       "troubleshooting": "If either required connection is unavailable, retry rhc connect and review network, DNS, proxy, time synchronization, and entitlement access before continuing.",
       "media": {
@@ -887,7 +1124,7 @@
         { "command": "ansible localhost -i localhost, -m ansible.builtin.ping -c local", "explanation": "Runs the ansible.builtin.ping module against an inline localhost inventory through the local connection. It validates Python execution rather than sending ICMP packets." }
       ],
       "expected": "localhost returns SUCCESS with ping: pong and changed: false.",
-      "note": "You now have a working Ansible control node and can continue with inventories, playbooks, and collections.",
+      "note": "You now have a working local ansible-core runtime. Remote managed-host readiness has not yet been tested.",
       "troubleshooting": "If the test fails, confirm that ansible resolves to /usr/bin/ansible and that the local Python runtime reported by ansible --version is available. The acceptance criteria are localhost SUCCESS and ping pong.",
       "media": {
         "type": "terminal",
@@ -924,7 +1161,7 @@
     }
   ],
       "verification": [
-    "rhc status reports active Subscription Management and Insights connections",
+    "rhc status reports active Subscription Management and Red Hat Lightspeed connections",
     "BaseOS and AppStream are enabled",
     "rpm -q ansible-core returns the installed package",
     "ansible-doc lists the available modules and returns their total count",
@@ -982,12 +1219,12 @@
           "label": "Register RHEL",
           "title": "Register RHEL with Red Hat services",
           "image": "/demos/installing-ansible-core/assets/02-registration-complete.png",
-          "alt": "RHEL terminal confirming successful connections to Red Hat Subscription Management and Insights",
+          "alt": "RHEL terminal confirming successful connections to Red Hat services",
           "explanation": "A registered RHEL system can retrieve protected content from Red Hat repositories. This demonstration uses an interactive Red Hat account login and keeps all credential input outside the published replay.",
           "commands": [
             { "command": "sudo rhc connect", "explanation": "Runs the Red Hat connector with administrative privileges. It registers the system with Subscription Management and connects it to Red Hat Lightspeed." }
           ],
-          "expected": "rhc reports successful connections to Red Hat Subscription Management and Insights and activates remote host configuration.",
+          "expected": "rhc reports successful connections to Red Hat Subscription Management and Red Hat Lightspeed and activates remote host configuration. The recorded client uses the former Red Hat Insights name in its output.",
           "note": "Credential input is excluded from the replay. The neutral placeholders show where learners interact without exposing an account name or password.",
           "troubleshooting": "If no credential prompt appears, make sure rhc connect is running in an interactive terminal. If registration fails, verify network, DNS, proxy, system time, and the account's RHEL entitlement.",
           "media": {
@@ -1000,12 +1237,12 @@
           "label": "Verify Connection",
           "title": "Verify the Red Hat connection",
           "image": "/demos/installing-ansible-core/assets/03-registration-status.png",
-          "alt": "RHEL terminal showing active Subscription Management and Red Hat Insights connections",
+          "alt": "RHEL terminal showing active Subscription Management and Red Hat hosted inventory connections",
           "explanation": "Registration should be confirmed independently before relying on protected repositories. The connection status separates a successful login from a usable registered system.",
           "commands": [
             { "command": "sudo rhc status", "explanation": "Reports the system's current connections to Subscription Management, Red Hat Lightspeed, and remote host configuration services." }
           ],
-          "expected": "The system is connected to Red Hat Subscription Management and Red Hat Insights.",
+          "expected": "The system is connected to Red Hat Subscription Management and Red Hat Lightspeed. The recorded client uses the former Red Hat Insights name in its output.",
           "note": "The remote host configuration daemon may later report inactive. That optional daemon state does not prevent DNF from installing packages from subscribed repositories.",
           "troubleshooting": "If either required connection is unavailable, retry rhc connect and review network, DNS, proxy, time synchronization, and entitlement access before continuing.",
           "media": {
@@ -1106,7 +1343,7 @@
             { "command": "python -m pip install 'ansible-core==2.21.*'", "explanation": "Installs the newest available ansible-core release in the 2.21 series from PyPI into the active virtual environment." }
           ],
           "expected": "pip installs the newest available ansible-core 2.21.x release and its Python dependencies inside the virtual environment.",
-          "note": "The wildcard keeps the installation on the 2.21 feature line while allowing pip to select its newest available maintenance release. Consult the current support matrix before reusing this constraint later.",
+          "note": "The feature-line constraint lets this demonstration select the newest available 2.21 maintenance release. For a repeatable environment, replace it with the exact release accepted during testing and record the resolved dependencies. Consult the current support matrix before reusing the constraint later.",
           "troubleshooting": "If pip reports that no matching distribution exists, compare the active Python version with the upstream support matrix. Also verify DNS, HTTPS access to PyPI, proxy settings and the system clock; do not add --break-system-packages because this installation belongs in the virtual environment.",
           "media": {
             "type": "terminal",
@@ -1168,6 +1405,7 @@
             { "command": "ansible localhost -i localhost, -m ansible.builtin.ping -c local -e \"ansible_python_interpreter=$(command -v python)\"", "explanation": "Runs the ansible.builtin.ping module locally with an inline inventory and explicitly selects the active environment's Python interpreter." }
           ],
           "expected": "localhost returns SUCCESS with changed: false and ping: pong.",
+          "note": "You now have a working local ansible-core runtime. Remote managed-host readiness has not yet been tested.",
           "troubleshooting": "If the command fails, confirm that the virtual environment is active and that command -v python returns its Python 3.12 executable. Continue only when the result contains localhost SUCCESS and ping pong.",
           "media": {
             "type": "terminal",
@@ -1231,7 +1469,7 @@
         }
       ],
       "verification": [
-        "rhc status reports active Subscription Management and Insights connections",
+        "rhc status reports active Subscription Management and Red Hat Lightspeed connections",
         "BaseOS and AppStream are enabled for the system architecture",
         "Python 3.12 and its matching pip package were installed from subscribed RHEL AppStream repositories",
         "The virtual environment uses Python 3.12 and stores packages under /home/rajat/.venvs/ansible-core-2.21",
@@ -1242,8 +1480,8 @@
         "Activation and deactivation correctly add and remove the environment's Ansible executable from PATH"
       ],
       "cleanup": {
-        "explanation": "Cleanup removes only the user-owned upstream ansible-core environment created by this demonstration. Python 3.12 remains installed because other applications may use it; remove operating-system packages only after checking dependencies and local policy.",
-        "command": "deactivate 2>/dev/null || true\nrm -rf /home/rajat/.venvs/ansible-core-2.21"
+        "explanation": "Cleanup removes only the user-owned upstream ansible-core environment created by this demonstration. Python 3.12 remains installed because other applications may use it; remove operating-system packages only after checking dependencies and local policy. Disconnect RHEL only when this disposable VM will not be used for later labs, because the system will lose access to protected Red Hat content and services.",
+        "command": "deactivate 2>/dev/null || true\nrm -rf /home/rajat/.venvs/ansible-core-2.21\n# Optional: disconnect this disposable lab VM\nsudo rhc disconnect"
       }
     },
     {
@@ -1290,12 +1528,12 @@
           "label": "Register RHEL",
           "title": "Register RHEL with Red Hat services",
           "image": "/demos/installing-ansible-core/assets/02-registration-complete.png",
-          "alt": "RHEL terminal confirming successful connections to Red Hat Subscription Management and Insights",
+          "alt": "RHEL terminal confirming successful connections to Red Hat services",
           "explanation": "A registered RHEL system can retrieve protected content from Red Hat repositories. This demonstration uses an interactive Red Hat account login and keeps all credential input outside the published replay.",
           "commands": [
             { "command": "sudo rhc connect", "explanation": "Runs the Red Hat connector with administrative privileges. It registers the system with Subscription Management and connects it to Red Hat Lightspeed." }
           ],
-          "expected": "rhc reports successful connections to Red Hat Subscription Management and Insights and activates remote host configuration.",
+          "expected": "rhc reports successful connections to Red Hat Subscription Management and Red Hat Lightspeed and activates remote host configuration. The recorded client uses the former Red Hat Insights name in its output.",
           "note": "Credential input is excluded from the replay. The neutral placeholders show where learners interact without exposing an account name or password.",
           "troubleshooting": "If no credential prompt appears, make sure rhc connect is running in an interactive terminal. If registration fails, verify network, DNS, proxy, system time, and the account's RHEL entitlement.",
           "media": {
@@ -1308,12 +1546,12 @@
           "label": "Verify Connection",
           "title": "Verify the Red Hat connection",
           "image": "/demos/installing-ansible-core/assets/03-registration-status.png",
-          "alt": "RHEL terminal showing active Subscription Management and Red Hat Insights connections",
+          "alt": "RHEL terminal showing active Subscription Management and Red Hat hosted inventory connections",
           "explanation": "Registration should be confirmed independently before relying on protected repositories. The connection status separates a successful login from a usable registered system.",
           "commands": [
             { "command": "sudo rhc status", "explanation": "Reports the system's current connections to Subscription Management, Red Hat Lightspeed, and remote host configuration services." }
           ],
-          "expected": "The system is connected to Red Hat Subscription Management and Red Hat Insights.",
+          "expected": "The system is connected to Red Hat Subscription Management and Red Hat Lightspeed. The recorded client uses the former Red Hat Insights name in its output.",
           "note": "The remote host configuration daemon may later report inactive. That optional daemon state does not prevent DNF from installing packages from subscribed repositories.",
           "troubleshooting": "If either required connection is unavailable, retry rhc connect and review network, DNS, proxy, time synchronization, and entitlement access before continuing.",
           "media": {
@@ -1386,7 +1624,7 @@
           "title": "Install pipx for the current user",
           "image": "/demos/installing-ansible-core/assets/pipx-rhel-04-install-pipx.svg",
           "alt": "Terminal installing pipx into the rajat user's Python package directory",
-          "explanation": "pipx is itself a Python command-line application. Install it for the current user so its files remain separate from RPM-managed Python locations and administrative privileges are not needed for PyPI packages.",
+          "explanation": "pipx is itself a Python command-line application. Python 3.12's pip retrieves it from the configured Python package index—PyPI in this demonstration—and installs it for the current user so its files remain separate from RPM-managed Python locations.",
           "commands": [
             { "command": "python3.12 -m pip install --user pipx", "explanation": "Uses Python 3.12's pip to install pipx under the current user's home directory instead of the system Python package directories." },
             { "command": "python3.12 -m pipx --version", "explanation": "Invokes pipx through Python directly to confirm the installation before relying on the standalone command's PATH entry." }
@@ -1430,7 +1668,7 @@
             { "command": "pipx install --python python3.12 'ansible-core==2.21.*'", "explanation": "Creates a pipx-managed environment with Python 3.12 and installs the newest available maintenance release in the ansible-core 2.21 feature line from PyPI." }
           ],
           "expected": "pipx installs ansible-core 2.21.x with Python 3.12 and lists the Ansible commands made available on the user's PATH.",
-          "note": "A warning that setuptools is absent from pipx's shared libraries does not indicate an ansible-core installation failure. Confirm success through the installed package and command list at the end.",
+          "note": "The feature-line constraint lets this demonstration select the newest available 2.21 maintenance release. For a repeatable environment, replace it with the exact release accepted during testing and record the resolved dependencies. A warning that setuptools is absent from pipx's shared libraries does not indicate an ansible-core installation failure.",
           "troubleshooting": "If pipx cannot resolve the requested release, compare Python 3.12 with the upstream support matrix and verify PyPI connectivity. Do not fall back to an unsupported Python or install into RHEL's platform Python.",
           "media": {
             "type": "terminal",
@@ -1492,6 +1730,7 @@
             { "command": "ansible localhost -i localhost, -m ansible.builtin.ping -c local -e ansible_python_interpreter=/usr/bin/python3", "explanation": "Runs the ansible.builtin.ping module against an inline localhost inventory through the local connection and explicitly selects the managed-host Python interpreter. This tests Python module execution rather than network ICMP." }
           ],
           "expected": "localhost returns SUCCESS with changed: false and ping: pong, without an interpreter-discovery warning.",
+          "note": "You now have a working local ansible-core runtime. Remote managed-host readiness has not yet been tested.",
           "troubleshooting": "If the test fails, confirm that /usr/bin/python3 exists, ansible resolves to /home/rajat/.local/bin/ansible, and pipx reports a healthy ansible-core environment. Continue only when the result contains SUCCESS and ping pong.",
           "media": {
             "type": "terminal",
@@ -1538,7 +1777,7 @@
         }
       ],
       "verification": [
-        "rhc status reports active Subscription Management and Insights connections",
+        "rhc status reports active Subscription Management and Red Hat Lightspeed connections",
         "BaseOS and AppStream are enabled for the system architecture",
         "Python 3.12 and pip were installed from subscribed RHEL AppStream repositories",
         "pipx is installed for the rajat user and available through /home/rajat/.local/bin",
@@ -1549,8 +1788,8 @@
         "The localhost ansible.builtin.ping test returns SUCCESS and ping: pong"
       ],
       "cleanup": {
-        "explanation": "Remove the isolated ansible-core application when it is no longer needed. This leaves pipx and Python 3.12 available for other user-managed command-line applications.",
-        "command": "pipx uninstall ansible-core"
+        "explanation": "Remove the isolated ansible-core application when it is no longer needed. This leaves pipx and Python 3.12 available for other user-managed command-line applications. Disconnect RHEL only when this disposable VM will not be used for later labs, because the system will lose access to protected Red Hat content and services.",
+        "command": "pipx uninstall ansible-core\n# Optional: disconnect this disposable lab VM\nsudo rhc disconnect"
       }
     }
   ]

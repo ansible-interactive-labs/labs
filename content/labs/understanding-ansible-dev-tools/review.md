@@ -1,7 +1,5 @@
 # HOD-002 Content Review
 
-Reviewed: September 11, 2026
-
 ## Readiness
 
 The theory and comparison page is ready for local review. Recorded demonstrations remain intentionally marked as in preparation.

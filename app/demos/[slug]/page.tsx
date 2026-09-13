@@ -3,10 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Fragment } from "react";
 import DemoPlayer from "@/components/DemoPlayer";
+import LabAnalytics, { DemoStartLink } from "@/components/LabAnalytics";
 import SiteFooter from "@/components/SiteFooter";
 import PrimaryNav from "@/components/PrimaryNav";
 import { getLab, getLabSlugs } from "@/content/labs/loader";
-import type { LabComparison } from "@/content/labs/types";
+import type { LabComparison, LabNextStep } from "@/content/labs/types";
 import { brand } from "@/lib/brand";
 
 /* Native images keep public asset paths compatible with static deployment paths. */
@@ -25,20 +26,25 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const lab = getLab(slug);
   if (!lab) return {};
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  const image = new URL(lab.coverImage.replace(/^\//, ""), `${siteUrl.replace(/\/$/, "")}/`).toString();
+  const image = new URL((lab.socialImage ?? lab.coverImage).replace(/^\//, ""), `${siteUrl.replace(/\/$/, "")}/`).toString();
+  const canonical = new URL(`demos/${lab.slug}/`, `${siteUrl.replace(/\/$/, "")}/`).toString();
+  const title = lab.seoTitle ?? lab.title;
+  const description = lab.seoDescription ?? lab.shortDescription;
   return {
-    title: lab.title,
-    description: lab.shortDescription,
+    title,
+    description,
+    alternates: { canonical },
     openGraph: {
-      title: `${lab.hodId} · ${lab.title}`,
-      description: `${lab.shortDescription} Created by ${brand.creator}.`,
+      title: `${lab.hodId} · ${title}`,
+      description: `${description} Created by ${brand.creator}.`,
+      url: canonical,
       type: "article",
       images: [{ url: image, alt: lab.coverAlt }]
     },
     twitter: {
       card: "summary_large_image",
-      title: `${lab.hodId} · ${lab.title}`,
-      description: `${lab.shortDescription} Created by ${brand.creator}.`,
+      title: `${lab.hodId} · ${title}`,
+      description: `${description} Created by ${brand.creator}.`,
       images: [image]
     }
   };
@@ -68,7 +74,7 @@ function ComparisonSection({ labSlug, comparison, index }: { labSlug: string; co
                 <div>
                   <strong>{note.title}</strong>
                   <p>{note.detail}</p>
-                  {note.reference ? <a href={note.reference.href} target="_blank" rel="noreferrer">{note.reference.label} ↗</a> : null}
+                  {note.reference ? <a href={note.reference.href} target="_blank" rel="noreferrer" data-analytics-event="official_reference_opened" data-analytics-label={note.reference.label}>{note.reference.label} ↗</a> : null}
                 </div>
               </aside>
             ))}
@@ -87,7 +93,7 @@ function ComparisonSection({ labSlug, comparison, index }: { labSlug: string; co
                 <tr key={row.aspect}>
                   <th scope="row">
                     {row.aspect}
-                    {row.reference ? <a className="comparison-row-reference" href={row.reference.href} target="_blank" rel="noreferrer">{row.reference.label} ↗</a> : null}
+                    {row.reference ? <a className="comparison-row-reference" href={row.reference.href} target="_blank" rel="noreferrer" data-analytics-event="official_reference_opened" data-analytics-label={row.reference.label}>{row.reference.label} ↗</a> : null}
                   </th>
                   {row.values.map((value, valueIndex) => (
                     <td data-label={comparison.columns[valueIndex]} key={`${row.aspect}-${valueIndex}`}>
@@ -107,7 +113,7 @@ function ComparisonSection({ labSlug, comparison, index }: { labSlug: string; co
       {comparison.decisionGuide ? (
         <section className="decision-guide" aria-labelledby={`${headingId}-decision-guide`}>
           <div className="decision-guide-heading">
-            <span>Decision 2</span>
+            <span>{comparison.decisionGuide.label ?? "Decision 2"}</span>
             <h3 id={`${headingId}-decision-guide`}>{comparison.decisionGuide.title}</h3>
             <p>{comparison.decisionGuide.introduction}</p>
           </div>
@@ -119,7 +125,8 @@ function ComparisonSection({ labSlug, comparison, index }: { labSlug: string; co
                 <p>{option.detail}</p>
                 <div className="decision-option-fit"><strong>Best fit</strong><p>{option.bestFor}</p></div>
                 {option.note ? <p className="decision-option-note">{option.note}</p> : null}
-                {option.reference ? <a href={option.reference.href} target="_blank" rel="noreferrer">{option.reference.label} ↗</a> : null}
+                {option.reference ? <a href={option.reference.href} target="_blank" rel="noreferrer" data-analytics-event="official_reference_opened" data-analytics-label={option.reference.label}>{option.reference.label} ↗</a> : null}
+                {option.href ? <DemoStartLink className="decision-option-action" href={option.href} analyticsLabel={option.title}>{option.linkLabel ?? `Start the ${option.title} demo`} →</DemoStartLink> : null}
               </article>
             ))}
           </div>
@@ -136,6 +143,22 @@ function ComparisonSection({ labSlug, comparison, index }: { labSlug: string; co
           </div>
         </section>
       ) : null}
+      {comparison.followups?.map((followup, followupIndex) => (
+        <section className="comparison-followup" aria-labelledby={`${headingId}-followup-${followupIndex + 1}`} key={followup.title}>
+          <h3 id={`${headingId}-followup-${followupIndex + 1}`}>{followup.title}</h3>
+          {followup.paragraphs?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+          {followup.items?.length ? (
+            <div className="comparison-followup-grid">
+              {followup.items.map((item) => (
+                <article key={item.title}>
+                  <strong>{item.title}</strong>
+                  <p>{item.detail}</p>
+                </article>
+              ))}
+            </div>
+          ) : null}
+        </section>
+      ))}
       {comparison.takeaway ? (
         <div className="comparison-takeaway">
           <strong>{comparison.takeawayLabel ?? "Which should you choose?"}</strong>
@@ -144,9 +167,31 @@ function ComparisonSection({ labSlug, comparison, index }: { labSlug: string; co
       ) : null}
       <div className="comparison-sources">
         <span>Official references:</span> {comparison.sources.map((source, sourceIndex) => (
-          <span key={source.href}>{sourceIndex > 0 && " · "}<a href={source.href} target="_blank" rel="noreferrer">{source.label} ↗</a></span>
+          <span key={source.href}>{sourceIndex > 0 && " · "}<a href={source.href} target="_blank" rel="noreferrer" data-analytics-event="official_reference_opened" data-analytics-label={source.label}>{source.label} ↗</a></span>
         ))}
       </div>
+    </section>
+  );
+}
+
+function NextStepCard({ labSlug, nextStep }: { labSlug: string; nextStep: LabNextStep }) {
+  return (
+    <section className={`lab-next-step${nextStep.href ? "" : " secondary-next-step"}`} aria-labelledby={`next-step-${labSlug}`}>
+      <article>
+        <div className="lab-next-step-heading">
+          <p>{nextStep.eyebrow}</p>
+          <span>{nextStep.status}</span>
+        </div>
+        <h2 id={`next-step-${labSlug}`}>{nextStep.title}</h2>
+        <p>{nextStep.detail}</p>
+        <ul>
+          {nextStep.items.map((item) => <li key={item}>{item}</li>)}
+        </ul>
+        <div className="lab-next-step-links">
+          {nextStep.href ? <Link href={nextStep.href} data-analytics-event="next_hod_selected" data-analytics-label={nextStep.title}>{nextStep.linkLabel ?? "Open the next HOD"} →</Link> : null}
+          {nextStep.reference ? <a href={nextStep.reference.href} target="_blank" rel="noreferrer" data-analytics-event="official_reference_opened" data-analytics-label={nextStep.reference.label}>{nextStep.reference.label} ↗</a> : null}
+        </div>
+      </article>
     </section>
   );
 }
@@ -157,24 +202,48 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
   if (!lab) notFound();
 
   const totalSteps = lab.demos.reduce((count, demo) => count + demo.steps.length, 0);
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: lab.seoTitle ?? lab.title,
+    description: lab.seoDescription ?? lab.shortDescription,
+    author: { "@type": "Person", name: brand.creator, url: brand.linkedin },
+    publisher: { "@type": "Organization", name: brand.siteName },
+    image: new URL((lab.socialImage ?? lab.coverImage).replace(/^\//, ""), `${siteUrl}/`).toString(),
+    mainEntityOfPage: new URL(`demos/${lab.slug}/`, `${siteUrl}/`).toString(),
+    about: [...new Set([lab.topic, lab.platform, ...lab.tags])],
+    proficiencyLevel: lab.difficulty,
+    timeRequired: `PT${lab.durationMinutes}M`,
+    hasPart: lab.demos.map((demo) => ({
+      "@type": "HowTo",
+      name: demo.title,
+      description: demo.objective,
+      totalTime: `PT${demo.durationMinutes}M`,
+      step: demo.steps.map((step) => ({ "@type": "HowToStep", name: step.title, text: step.explanation }))
+    }))
+  };
 
   return (
     <main className="lab-page" id="main-content">
       <PrimaryNav active="demos" className="lab-topbar" />
+      <LabAnalytics hodId={lab.hodId} slug={lab.slug} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
 
       <header className="lab-hero">
         <div>
-          <p className="eyebrow"><span /> {lab.hodId} · {lab.topic} · {lab.difficulty}</p>
+          <p className="eyebrow"><span /> {lab.hodId} · Hands-On Demo · {lab.topic} · {lab.difficulty}</p>
           <h1>{lab.title}</h1>
           <p className="lab-description">{lab.description}</p>
-          <p className="lab-byline">Created, demonstrated, and verified by <Link href={brand.creatorPath}>{brand.creator} →</Link> · <Link href="/demos/">All Hands-On Demos →</Link></p>
+          {lab.audience ? <p className="lab-audience"><strong>Who this is for:</strong> {lab.audience}</p> : null}
+          <p className="lab-byline">Created, demonstrated, and verified by <Link href={brand.creatorPath} data-analytics-event="author_profile_opened" data-analytics-label="Author page">{brand.creator} →</Link> · <Link href="/demos/">All Hands-On Demos →</Link></p>
           <div className="lab-facts" aria-label="Lab facts">
-            <span><small>Duration</small>{lab.duration}</span>
+            <span><small>{lab.durationNote ? "All paths" : "Duration"}</small>{lab.duration}</span>
             <span><small>Platform</small>{lab.platform}</span>
             <span><small>Demonstrations</small>{lab.demos.length || "In preparation"}</span>
             <span><small>Total steps</small>{totalSteps || "Not recorded"}</span>
-            <span><small>{lab.demos.length ? "Last verified" : "Last reviewed"}</small>{lab.verified.date}</span>
           </div>
+          {lab.durationNote ? <p className="lab-duration-note">{lab.durationNote}</p> : null}
         </div>
         <div className="lab-hero-side">
           <figure className="lab-cover-art">
@@ -226,23 +295,46 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
               <span>{item.label}</span>
               <strong>{item.value}</strong>
               <p>{item.detail}</p>
-              {item.href && <a href={item.href} target="_blank" rel="noreferrer">Learn about no-cost access ↗</a>}
+              {item.href && <a href={item.href} target="_blank" rel="noreferrer" data-analytics-event="official_reference_opened" data-analytics-label={item.label}>Learn about no-cost access ↗</a>}
             </article>
           ))}
         </div>
-        {lab.accessCallout ? (
-          <aside className="prerequisite-callout lab-access-callout">
-            <div className="callout-icon" aria-hidden="true">✓</div>
+        {lab.prerequisiteCallouts?.length ? (
+          <div className="prerequisite-callout-group">
+            {lab.prerequisiteCallouts.map((callout) => (
+              <aside className="prerequisite-callout lab-access-callout" key={callout.title}>
+                <div className="callout-icon" aria-hidden="true">✓</div>
+                <div>
+                  <strong>{callout.title}</strong>
+                  {callout.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                </div>
+                {callout.links?.length ? (
+                  <div className="prerequisite-callout-actions">
+                    {callout.links.map((link) => (
+                      <a href={link.href} target="_blank" rel="noreferrer" key={link.href} data-analytics-event="official_reference_opened" data-analytics-label={link.label}>{link.label} <span>↗</span></a>
+                    ))}
+                  </div>
+                ) : null}
+              </aside>
+            ))}
+          </div>
+        ) : null}
+        {lab.prerequisiteDetails ? (
+          <details className="prerequisite-details">
+            <summary>
+              <span>{lab.prerequisiteDetails.title}</span>
+              <small>{lab.prerequisiteDetails.introduction}</small>
+            </summary>
             <div>
-              <strong>{lab.accessCallout.title}</strong>
-              <p>{lab.accessCallout.detail}</p>
-            </div>
-            <div className="prerequisite-callout-actions">
-              {lab.accessCallout.links.map((link) => (
-                <a href={link.href} target="_blank" rel="noreferrer" key={link.href}>{link.label} <span>↗</span></a>
+              {lab.prerequisiteDetails.items.map((callout) => (
+                <article key={callout.title}>
+                  <h3>{callout.title}</h3>
+                  {callout.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                  {callout.links?.length ? <div>{callout.links.map((link) => <a href={link.href} target="_blank" rel="noreferrer" key={link.href} data-analytics-event="official_reference_opened" data-analytics-label={link.label}>{link.label} ↗</a>)}</div> : null}
+                </article>
               ))}
             </div>
-          </aside>
+          </details>
         ) : null}
       </section>
 
@@ -250,11 +342,24 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
         comparison.afterDemoId ? null : <ComparisonSection labSlug={lab.slug} comparison={comparison} index={comparisonIndex} key={comparison.title} />
       ))}
 
+      {lab.proof ? (
+        <section className="lab-proof" aria-labelledby={`proof-${lab.slug}`}>
+          <div>
+            <p className="eyebrow"><span /> Demonstrated evidence</p>
+            <h2 id={`proof-${lab.slug}`}>{lab.proof.title}</h2>
+            <p>{lab.proof.introduction}</p>
+          </div>
+          <div className="lab-proof-grid">
+            {lab.proof.items.map((item, index) => <article key={item.title}><span>{String(index + 1).padStart(2, "0")}</span><strong>{item.title}</strong><p>{item.detail}</p></article>)}
+          </div>
+        </section>
+      ) : null}
+
       {lab.demos.length ? <section className="demo-modules" aria-labelledby="demonstrations-title">
         <div className="demo-modules-heading">
           <p className="eyebrow"><span /> Watch it. Run it. Verify it.</p>
           <h2 id="demonstrations-title">{lab.demos.length === 1 ? "Demonstration" : "Demonstrations"}</h2>
-          <p>Each demonstration is an independent workflow with contextual explanations, expected results, recovery guidance, and a final verification.</p>
+          <p>{lab.demos.length > 1 ? "Choose the workflow that matches your installation decision, or complete all three to compare them. Each demonstration includes contextual explanations, expected results, recovery guidance, and a final verification." : "This demonstration includes contextual explanations, expected results, recovery guidance, and a final verification."}</p>
         </div>
         {lab.demos.map((demo) => (
           <Fragment key={demo.id}>
@@ -299,8 +404,8 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
                 <h3>{option.title}</h3>
                 <p>{option.detail}</p>
                 <div>
-                  {option.href && <Link href={option.href}>{option.linkLabel ?? "Open the dedicated HOD"} →</Link>}
-                  <a href={option.reference.href} target="_blank" rel="noreferrer">{option.reference.label} ↗</a>
+                  {option.href && <Link href={option.href} data-analytics-event="next_hod_selected" data-analytics-label={option.title}>{option.linkLabel ?? "Open the dedicated HOD"} →</Link>}
+                  <a href={option.reference.href} target="_blank" rel="noreferrer" data-analytics-event="official_reference_opened" data-analytics-label={option.reference.label}>{option.reference.label} ↗</a>
                 </div>
               </article>
             ))}
@@ -312,25 +417,27 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
       {lab.overview?.relatedTools?.length ? (
         <section className="overview-related-tools" aria-label="Related developer tools">
           {lab.overview.relatedTools.map((tool) => (
-            <article key={tool.title}>
+            <article className={tool.primary ? "primary-next-hod" : undefined} key={tool.title}>
               <div className="related-tool-heading">
-                <p>Related developer tool</p>
+                <p>{tool.primary ? "Continue learning" : "Related developer tool"}</p>
                 <span>{tool.status}</span>
               </div>
               <h2><code>{tool.title}</code></h2>
               <p>{tool.detail}</p>
               <div className="related-tool-links">
-                {tool.href && <Link href={tool.href}>{tool.linkLabel ?? "Open the dedicated HOD"} →</Link>}
-                <a href={tool.reference.href} target="_blank" rel="noreferrer">{tool.reference.label} ↗</a>
+                {tool.href && <Link href={tool.href} data-analytics-event="next_hod_selected" data-analytics-label={tool.title}>{tool.linkLabel ?? "Open the dedicated HOD"} →</Link>}
+                <a href={tool.reference.href} target="_blank" rel="noreferrer" data-analytics-event="official_reference_opened" data-analytics-label={tool.reference.label}>{tool.reference.label} ↗</a>
               </div>
             </article>
           ))}
         </section>
       ) : null}
 
+      {lab.nextStep ? <NextStepCard labSlug={lab.slug} nextStep={lab.nextStep} /> : null}
+
       <section className="feedback-band">
-        <div><strong>Keep this HOD accurate.</strong><p>{lab.demos.length ? "Tell Rajat which result differed so the demonstration can stay current." : "Tell Rajat if a package, tool, requirement, or support detail has changed."}</p></div>
-        <div className="feedback-actions"><a href={brand.linkedin} target="_blank" rel="noreferrer">Share feedback with Rajat ↗</a></div>
+        <div><strong>Created and demonstrated by {brand.creator}</strong><p>Practical automation guidance built from tested workflows, inspectable evidence, and documented platform boundaries.</p></div>
+        <div className="feedback-actions"><Link href={brand.creatorPath}>Meet Rajat →</Link><a href={brand.linkedin} target="_blank" rel="noreferrer" data-analytics-event="author_profile_opened" data-analytics-label="LinkedIn">Share feedback ↗</a></div>
       </section>
 
       <SiteFooter />

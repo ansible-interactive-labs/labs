@@ -95,20 +95,24 @@
       "href": "https://docs.ansible.com/projects/navigator/installation/"
     }
   ],
-  "accessCallout": {
-    "title": "Don’t have a Red Hat subscription?",
-    "detail": "This demonstration requires access to both RHEL 9 and Red Hat Ansible Automation Platform. Eligible individuals can use the no-cost Red Hat Developer Subscription for RHEL. Apply separately for an AAP product trial, then use a Red Hat account with the required entitlements when registering the system so Subscription Manager can expose the RHEL and versioned AAP repositories.",
-    "links": [
-      {
-        "href": "https://developers.redhat.com/register",
-        "label": "Get no-cost RHEL access"
-      },
-      {
-        "href": "https://www.redhat.com/en/technologies/management/ansible/trial",
-        "label": "Apply for an AAP product trial"
-      }
-    ]
-  },
+  "prerequisiteCallouts": [
+    {
+      "title": "Don’t have a Red Hat subscription?",
+      "paragraphs": [
+        "This demonstration requires access to both RHEL 9 and Red Hat Ansible Automation Platform. Eligible individuals can use the no-cost Red Hat Developer Subscription for RHEL. Apply separately for an AAP product trial, then use a Red Hat account with the required entitlements when registering the system so Subscription Manager can expose the RHEL and versioned AAP repositories."
+      ],
+      "links": [
+        {
+          "href": "https://developers.redhat.com/register",
+          "label": "Get no-cost RHEL access"
+        },
+        {
+          "href": "https://www.redhat.com/en/technologies/management/ansible/trial",
+          "label": "Apply for an AAP product trial"
+        }
+      ]
+    }
+  ],
   "comparisons": [
     {
       "title": "Community ansible-dev-tools vs Red Hat Ansible development tools",
@@ -263,8 +267,6 @@
     }
   ],
   "verified": {
-    "date": "September 11, 2026",
-    "dateISO": "2026-09-11",
     "os": "Official upstream ADT documentation and package metadata",
     "architecture": "Red Hat Ansible Automation Platform 2.7 documentation",
     "package": "PyPI 26.8.0 · Red Hat RPM example 25.8.3"

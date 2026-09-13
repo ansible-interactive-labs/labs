@@ -20,7 +20,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     } as const)),
     ...getLabSummaries().map((lab) => ({
       url: `${siteUrl}/demos/${lab.slug}/`,
-      lastModified: lab.verifiedDateISO,
       changeFrequency: "monthly" as const,
       priority: 0.8
     }))

@@ -86,7 +86,7 @@ export default function Home() {
             <div><dt>Evidence</dt><dd>{firstLab.stepCount} replay-led steps</dd></div>
             <div><dt>Environment</dt><dd>{firstLab.platform}</dd></div>
             <div><dt>Level</dt><dd>{firstLab.difficulty}</dd></div>
-            <div><dt>Last verified</dt><dd>{firstLab.verifiedDateISO}</dd></div>
+            <div><dt>Demonstrations</dt><dd>{firstLab.demoCount}</dd></div>
           </dl>
           <strong>Capabilities demonstrated</strong>
           <ul><li>Environment and subscription validation</li><li>Package discovery and lifecycle</li><li>Ansible CLI configuration and documentation</li><li>Functional verification and troubleshooting</li></ul>
@@ -119,7 +119,7 @@ export default function Home() {
         </div>
         <div className="standard-grid">
           {[
-            ["01", "Verified", "Tested OS, architecture, package details, and a visible last-verified date."],
+            ["01", "Verified", "Tested OS, architecture, and package details for every recorded workflow."],
             ["02", "Accessible", "Keyboard navigation, terminal transcripts, meaningful image descriptions, strong contrast, and reduced motion."],
             ["03", "Recoverable", "Per-step diagnostics, common-issue guidance, completion checks, and optional cleanup."],
             ["04", "Portable", "Responsive on phones and tablets, with terminal replays, screenshot fallbacks, and fresh-start demo sessions."]

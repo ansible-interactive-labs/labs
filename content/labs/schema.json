@@ -24,8 +24,13 @@
     "title": { "type": "string", "minLength": 3 },
     "shortDescription": { "type": "string", "minLength": 10 },
     "description": { "type": "string", "minLength": 20 },
+    "seoTitle": { "type": "string", "minLength": 10 },
+    "seoDescription": { "type": "string", "minLength": 20 },
+    "audience": { "type": "string", "minLength": 20 },
+    "durationNote": { "type": "string", "minLength": 20 },
     "coverImage": { "type": "string", "pattern": "^/demos/.+\\.(png|jpg|jpeg|webp|svg)$" },
     "coverAlt": { "type": "string", "minLength": 10 },
+    "socialImage": { "type": "string", "pattern": "^/demos/.+\\.(png|jpg|jpeg|webp)$" },
     "duration": { "type": "string", "minLength": 3 },
     "durationMinutes": { "type": "integer", "minimum": 1 },
     "difficulty": { "enum": ["Beginner", "Intermediate", "Expert"] },
@@ -71,6 +76,7 @@
               "status": { "type": "string", "minLength": 3 },
               "href": { "type": "string", "pattern": "^/" },
               "linkLabel": { "type": "string", "minLength": 3 },
+              "primary": { "type": "boolean" },
               "reference": {
                 "type": "object",
                 "additionalProperties": false,
@@ -135,24 +141,96 @@
         }
       }
     },
-    "accessCallout": {
+    "proof": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["title", "detail", "links"],
+      "required": ["title", "introduction", "items"],
       "properties": {
         "title": { "type": "string", "minLength": 5 },
-        "detail": { "type": "string", "minLength": 20 },
-        "links": {
+        "introduction": { "type": "string", "minLength": 20 },
+        "items": {
           "type": "array",
-          "minItems": 1,
+          "minItems": 2,
+          "maxItems": 6,
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["href", "label"],
+            "required": ["title", "detail"],
             "properties": {
-              "href": { "type": "string", "format": "uri" },
-              "label": { "type": "string", "minLength": 3 }
+              "title": { "type": "string", "minLength": 3 },
+              "detail": { "type": "string", "minLength": 10 }
             }
+          }
+        }
+      }
+    },
+    "prerequisiteCallouts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "paragraphs"],
+        "properties": {
+          "title": { "type": "string", "minLength": 5 },
+          "paragraphs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 20 }
+          },
+          "links": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["href", "label"],
+              "properties": {
+                "href": { "type": "string", "format": "uri" },
+                "label": { "type": "string", "minLength": 3 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "prerequisiteDetails": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "introduction", "items"],
+      "properties": {
+        "title": { "type": "string", "minLength": 5 },
+        "introduction": { "type": "string", "minLength": 20 },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/guidanceCallout" }
+        }
+      }
+    },
+    "nextStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eyebrow", "title", "detail", "status", "items"],
+      "properties": {
+        "eyebrow": { "type": "string", "minLength": 3 },
+        "title": { "type": "string", "minLength": 5 },
+        "detail": { "type": "string", "minLength": 20 },
+        "status": { "type": "string", "minLength": 3 },
+        "items": {
+          "type": "array",
+          "minItems": 3,
+          "items": { "type": "string", "minLength": 10 }
+        },
+        "href": { "type": "string", "pattern": "^/demos/[a-z0-9]+(?:-[a-z0-9]+)*/$" },
+        "linkLabel": { "type": "string", "minLength": 3 },
+        "reference": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["href", "label"],
+          "properties": {
+            "href": { "type": "string", "format": "uri" },
+            "label": { "type": "string", "minLength": 3 }
           }
         }
       }
@@ -230,11 +308,46 @@
             }
           },
           "takeaway": { "type": "string", "minLength": 20 },
+          "followups": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["title"],
+              "anyOf": [
+                { "required": ["paragraphs"] },
+                { "required": ["items"] }
+              ],
+              "properties": {
+                "title": { "type": "string", "minLength": 5 },
+                "paragraphs": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": { "type": "string", "minLength": 20 }
+                },
+                "items": {
+                  "type": "array",
+                  "minItems": 2,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["title", "detail"],
+                    "properties": {
+                      "title": { "type": "string", "minLength": 3 },
+                      "detail": { "type": "string", "minLength": 20 }
+                    }
+                  }
+                }
+              }
+            }
+          },
           "decisionGuide": {
             "type": "object",
             "additionalProperties": false,
             "required": ["title", "introduction", "options", "pathTitle", "path"],
             "properties": {
+              "label": { "type": "string", "minLength": 3 },
               "title": { "type": "string", "minLength": 5 },
               "introduction": { "type": "string", "minLength": 20 },
               "options": {
@@ -251,6 +364,8 @@
                     "detail": { "type": "string", "minLength": 20 },
                     "bestFor": { "type": "string", "minLength": 10 },
                     "note": { "type": "string", "minLength": 20 },
+                    "href": { "type": "string", "pattern": "^#demo-[a-z0-9]+(?:-[a-z0-9]+)*$" },
+                    "linkLabel": { "type": "string", "minLength": 3 },
                     "reference": {
                       "type": "object",
                       "additionalProperties": false,
@@ -299,10 +414,8 @@
     "verified": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["date", "dateISO", "os", "architecture", "package"],
+      "required": ["os", "architecture", "package"],
       "properties": {
-        "date": { "type": "string" },
-        "dateISO": { "type": "string", "format": "date" },
         "os": { "type": "string" },
         "architecture": { "type": "string" },
         "package": { "type": "string" }
@@ -398,6 +511,34 @@
             "properties": {
               "explanation": { "type": "string", "minLength": 10 },
               "command": { "type": "string", "minLength": 3 }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "guidanceCallout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "paragraphs"],
+      "properties": {
+        "title": { "type": "string", "minLength": 5 },
+        "paragraphs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 20 }
+        },
+        "links": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["href", "label"],
+            "properties": {
+              "href": { "type": "string", "format": "uri" },
+              "label": { "type": "string", "minLength": 3 }
             }
           }
         }

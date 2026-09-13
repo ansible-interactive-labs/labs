@@ -31,6 +31,38 @@ export type LabPrerequisite = {
   href?: string;
 };
 
+export type LabGuidanceCallout = {
+  title: string;
+  paragraphs: string[];
+  links?: Array<{
+    href: string;
+    label: string;
+  }>;
+};
+
+export type LabProof = {
+  title: string;
+  introduction: string;
+  items: Array<{
+    title: string;
+    detail: string;
+  }>;
+};
+
+export type LabNextStep = {
+  eyebrow: string;
+  title: string;
+  detail: string;
+  status: string;
+  items: string[];
+  href?: string;
+  linkLabel?: string;
+  reference?: {
+    href: string;
+    label: string;
+  };
+};
+
 export type LabOverview = {
   title: string;
   introduction: string;
@@ -46,6 +78,7 @@ export type LabOverview = {
     status: string;
     href?: string;
     linkLabel?: string;
+    primary?: boolean;
     reference: {
       label: string;
       href: string;
@@ -97,7 +130,16 @@ export type LabComparison = {
     };
   }>;
   takeaway?: string;
+  followups?: Array<{
+    title: string;
+    paragraphs?: string[];
+    items?: Array<{
+      title: string;
+      detail: string;
+    }>;
+  }>;
   decisionGuide?: {
+    label?: string;
     title: string;
     introduction: string;
     options: Array<{
@@ -110,6 +152,8 @@ export type LabComparison = {
         label: string;
         href: string;
       };
+      href?: string;
+      linkLabel?: string;
     }>;
     pathTitle: string;
     path: Array<{
@@ -149,8 +193,13 @@ export type Lab = {
   title: string;
   shortDescription: string;
   description: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  audience?: string;
+  durationNote?: string;
   coverImage: string;
   coverAlt: string;
+  socialImage?: string;
   duration: string;
   durationMinutes: number;
   difficulty: "Beginner" | "Intermediate" | "Expert";
@@ -162,19 +211,17 @@ export type Lab = {
   tags: string[];
   outcomes: string[];
   overview?: LabOverview;
+  proof?: LabProof;
   prerequisites: LabPrerequisite[];
-  accessCallout?: {
+  prerequisiteCallouts?: LabGuidanceCallout[];
+  prerequisiteDetails?: {
     title: string;
-    detail: string;
-    links: Array<{
-      href: string;
-      label: string;
-    }>;
+    introduction: string;
+    items: LabGuidanceCallout[];
   };
+  nextStep?: LabNextStep;
   comparisons?: LabComparison[];
   verified: {
-    date: string;
-    dateISO: string;
     os: string;
     architecture: string;
     package: string;
@@ -202,6 +249,5 @@ export type LabSummary = Pick<Lab,
   | "outcomes"
 > & {
   stepCount: number;
-  verifiedDate: string;
-  verifiedDateISO: string;
+  demoCount: number;
 };

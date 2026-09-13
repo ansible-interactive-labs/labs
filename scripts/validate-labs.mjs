@@ -21,6 +21,16 @@ const warnings = [];
 const fail = (source, message) => errors.push(`${source}: ${message}`);
 const warn = (source, message) => warnings.push(`${source}: ${message}`);
 const nonEmptyString = (value) => typeof value === "string" && value.trim().length > 0;
+const validateGuidanceCallout = (callout, sourceName) => {
+  if (!nonEmptyString(callout?.title)) fail(sourceName, "title is required");
+  if (!Array.isArray(callout?.paragraphs) || callout.paragraphs.length === 0 || callout.paragraphs.some((paragraph) => !nonEmptyString(paragraph))) {
+    fail(sourceName, "paragraphs must contain at least one non-empty paragraph");
+  }
+  (callout?.links ?? []).forEach((link, linkIndex) => {
+    if (!nonEmptyString(link?.label)) fail(sourceName, `links[${linkIndex}].label is required`);
+    try { new URL(link?.href); } catch { fail(sourceName, `links[${linkIndex}].href must be a valid URL`); }
+  });
+};
 
 const directories = readdirSync(labsRoot, { withFileTypes: true })
   .filter((entry) => entry.isDirectory() && existsSync(join(labsRoot, entry.name, "lab.json")))
@@ -67,6 +77,12 @@ for (const directory of directories) {
   ["title", "shortDescription", "description", "coverImage", "coverAlt", "duration", "topic", "platform", "status"].forEach((key) => {
     if (!nonEmptyString(lab[key])) fail(directory, `${key} is required`);
   });
+  ["seoTitle", "seoDescription", "audience", "durationNote"].forEach((key) => {
+    if (lab[key] !== undefined && !nonEmptyString(lab[key])) fail(directory, `${key} must be a non-empty string when supplied`);
+  });
+  if (lab.socialImage !== undefined && !/^\/demos\/.+\.(png|jpe?g|webp)$/i.test(lab.socialImage)) {
+    fail(directory, "socialImage must be a PNG, JPG, or WebP path under /demos");
+  }
   if (titles.has(lab.title)) fail(directory, `duplicate title ${lab.title}`);
   titles.add(lab.title);
 
@@ -90,8 +106,7 @@ for (const directory of directories) {
   });
   if (!Array.isArray(lab.demos)) fail(directory, "demos must be an array");
   if (lab.status === "Available" && lab.demos?.length === 0) fail(directory, "an available HOD must contain at least one demo");
-  if (!lab.verified || !nonEmptyString(lab.verified.dateISO) || Number.isNaN(Date.parse(lab.verified.dateISO))) fail(directory, "verified.dateISO must be a valid date");
-  ["date", "os", "architecture", "package"].forEach((key) => {
+  ["os", "architecture", "package"].forEach((key) => {
     if (!nonEmptyString(lab.verified?.[key])) fail(directory, `verified.${key} is required`);
   });
 
@@ -116,6 +131,14 @@ for (const directory of directories) {
       fail(directory, "overview.note must be a non-empty string when supplied");
     }
   }
+  if (lab.proof) {
+    ["title", "introduction"].forEach((key) => {
+      if (!nonEmptyString(lab.proof?.[key])) fail(directory, `proof.${key} is required`);
+    });
+    if (!Array.isArray(lab.proof.items) || lab.proof.items.length < 2 || lab.proof.items.some((item) => !nonEmptyString(item?.title) || !nonEmptyString(item?.detail))) {
+      fail(directory, "proof.items must contain at least two complete items");
+    }
+  }
   (lab.prerequisites ?? []).forEach((item, index) => {
     ["label", "value", "detail"].forEach((key) => {
       if (!nonEmptyString(item?.[key])) fail(directory, `prerequisites[${index}].${key} is required`);
@@ -124,12 +147,48 @@ for (const directory of directories) {
       try { new URL(item.href); } catch { fail(directory, `prerequisites[${index}].href must be a valid URL`); }
     }
   });
+  (lab.prerequisiteCallouts ?? []).forEach((callout, calloutIndex) => {
+    validateGuidanceCallout(callout, `${directory} prerequisiteCallouts[${calloutIndex}]`);
+  });
+  if (lab.prerequisiteDetails) {
+    if (!nonEmptyString(lab.prerequisiteDetails.title)) fail(directory, "prerequisiteDetails.title is required");
+    if (!nonEmptyString(lab.prerequisiteDetails.introduction)) fail(directory, "prerequisiteDetails.introduction is required");
+    if (!Array.isArray(lab.prerequisiteDetails.items) || lab.prerequisiteDetails.items.length === 0) {
+      fail(directory, "prerequisiteDetails.items must contain at least one item");
+    }
+    (lab.prerequisiteDetails.items ?? []).forEach((callout, calloutIndex) => {
+      validateGuidanceCallout(callout, `${directory} prerequisiteDetails.items[${calloutIndex}]`);
+    });
+  }
+  if (lab.nextStep) {
+    ["eyebrow", "title", "detail", "status"].forEach((key) => {
+      if (!nonEmptyString(lab.nextStep?.[key])) fail(directory, `nextStep.${key} is required`);
+    });
+    if (!Array.isArray(lab.nextStep.items) || lab.nextStep.items.length < 3 || lab.nextStep.items.some((item) => !nonEmptyString(item))) {
+      fail(directory, "nextStep.items must contain at least three non-empty items");
+    }
+    if (lab.nextStep.href && !/^\/demos\/[a-z0-9]+(?:-[a-z0-9]+)*\/$/.test(lab.nextStep.href)) {
+      fail(directory, "nextStep.href must be a canonical internal HOD route");
+    }
+    if (lab.nextStep.href && !nonEmptyString(lab.nextStep.linkLabel)) fail(directory, "nextStep.linkLabel is required when href is supplied");
+    if (lab.nextStep.reference) {
+      if (!nonEmptyString(lab.nextStep.reference.label)) fail(directory, "nextStep.reference.label is required");
+      try { new URL(lab.nextStep.reference.href); } catch { fail(directory, "nextStep.reference.href must be a valid URL"); }
+    }
+  }
   (lab.comparisons ?? []).forEach((comparison, index) => {
     const sourceName = `${directory} comparison ${index + 1}`;
     ["title", "introduction"].forEach((key) => {
       if (!nonEmptyString(comparison?.[key])) fail(sourceName, `${key} is required`);
     });
     if (comparison?.takeaway !== undefined && !nonEmptyString(comparison.takeaway)) fail(sourceName, "takeaway must be a non-empty string when provided");
+    if (comparison?.decisionGuide?.label !== undefined && !nonEmptyString(comparison.decisionGuide.label)) fail(sourceName, "decisionGuide.label must be a non-empty string when provided");
+    (comparison?.followups ?? []).forEach((followup, followupIndex) => {
+      if (!nonEmptyString(followup?.title)) fail(sourceName, `followups[${followupIndex}].title is required`);
+      const paragraphsValid = Array.isArray(followup?.paragraphs) && followup.paragraphs.length > 0 && followup.paragraphs.every((paragraph) => nonEmptyString(paragraph));
+      const itemsValid = Array.isArray(followup?.items) && followup.items.length > 1 && followup.items.every((item) => nonEmptyString(item?.title) && nonEmptyString(item?.detail));
+      if (!paragraphsValid && !itemsValid) fail(sourceName, `followups[${followupIndex}] requires non-empty paragraphs or at least two complete items`);
+    });
     (comparison?.notes ?? []).forEach((note, noteIndex) => {
       if (!nonEmptyString(note?.title)) fail(sourceName, `notes[${noteIndex}].title is required`);
       if (!nonEmptyString(note?.detail)) fail(sourceName, `notes[${noteIndex}].detail is required`);
@@ -166,6 +225,15 @@ for (const directory of directories) {
         });
         if (option?.note !== undefined && !nonEmptyString(option.note)) {
           fail(sourceName, `decisionGuide.options[${optionIndex}].note must be a non-empty string when provided`);
+        }
+        if (option?.href && !/^#demo-[a-z0-9]+(?:-[a-z0-9]+)*$/.test(option.href)) {
+          fail(sourceName, `decisionGuide.options[${optionIndex}].href must target a demo section`);
+        }
+        if (option?.href && !(lab.demos ?? []).some((demo) => option.href === `#demo-${demo.id}`)) {
+          fail(sourceName, `decisionGuide.options[${optionIndex}].href does not match a demo in this HOD`);
+        }
+        if (option?.href && !nonEmptyString(option.linkLabel)) {
+          fail(sourceName, `decisionGuide.options[${optionIndex}].linkLabel is required when href is supplied`);
         }
         if (option?.reference) {
           if (!nonEmptyString(option.reference.label)) fail(sourceName, `decisionGuide.options[${optionIndex}].reference.label is required`);
@@ -264,6 +332,7 @@ for (const directory of directories) {
   });
   const imageAssets = [
     { image: lab.coverImage, label: "coverImage" },
+    ...(lab.socialImage ? [{ image: lab.socialImage, label: "socialImage" }] : []),
     ...(lab.demos ?? []).map((demo, index) => ({ image: demo.coverImage, label: `demo ${index + 1} coverImage` })),
     ...demoSteps.map(({ step }, index) => ({ image: step.image, label: `step ${index + 1} image` })),
   ];
@@ -435,10 +504,6 @@ for (const directory of directories) {
   const raw = JSON.stringify(lab);
   if (/VNC Password|SSH Password|192\.168\.\d+\.\d+|password\s*=/i.test(raw)) fail(directory, "possible credential or local address found in lab data");
 
-  if (lab.verified?.dateISO) {
-    const ageDays = Math.floor((Date.now() - Date.parse(lab.verified.dateISO)) / 86400000);
-    if (ageDays > 365) warn(directory, `verification is ${ageDays} days old`);
-  }
 }
 
 warnings.forEach((message) => console.warn(`WARN ${message}`));

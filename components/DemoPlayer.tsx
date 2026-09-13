@@ -6,6 +6,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Lab, LabDemo } from "@/content/labs/types";
 import TerminalReplay from "@/components/TerminalReplay";
+import { trackLabEvent } from "@/components/LabAnalytics";
 import { brand } from "@/lib/brand";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -105,12 +106,14 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
   };
 
   const markComplete = () => {
+    trackLabEvent("demo_completed", { hod_id: lab.hodId, demo_id: demo.demoId });
     setCompleted(true);
     setStarted(false);
     setAnnouncement("Demo complete. This session will reset when you leave or refresh the page.");
   };
 
   const startLab = () => {
+    trackLabEvent("demo_started", { hod_id: lab.hodId, demo_id: demo.demoId });
     setStepIndex(0);
     setCompleted(false);
     setStarted(true);

@@ -14,17 +14,35 @@ For every new or substantially changed lab, provide the owner with a short repor
 
 If no gaps are found, say so explicitly rather than omitting the review.
 
+## Technical marketing audit
+
+Before publishing, review how the HOD communicates its value as well as how it teaches the task:
+
+- Name the intended learner and make the difficulty label consistent with both the command work and the surrounding decision guidance.
+- Lead with the problem the learner will solve, not a list of package features or recorded steps.
+- Keep the HOD-level outcome list to a small set of durable promises; retain implementation detail in each demo's outcomes.
+- When demos are alternative paths, say that learners may choose one and distinguish the single-path duration from the time required to complete every path.
+- Connect each decision option directly to its matching demo rather than asking learners to locate it manually.
+- Keep individual prerequisites visible and place organization-specific registration, governance, and disconnected-environment guidance in progressive disclosure.
+- State the evidence behind the HOD, such as the tested environment, replayed output, provenance checks, expected results, and official references, without unsupported expertise or adoption claims.
+- Expand Hands-On Demo on the first visible HOD reference for visitors who do not yet know the abbreviation.
+- Give the completed HOD one visually primary continuation action. Planned learning paths and reference material remain secondary.
+- Use a search-focused metadata title and description, canonical URL, meaningful social preview, and appropriate structured data without forcing the visible page title to carry every keyword.
+- If aggregate measurement is enabled, collect only the events required to improve the learning journey, avoid learner or persistent session identifiers, honor browser privacy signals, and document the external provider's retention and consent responsibilities.
+
 ## Instructional audit
 
 Review each lab through all of these lenses:
 
 - The title, objective, outcomes, and final verification describe the same skill.
+- For an ansible-core installation decision, identify required collections, their `requires_ansible` constraints, supported platforms, and external dependencies before recommending a version or installation path.
 - Each demo title identifies the installation source or operating method shown by the complete replay. The pre-start objective and outcomes account for every material phase rather than only the main installation command.
 - Keep the path to the hands-on workflow short: introduce the core concept and prerequisites, present the decision learners need to choose a demo, and then show the demos. Place historical compatibility matrices, operational lifecycle guidance, version pinning, controllers, and related tools after the recorded workflows unless learners must use that material to make the initial choice.
 - Every HOD uses a dedicated 16:9 editorial cover that represents its subject; recording frames and step screenshots are not used as catalog artwork.
 - Every demo module uses its own 16:9 editorial cover that represents the specific workflow. It must differ from the HOD cover, every sibling demo cover, and every step image, including when the HOD contains only one demo.
 - Each HOD may contain one or more demo modules. Every module has its own objective, duration, steps, verification checks, recovery guide, and optional cleanup.
 - Prerequisites state the operating system, privileges, access, accounts or subscriptions, connectivity, and starting state.
+- When a package-source or entitlement explanation needs more space, place it in a reusable `prerequisiteCallouts` entry instead of overloading a prerequisite card. State which dependency the subscription supplies and which source supplies the demonstrated application.
 - No setup action is implied or hidden between recorded steps.
 - Every terminal replay has a readable transcript and a verified screenshot fallback.
 - Every terminal replay uses the project-wide asciicast v2 geometry of 120 columns × 34 rows so the player remains stable between steps and across labs.
@@ -43,8 +61,15 @@ Review each lab through all of these lenses:
 - When the same ordered command sequence appears in more than one demo, reuse all learner-facing step content verbatim. Different replay files and fallback images are allowed when they show different environments; instructional wording is not duplicated or rewritten.
 - Commands are safe to copy and do not expose credentials, local addresses, account identifiers, or destructive shortcuts.
 - Version-dependent output is identified so learners do not expect an exact match unnecessarily.
+- When a demonstration uses a feature-line constraint, place an exact-version warning beside that installation step instead of relying only on later lifecycle guidance.
 - Troubleshooting covers the likely failure points and does not weaken security controls.
 - The final check proves function, not merely installation.
+- State the boundary of the final check. A localhost test must not be described as proof that remote inventory, transport, credentials, privilege escalation, network policy, or managed-host dependencies are ready.
+- When that boundary requires a separate workflow, add a post-demo `nextStep` card describing the follow-on acceptance test. Do not add an internal link until the destination HOD exists.
+- When multiple installation paths can coexist on a machine, explain package ownership, command precedence, platform-Python protection, and whether learners should use separate clean environments.
+- Version-pinning guidance records the approved artifact source as well as the selected release; a pin alone does not establish repository trust or organizational approval.
+- Keep source controls proportional and practical: identify the approved repository or server, preserve certificate and signature validation, and state when exact versions or hashes are expected.
+- Name the official update channels for each distribution path. Treat RHEL RPM advisories, upstream ansible-core releases, and collection releases as separate monitoring streams.
 - Cleanup explains consequences and is clearly optional when later labs depend on the environment.
 - Screenshot alternative text describes the evidence learners need to identify.
 - New terminology is explained before it is required.
@@ -62,6 +87,10 @@ Add a comparison when two names, packages, commands, interfaces, distributions, 
 Place the comparison immediately before the learner first needs the distinction. Use the structured `comparisons` field in `lab.json`; do not hide the explanation in a note or troubleshooting accordion.
 
 When one choice depends on another, present the comparison as a staged decision instead of repeating the same factors in separate sections. Use the optional `decisionGuide` block for concise option cards and a quick decision path after the primary comparison table.
+
+Use the optional `followups` block for guidance that follows from the decision but does not belong in another comparison row, such as avoiding mixed package ownership or explaining what a shared validation command does and does not prove.
+
+When learners need a final decision check, use a short confirmation block rather than a form or architecture record. It should confirm content compatibility, runtime compatibility, installation ownership, and the package source or maintenance path without collecting or retaining learner data.
 
 Each comparison must include:
 

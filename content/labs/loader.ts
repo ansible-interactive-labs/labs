@@ -65,7 +65,6 @@ export const getLabSummaries = cache((): LabSummary[] => getLabSlugs()
     tags: lab.tags,
     outcomes: lab.outcomes,
     stepCount: lab.demos.reduce((count, demo) => count + demo.steps.length, 0),
-    verifiedDate: lab.verified.date,
-    verifiedDateISO: lab.verified.dateISO
+    demoCount: lab.demos.length
   }))
   .sort((a, b) => a.publishedOrder - b.publishedOrder || a.title.localeCompare(b.title)));

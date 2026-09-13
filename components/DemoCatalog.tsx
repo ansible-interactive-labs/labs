@@ -33,7 +33,7 @@ export default function DemoCatalog({ labs }: { labs: LabSummary[] }) {
       return matchesQuery && matchesDifficulty && matchesTopic;
     });
     return matches.sort((a, b) => {
-      if (sort === "Newest") return b.verifiedDateISO.localeCompare(a.verifiedDateISO);
+      if (sort === "Newest") return b.hodNumber - a.hodNumber;
       if (sort === "Title A–Z") return a.title.localeCompare(b.title);
       if (sort === "Shortest") return a.durationMinutes - b.durationMinutes;
       return a.publishedOrder - b.publishedOrder;
