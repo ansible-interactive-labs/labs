@@ -77,7 +77,7 @@ for (const directory of directories) {
   ["title", "shortDescription", "description", "coverImage", "coverAlt", "duration", "topic", "platform", "status"].forEach((key) => {
     if (!nonEmptyString(lab[key])) fail(directory, `${key} is required`);
   });
-  ["seoTitle", "seoDescription", "audience", "durationNote"].forEach((key) => {
+  ["seoTitle", "seoDescription", "audience"].forEach((key) => {
     if (lab[key] !== undefined && !nonEmptyString(lab[key])) fail(directory, `${key} must be a non-empty string when supplied`);
   });
   if (lab.socialImage !== undefined && !/^\/demos\/.+\.(png|jpe?g|webp)$/i.test(lab.socialImage)) {
@@ -106,10 +106,6 @@ for (const directory of directories) {
   });
   if (!Array.isArray(lab.demos)) fail(directory, "demos must be an array");
   if (lab.status === "Available" && lab.demos?.length === 0) fail(directory, "an available HOD must contain at least one demo");
-  ["os", "architecture", "package"].forEach((key) => {
-    if (!nonEmptyString(lab.verified?.[key])) fail(directory, `verified.${key} is required`);
-  });
-
   ["tags", "outcomes"].forEach((key) => {
     (lab[key] ?? []).forEach((item, index) => {
       if (!nonEmptyString(item)) fail(directory, `${key}[${index}] must be a non-empty string`);

@@ -9,7 +9,6 @@
   "seoTitle": "Install ansible-core on RHEL 9 with DNF, pip, or pipx",
   "seoDescription": "Compare Red Hat and upstream ansible-core, choose DNF, pip, or pipx, and follow verified RHEL 9 installation demonstrations.",
   "audience": "For developers and automation content authors who are new to installing ansible-core, and for practitioners who must choose and maintain a supported installation path. The command workflows are beginner-friendly; the compatibility, lifecycle, and source-governance guidance provides the practitioner context behind the choice.",
-  "durationNote": "Choose one installation path and allow 13–18 minutes for its demonstration. Complete all three paths when you want the full 48-minute comparison.",
   "coverImage": "/demos/installing-ansible-core/cover.svg",
   "coverAlt": "RHEL RPM and upstream PyPI installation paths leading to ansible-core and a successful localhost validation",
   "socialImage": "/demos/installing-ansible-core/social.png",
@@ -924,11 +923,6 @@
       ]
     }
   ],
-  "verified": {
-    "os": "Red Hat Enterprise Linux 9.8 (Plow)",
-    "architecture": "aarch64",
-    "package": "RHEL RPM 2.14.18-3.el9_8.1 · upstream PyPI 2.21.4 · pipx 1.17.2"
-  },
   "demos": [
     {
       "id": "install-and-validate",

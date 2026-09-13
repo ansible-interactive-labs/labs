@@ -266,10 +266,5 @@
       ]
     }
   ],
-  "verified": {
-    "os": "Official upstream ADT documentation and package metadata",
-    "architecture": "Red Hat Ansible Automation Platform 2.7 documentation",
-    "package": "PyPI 26.8.0 · Red Hat RPM example 25.8.3"
-  },
   "demos": []
 }

@@ -196,7 +196,6 @@ export type Lab = {
   seoTitle?: string;
   seoDescription?: string;
   audience?: string;
-  durationNote?: string;
   coverImage: string;
   coverAlt: string;
   socialImage?: string;
@@ -221,11 +220,6 @@ export type Lab = {
   };
   nextStep?: LabNextStep;
   comparisons?: LabComparison[];
-  verified: {
-    os: string;
-    architecture: string;
-    package: string;
-  };
   demos: LabDemo[];
 };
 

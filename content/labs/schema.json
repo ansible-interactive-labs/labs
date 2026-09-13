@@ -14,7 +14,7 @@
     "schemaVersion", "hodId", "slug", "title", "shortDescription", "description",
     "coverImage", "coverAlt", "duration", "durationMinutes", "difficulty",
     "topic", "platform", "status", "hodNumber", "publishedOrder", "tags", "outcomes",
-    "prerequisites", "verified", "demos"
+    "prerequisites", "demos"
   ],
   "properties": {
     "$schema": { "type": "string" },
@@ -27,7 +27,6 @@
     "seoTitle": { "type": "string", "minLength": 10 },
     "seoDescription": { "type": "string", "minLength": 20 },
     "audience": { "type": "string", "minLength": 20 },
-    "durationNote": { "type": "string", "minLength": 20 },
     "coverImage": { "type": "string", "pattern": "^/demos/.+\\.(png|jpg|jpeg|webp|svg)$" },
     "coverAlt": { "type": "string", "minLength": 10 },
     "socialImage": { "type": "string", "pattern": "^/demos/.+\\.(png|jpg|jpeg|webp)$" },
@@ -409,16 +408,6 @@
             }
           }
         }
-      }
-    },
-    "verified": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["os", "architecture", "package"],
-      "properties": {
-        "os": { "type": "string" },
-        "architecture": { "type": "string" },
-        "package": { "type": "string" }
       }
     },
     "demos": {

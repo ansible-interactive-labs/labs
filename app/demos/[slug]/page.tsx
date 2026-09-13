@@ -201,7 +201,6 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
   const lab = getLab(slug);
   if (!lab) notFound();
 
-  const totalSteps = lab.demos.reduce((count, demo) => count + demo.steps.length, 0);
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
   const structuredData = {
     "@context": "https://schema.org",
@@ -237,30 +236,10 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
           <p className="lab-description">{lab.description}</p>
           {lab.audience ? <p className="lab-audience"><strong>Who this is for:</strong> {lab.audience}</p> : null}
           <p className="lab-byline">Created, demonstrated, and verified by <Link href={brand.creatorPath} data-analytics-event="author_profile_opened" data-analytics-label="Author page">{brand.creator} →</Link> · <Link href="/demos/">All Hands-On Demos →</Link></p>
-          <div className="lab-facts" aria-label="Lab facts">
-            <span><small>{lab.durationNote ? "All paths" : "Duration"}</small>{lab.duration}</span>
-            <span><small>Platform</small>{lab.platform}</span>
-            <span><small>Demonstrations</small>{lab.demos.length || "In preparation"}</span>
-            <span><small>Total steps</small>{totalSteps || "Not recorded"}</span>
-          </div>
-          {lab.durationNote ? <p className="lab-duration-note">{lab.durationNote}</p> : null}
         </div>
-        <div className="lab-hero-side">
-          <figure className="lab-cover-art">
-            <img src={`${basePath}${lab.coverImage}`} alt={lab.coverAlt} />
-          </figure>
-          <aside className="verification-card">
-            <span>{lab.demos.length ? "Verified environment" : "Research basis"}</span>
-            <dl>
-              <div><dt>{lab.demos.length ? "Operating system" : "Community source"}</dt><dd>{lab.verified.os}</dd></div>
-              <div><dt>{lab.demos.length ? "Architecture" : "Red Hat source"}</dt><dd>{lab.verified.architecture}</dd></div>
-              <div><dt>{lab.demos.length ? "Captured package" : "Package snapshot"}</dt><dd>{lab.verified.package}</dd></div>
-            </dl>
-            <p>{lab.demos.length
-              ? "Package versions can change as Red Hat publishes updates. Match the expected behavior, not an exact version string."
-              : "Tool membership and package versions change over time. Use the linked official references when choosing an installation path."}</p>
-          </aside>
-        </div>
+        <figure className="lab-cover-art">
+          <img src={`${basePath}${lab.coverImage}`} alt={lab.coverAlt} />
+        </figure>
       </header>
 
       {lab.overview && (
