@@ -81,7 +81,6 @@ export default function DemoCatalog({ labs }: { labs: LabSummary[] }) {
                 <img src={`${basePath}${lab.coverImage}`} alt={lab.coverAlt} loading="lazy" decoding="async" />
                 <span className="hod-badge">{lab.hodId}</span>
                 <span className="play-button" aria-hidden="true">{lab.stepCount ? "▶" : "→"}</span>
-                <span className="duration">{lab.duration}</span>
               </Link>
               <div className="demo-content">
                 <div className="tags"><span>{lab.difficulty}</span></div>
