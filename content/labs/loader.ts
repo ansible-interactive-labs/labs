@@ -25,7 +25,6 @@ const assertLab = (value: unknown, source: string): Lab => {
     if (typeof demo.coverAlt !== "string" || !demo.coverAlt.trim()) throw new Error(`${source}: demo ${index + 1} requires coverAlt text`);
     if (!Array.isArray(demo.steps) || demo.steps.length === 0) throw new Error(`${source}: demo ${index + 1} requires at least one step`);
     if (!Array.isArray(demo.verification) || demo.verification.length === 0) throw new Error(`${source}: demo ${index + 1} requires verification checks`);
-    if (!Array.isArray(demo.troubleshooting) || demo.troubleshooting.length === 0) throw new Error(`${source}: demo ${index + 1} requires troubleshooting guidance`);
   });
   if (!Array.isArray(lab.prerequisites) || lab.prerequisites.length === 0) throw new Error(`${source}: prerequisites are required`);
   return lab as Lab;

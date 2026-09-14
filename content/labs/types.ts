@@ -11,17 +11,16 @@ export type LabStep = {
   expected: string;
   note?: string;
   troubleshooting: string;
+  recovery?: Array<{
+    symptom: string;
+    detail: string;
+    command?: string;
+  }>;
   media?: {
     type: "terminal";
     source: string;
     transcript: string;
   };
-};
-
-export type LabTroubleshooting = {
-  title: string;
-  command: string;
-  detail: string;
 };
 
 export type LabPrerequisite = {
@@ -47,6 +46,27 @@ export type LabProof = {
     title: string;
     detail: string;
   }>;
+};
+
+export type LabSupportGuidance = {
+  title: string;
+  introduction: string;
+  routes: Array<{
+    title: string;
+    detail: string;
+    reference?: {
+      label: string;
+      href: string;
+    };
+  }>;
+  diagnostics: {
+    title: string;
+    introduction: string;
+    items: Array<{
+      command: string;
+      detail: string;
+    }>;
+  };
 };
 
 export type LabNextStep = {
@@ -179,7 +199,13 @@ export type LabDemo = {
   durationMinutes: number;
   steps: LabStep[];
   verification: string[];
-  troubleshooting: LabTroubleshooting[];
+  completionRecord: {
+    introduction: string;
+    items: Array<{
+      label: string;
+      value: string;
+    }>;
+  };
   cleanup?: {
     explanation: string;
     command: string;
@@ -211,6 +237,7 @@ export type Lab = {
   outcomes: string[];
   overview?: LabOverview;
   proof?: LabProof;
+  supportGuidance?: LabSupportGuidance;
   prerequisites: LabPrerequisite[];
   prerequisiteCallouts?: LabGuidanceCallout[];
   prerequisiteDetails?: {

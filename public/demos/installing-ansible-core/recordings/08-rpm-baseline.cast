@@ -1,0 +1,13 @@
+{"version":2,"width":120,"height":34,"idle_time_limit":1.25,"title":"rpm baseline","env":{"SHELL":"/bin/bash","TERM":"xterm-256color"}}
+[0,"o","\r\n"]
+[0.000027,"o","\r\n[rajat@demo ~]$ "]
+[1.250027,"o","rpm -q ansible-core | tee ~/ansible-core-rpm-baseline.txt\r\n"]
+[1.260863,"o","ansible-core-2.14.18-3.el9_8.1.aarch64\r\n\r\n"]
+[1.261448,"o",""]
+[1.261475,"o","[rajat@demo ~]$ "]
+[2.511475,"o","sudo dnf info --installed ansible-core | tee -a ~/ansible-core-rpm-baseline.txt\r\n"]
+[3.761475,"o","Updating Subscription Management repositories.\r\n"]
+[4.727086,"o","Installed Packages\r\nName         : ansible-core\r\nEpoch        : 1\r\nVersion      : 2.14.18\r\nRelease      : 3.el9_8.1\r\nArchitecture : aarch64\r\nSize         : 10 M\r\nSource       : ansible-core-2.14.18-3.el9_8.1.src.rpm\r\nRepository   : @System\r\nFrom repo    : rhel-9-for-aarch64-appstream-rpms\r\nSummary      : SSH-based configuration management, deployment, and task execution system\r\nURL          : http://ansible.com\r\nLicense      : GPLv3+\r\nDescription  : Ansible is a radically simple model-driven configuration management,\r\n             : multi-node deployment, and remote task execution system. Ansible works\r\n             : over SSH and does not require any software or daemons to be installed\r\n             : on remote nodes. Extension modules can be written in any language and\r\n             : are transferred to managed machines automatically.\r\n\r\n"]
+[4.759558,"o",""]
+[4.759583,"o","[rajat@demo ~]$ "]
+[6.009583,"o",""]

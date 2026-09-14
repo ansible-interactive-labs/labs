@@ -1,0 +1,54 @@
+[rajat@demo ~]$ pipx list --include-injected | tee ~/ansible-core-pipx-baseline.txt
+venvs are in /home/rajat/.local/share/pipx/venvs
+apps are exposed on your $PATH at /home/rajat/.local/bin
+manual pages are exposed at /home/rajat/.local/share/man
+shell completions are exposed at /home/rajat/.local/share
+   package ansible-core 2.21.4, installed using Python 3.12.14
+    - ansible
+    - ansible-config
+    - ansible-console
+    - ansible-doc
+    - ansible-galaxy
+    - ansible-inventory
+    - ansible-playbook
+    - ansible-pull
+    - ansible-test
+    - ansible-vault
+
+[rajat@demo ~]$ pipx runpip ansible-core freeze --all | tee -a ~/ansible-core-pipx-baseline.txt
+ansible-core==2.21.4
+cffi==2.1.1
+cryptography==50.0.1
+Jinja2==3.1.6
+MarkupSafe==3.0.3
+packaging==26.3
+pip==26.2.1
+pycparser==3.0
+PyYAML==6.0.3
+resolvelib==1.2.1
+
+[rajat@demo ~]$ pipx pin ansible-core --output json | tee -a ~/ansible-core-pipx-baseline.txt
+{
+  "command": [
+    "pin"
+  ],
+  "data": {
+    "packages": [
+      {
+        "environment": "ansible-core",
+        "injected": false,
+        "location": "/home/rajat/.local/share/pipx/venvs/ansible-core",
+        "package": "ansible-core",
+        "status": "pinned",
+        "version": "2.21.4"
+      }
+    ],
+    "skipped": []
+  },
+  "errors": [],
+  "exit_code": 0,
+  "pipx_result_version": "1",
+  "status": "success"
+}
+
+[rajat@demo ~]$

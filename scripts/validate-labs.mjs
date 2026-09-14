@@ -135,6 +135,23 @@ for (const directory of directories) {
       fail(directory, "proof.items must contain at least two complete items");
     }
   }
+  if (lab.supportGuidance) {
+    const support = lab.supportGuidance;
+    if (!nonEmptyString(support.title) || !nonEmptyString(support.introduction)) fail(directory, "supportGuidance requires a title and introduction");
+    if (!Array.isArray(support.routes) || support.routes.length < 2) fail(directory, "supportGuidance.routes must contain at least two routes");
+    (support.routes ?? []).forEach((route, routeIndex) => {
+      if (!nonEmptyString(route?.title) || !nonEmptyString(route?.detail)) fail(directory, `supportGuidance.routes[${routeIndex}] requires a title and detail`);
+      if (route?.reference) {
+        if (!nonEmptyString(route.reference.label)) fail(directory, `supportGuidance.routes[${routeIndex}].reference.label is required`);
+        try { new URL(route.reference.href); } catch { fail(directory, `supportGuidance.routes[${routeIndex}].reference.href must be a valid URL`); }
+      }
+    });
+    if (!nonEmptyString(support.diagnostics?.title) || !nonEmptyString(support.diagnostics?.introduction)) fail(directory, "supportGuidance.diagnostics requires a title and introduction");
+    if (!Array.isArray(support.diagnostics?.items) || support.diagnostics.items.length < 2) fail(directory, "supportGuidance.diagnostics.items must contain at least two commands");
+    (support.diagnostics?.items ?? []).forEach((item, itemIndex) => {
+      if (!nonEmptyString(item?.command) || !nonEmptyString(item?.detail)) fail(directory, `supportGuidance.diagnostics.items[${itemIndex}] requires a command and detail`);
+    });
+  }
   (lab.prerequisites ?? []).forEach((item, index) => {
     ["label", "value", "detail"].forEach((key) => {
       if (!nonEmptyString(item?.[key])) fail(directory, `prerequisites[${index}].${key} is required`);
@@ -270,14 +287,13 @@ for (const directory of directories) {
     if (!Number.isInteger(demo?.durationMinutes) || demo.durationMinutes < 1) fail(sourceName, "durationMinutes must be a positive integer");
     if (!Array.isArray(demo?.steps) || demo.steps.length === 0) fail(sourceName, "steps must contain at least one item");
     if (!Array.isArray(demo?.verification) || demo.verification.length === 0) fail(sourceName, "verification must contain at least one item");
-    if (!Array.isArray(demo?.troubleshooting) || demo.troubleshooting.length === 0) fail(sourceName, "troubleshooting must contain at least one item");
+    if (!nonEmptyString(demo?.completionRecord?.introduction)) fail(sourceName, "completionRecord.introduction is required");
+    if (!Array.isArray(demo?.completionRecord?.items) || demo.completionRecord.items.length < 4) fail(sourceName, "completionRecord.items must contain at least four entries");
+    (demo?.completionRecord?.items ?? []).forEach((item, itemIndex) => {
+      if (!nonEmptyString(item?.label) || !nonEmptyString(item?.value)) fail(sourceName, `completionRecord.items[${itemIndex}] requires a label and value`);
+    });
     (demo?.verification ?? []).forEach((item, index) => {
       if (!nonEmptyString(item)) fail(sourceName, `verification[${index}] must be a non-empty string`);
-    });
-    (demo?.troubleshooting ?? []).forEach((item, index) => {
-      ["title", "command", "detail"].forEach((key) => {
-        if (!nonEmptyString(item?.[key])) fail(sourceName, `troubleshooting[${index}].${key} is required`);
-      });
     });
     if (demo.cleanup && (!nonEmptyString(demo.cleanup.explanation) || !nonEmptyString(demo.cleanup.command))) {
       fail(sourceName, "cleanup must include an explanation and command when supplied");
@@ -312,6 +328,9 @@ for (const directory of directories) {
       const candidateCommandExplanations = candidate.step.commands.map((item) => item.explanation);
       if (JSON.stringify(baselineCommandExplanations) !== JSON.stringify(candidateCommandExplanations)) {
         fail(sourceName, "steps with the same command sequence must use the same command explanations");
+      }
+      if (JSON.stringify(baseline.step.recovery ?? []) !== JSON.stringify(candidate.step.recovery ?? [])) {
+        fail(sourceName, "steps with the same command sequence must use the same recovery guidance");
       }
     });
   });
@@ -381,6 +400,11 @@ for (const directory of directories) {
       if (shortDocumentedObject && !normalizedCommand.includes("ansible-doc --list")) {
         fail(sourceName, `commands[${commandIndex}] uses the short ansible-doc object name ${shortDocumentedObject[1]}; use its FQCN`);
       }
+    });
+    (step.recovery ?? []).forEach((item, recoveryIndex) => {
+      if (!nonEmptyString(item?.symptom)) fail(sourceName, `recovery[${recoveryIndex}].symptom is required`);
+      if (!nonEmptyString(item?.detail) || item.detail.trim().length < 20) fail(sourceName, `recovery[${recoveryIndex}].detail must explain the step-specific recovery`);
+      if (item.command !== undefined && !nonEmptyString(item.command)) fail(sourceName, `recovery[${recoveryIndex}].command must be non-empty when supplied`);
     });
     if (step.media) {
       if (step.media.type !== "terminal") fail(sourceName, `unsupported media type: ${step.media.type ?? "(missing)"}`);

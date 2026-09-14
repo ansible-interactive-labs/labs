@@ -1,0 +1,25 @@
+[rajat@demo ~]$ rpm -q ansible-core | tee ~/ansible-core-rpm-baseline.txt
+ansible-core-2.14.18-3.el9_8.1.aarch64
+
+[rajat@demo ~]$ sudo dnf info --installed ansible-core | tee -a ~/ansible-core-rpm-baseline.txt
+Updating Subscription Management repositories.
+Installed Packages
+Name         : ansible-core
+Epoch        : 1
+Version      : 2.14.18
+Release      : 3.el9_8.1
+Architecture : aarch64
+Size         : 10 M
+Source       : ansible-core-2.14.18-3.el9_8.1.src.rpm
+Repository   : @System
+From repo    : rhel-9-for-aarch64-appstream-rpms
+Summary      : SSH-based configuration management, deployment, and task execution system
+URL          : http://ansible.com
+License      : GPLv3+
+Description  : Ansible is a radically simple model-driven configuration management,
+             : multi-node deployment, and remote task execution system. Ansible works
+             : over SSH and does not require any software or daemons to be installed
+             : on remote nodes. Extension modules can be written in any language and
+             : are transferred to managed machines automatically.
+
+[rajat@demo ~]$

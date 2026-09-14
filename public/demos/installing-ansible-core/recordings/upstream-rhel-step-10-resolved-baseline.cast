@@ -1,0 +1,7 @@
+{"version":2,"width":120,"height":34,"idle_time_limit":1.25,"title":"upstream rhel step 10 resolved baseline","env":{"SHELL":"/bin/bash","TERM":"xterm-256color"}}
+[0,"o","\r\n(ansible-core-2.21) [rajat@demo ~]$ "]
+[1.25,"o","python -m pip freeze --all | tee ~/ansible-core-2.21-requirements.txt\r\n"]
+[1.367757,"o","ansible-core==2.21.4\r\ncffi==2.1.1\r\ncryptography==50.0.1\r\nJinja2==3.1.6\r\nMarkupSafe==3.0.3\r\npackaging==26.3\r\npip==26.2.1\r\npycparser==3.0\r\nPyYAML==6.0.3\r\nresolvelib==1.2.1\r\n"]
+[1.382801,"o","\r\n"]
+[1.382865,"o","(ansible-core-2.21) [rajat@demo ~]$ "]
+[2.632865,"o",""]

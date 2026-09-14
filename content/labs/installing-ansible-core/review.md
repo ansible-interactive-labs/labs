@@ -82,7 +82,7 @@ Implemented in this review:
 - Clarified that an inactive `rhcd` service does not block DNF package installation.
 - Standardized every replay at 120 columns by 34 rows with the `rajat` shell identity and ensured every returned prompt begins on a new line.
 - Re-recorded every command through the returned shell prompt, added a completion hold, and capped idle gaps so network and installation waits do not appear frozen.
-- Migrated HOD 001 to the multi-demo content model. Verification, cross-step troubleshooting, and optional cleanup now belong to the demo module and appear contextually inside the player rather than as duplicated page sections.
+- Migrated HOD 001 to the multi-demo content model. Verification and optional cleanup belong to the demo module, while troubleshooting and recovery remain attached to the step that can produce each issue.
 - Normalized every terminal replay to freeze on the final returned prompt and added validation that rejects post-prompt cursor movement in future recordings.
 - Expanded the configuration-inspection explanation of `PAGER=cat`, `ansible-config dump`, and `--only-changed`.
 - Expanded the final ad hoc command into its target pattern, module-selection, fully qualified collection name, and local-connection components, including why it is not an ICMP ping.
@@ -116,10 +116,10 @@ Official sources reviewed:
 - Clarified that repository access does not itself create a Red Hat support entitlement, identified the RHEL managed-host table as technical compatibility rather than a complete support matrix, and replaced the dated upstream lifecycle column with the durable label “Maintenance milestones.”
 - Updated Automation Controller references from AAP 2.6 to AAP 2.7 and linked the `ansible-dev-tools` card to the existing HOD 002 preview.
 - Updated the Core Concept note to describe what these demonstrations actually do—install, inspect, and validate a local ansible-core runtime—and added the missing maintained-version and Python-selection outcome to Demo 03.
-- Audited all three demo titles, pre-start objectives and outcomes, top-bar labels, step headings, introductions, command explanations, expected results, notes, “Result looks different?” guidance, and demo troubleshooting guides against the recorded command sequences.
+- Audited all three demo titles, pre-start objectives and outcomes, top-bar labels, step headings, introductions, command explanations, expected results, notes, and step-specific “Result looks different?” guidance against the recorded command sequences.
 - Renamed Demo 01 to “Install Red Hat-provided ansible-core on RHEL 9” so the title identifies the AppStream RPM path as clearly as the pip and pipx titles identify theirs.
 - Standardized every learner-facing field for the six command-identical step groups shared across the demos: system baseline, RHEL registration, connection verification, repository review, Python installation, and upstream content inspection.
-- Added registration and repository recovery entries to the pip and pipx troubleshooting guides, and added the missing registration and repository outcomes to the pipx pre-start summary.
+- Added registration and repository recovery entries to the matching pip and pipx steps, and added the missing registration and repository outcomes to the pipx pre-start summary.
 - Removed the per-step Restart Demo action. Anonymous sessions still reset when learners close or refresh the player, so the next Start Demo begins at step 1.
 - Added validation that rejects command drift between a transcript and its documented single-line command sequence, as well as wording drift between command-identical steps in different demos.
 - Commands have explanations, expected results, and recovery guidance.
@@ -163,3 +163,14 @@ Official sources reviewed:
 - Clarified that Demo 03 installs pipx from the configured Python package index, with PyPI as the source used in the recorded demonstration.
 - Every replay has a plain-text transcript, remains paused until the learner starts it, and contains no credentials.
 - The comparison table supports keyboard focus and horizontal scrolling on narrow screens.
+- Added a post-demo operational-support section that routes RHEL, upstream ansible-core, collection, and local-environment problems to the appropriate owner instead of treating every failure as an ansible-core issue.
+- Added an installation-specific diagnostic evidence checklist and a redaction reminder so learners can collect package, runtime, configuration, collection, and repository context before requesting help.
+- Replaced “latest published release” with an explicit upstream matrix boundary of ansible-base 2.10 through ansible-core 2.21, while retaining the official support-matrix link for later releases.
+- Expanded enterprise and per-demo cleanup guidance to distinguish local package removal and `rhc disconnect` from an organization’s complete asset-retirement process.
+- Added a copyable completion-record template to every demo. It records the installation method, source and owner, resolved version, Python runtime, executable, and localhost validation without implying that the website can inspect a learner’s machine.
+- Removed the demo-wide troubleshooting guide that repeated unrelated failures on every step. Each “Result looks different?” panel now covers only symptoms that can originate from the current command sequence.
+- Added symptom-specific diagnostic and recovery commands beside the affected step across all three installation paths, including registration, repositories, DNF, virtual environments, pip, pipx, package provenance, content inspection, and the localhost smoke test.
+- Reused identical recovery wording and commands wherever demos share the same ordered command sequence, and extended validation so future shared steps cannot silently drift.
+- Expanded Demo 01 with a recorded RPM-baseline step after package and runtime verification. It saves the installed package identity and DNF metadata, explains `@System` versus `From repo`, and links the practical workflow to the lifecycle and repeatability guidance without freezing maintenance updates.
+- Expanded Demo 02 with a recorded resolved-package baseline after provenance verification. The step saves `pip freeze --all` output from the active virtual environment and explains the boundary between a Python package snapshot and a portable, fully governed runtime.
+- Expanded Demo 03 with a recorded pipx application baseline after isolation and provenance verification. The step inventories the managed application and injected packages, captures exact resolved Python packages, pins the accepted application against routine pipx upgrades, and explains what the pin does not govern.

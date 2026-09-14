@@ -40,7 +40,10 @@ Review each lab through all of these lenses:
 - Keep the path to the hands-on workflow short: introduce the core concept and prerequisites, present the decision learners need to choose a demo, and then show the demos. Place historical compatibility matrices, operational lifecycle guidance, version pinning, controllers, and related tools after the recorded workflows unless learners must use that material to make the initial choice.
 - Every HOD uses a dedicated 16:9 editorial cover that represents its subject; recording frames and step screenshots are not used as catalog artwork.
 - Every demo module uses its own 16:9 editorial cover that represents the specific workflow. It must differ from the HOD cover, every sibling demo cover, and every step image, including when the HOD contains only one demo.
-- Each HOD may contain one or more demo modules. Every module has its own objective, duration, steps, verification checks, recovery guide, and optional cleanup.
+- Each HOD may contain one or more demo modules. Every module has its own objective, duration, steps, verification checks, step-specific recovery guidance, and optional cleanup.
+- Give every recorded demo a copyable completion record that identifies the installation method, artifact source and owner, resolved version, runtime, executable, and functional result. Use placeholders when the learner must supply output from their own environment.
+- When ownership can span vendors or projects, provide concise support routing and list the diagnostic evidence a learner should collect and redact before requesting help.
+- Describe a version matrix with an explicit first and last covered release. Avoid calling a static table “latest” unless its currency is maintained automatically.
 - Prerequisites state the operating system, privileges, access, accounts or subscriptions, connectivity, and starting state.
 - When a package-source or entitlement explanation needs more space, place it in a reusable `prerequisiteCallouts` entry instead of overloading a prerequisite card. State which dependency the subscription supplies and which source supplies the demonstrated application.
 - No setup action is implied or hidden between recorded steps.
@@ -49,7 +52,7 @@ Review each lab through all of these lenses:
 - The terminal canvas fills the fixed media pane; recordings must not appear as a smaller inset video inside the player.
 - Each demo module exposes one Start Demo button; active demo mode fits the viewport, keeps navigation fixed, and confines vertical scrolling to instructional content.
 - Active steps do not expose a Restart Demo action. Closing or refreshing resets the anonymous session, and the next Start Demo action begins at step 1.
-- Verification appears in the player after the final functional step, and troubleshooting remains contextual to the current step or available through the in-player recovery guide instead of duplicating large page sections.
+- Verification appears in the player after the final functional step, and troubleshooting remains contextual to the current step instead of duplicating a demo-wide recovery guide on every step.
 - Each learner-visible command has its own one- or two-line explanation. Separate commands render as distinct rows while multiline commands remain grouped as one command.
 - Every reference to an Ansible module, plugin, role, or other collection-provided object uses its fully qualified collection name when one exists. Verify commands and all surrounding prose, headings, alternative text, expected results, and troubleshooting against the relevant collection documentation.
 - Credential entry and other secrets are excluded rather than simulated in the recording.
@@ -57,8 +60,10 @@ Review each lab through all of these lenses:
 - Every shell prompt begins on a new line, with no more than one blank terminal row between completed output and the returned prompt.
 - The replay freezes on the final returned prompt. No newline, carriage return, terminal reset, or other output may move the cursor onto an empty line before playback ends.
 - Every step introduction describes the purpose and context without narrating its command sequence. Command rows explain what each command does, while expected results and troubleshooting cover success and recovery.
-- Compare each documented command sequence with its transcript in order. The top-bar label, step heading, introduction, expected result, note, “Result looks different?” message, and general troubleshooting guide must describe what the replay actually shows.
+- Compare each documented command sequence with its transcript in order. The top-bar label, step heading, introduction, expected result, note, and “Result looks different?” message must describe what the replay actually shows.
 - When the same ordered command sequence appears in more than one demo, reuse all learner-facing step content verbatim. Different replay files and fallback images are allowed when they show different environments; instructional wording is not duplicated or rewritten.
+- Keep every “Result looks different?” summary and recovery item limited to symptoms that can be produced by commands in the current step. Put a diagnostic or corrective command in the step that generated the symptom; do not repeat a demo-wide troubleshooting guide throughout the player.
+- When command-identical steps are reused across demos, keep their recovery symptoms, explanations, and commands identical as part of the shared learner-facing content.
 - Commands are safe to copy and do not expose credentials, local addresses, account identifiers, or destructive shortcuts.
 - Version-dependent output is identified so learners do not expect an exact match unnecessarily.
 - When a demonstration uses a feature-line constraint, place an exact-version warning beside that installation step instead of relying only on later lifecycle guidance.

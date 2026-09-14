@@ -12,8 +12,8 @@
   "coverImage": "/demos/installing-ansible-core/cover.svg",
   "coverAlt": "RHEL RPM and upstream PyPI installation paths leading to ansible-core and a successful localhost validation",
   "socialImage": "/demos/installing-ansible-core/social.png",
-  "duration": "48 min",
-  "durationMinutes": 48,
+  "duration": "51 min",
+  "durationMinutes": 51,
   "difficulty": "Beginner",
   "topic": "Foundation",
   "platform": "RHEL 9",
@@ -224,8 +224,78 @@
             "label": "Review offline collection installation"
           }
         ]
+      },
+      {
+        "title": "Retiring the lab system",
+        "paragraphs": [
+          "Removing ansible-core and running rhc disconnect are local cleanup actions, not a complete organizational asset-retirement process. For a managed or disposable system, also follow your organization’s process for reviewing and removing retired host records from the applicable inventory, subscription-management, security, and configuration-management services."
+        ]
       }
     ]
+  },
+  "supportGuidance": {
+    "title": "Get help from the right owner",
+    "introduction": "Route a problem according to the component that owns it. Before opening a case or issue, reproduce the failure, remove credentials and private infrastructure details from the output, and collect the package, runtime, configuration, and content evidence that identifies the failing layer.",
+    "routes": [
+      {
+        "title": "RHEL registration, repositories, or RPM",
+        "detail": "Start with Red Hat documentation and your organization’s RHEL support path. Open a Red Hat case only when the system has the applicable entitlement and the issue falls within the documented support scope.",
+        "reference": {
+          "label": "Review the ansible-core support scope",
+          "href": "https://access.redhat.com/articles/6325611"
+        }
+      },
+      {
+        "title": "Upstream ansible-core or PyPI package",
+        "detail": "Use your organization’s Python or open-source support process first. For a reproducible upstream defect, review the Ansible project’s issue guidance and search existing issues before filing a new report.",
+        "reference": {
+          "label": "Review Ansible issue reporting",
+          "href": "https://docs.ansible.com/projects/ansible/latest/community/communication.html#bug-reports-and-feature-requests"
+        }
+      },
+      {
+        "title": "Collection, module, or plugin",
+        "detail": "Use the FQCN and collection version to identify the content owner. Check that collection’s documentation, support statement, changelog, and issue tracker rather than assuming every content failure belongs to ansible-core.",
+        "reference": {
+          "label": "Review collection support",
+          "href": "https://docs.ansible.com/projects/ansible/latest/collections_guide/collections_support.html"
+        }
+      },
+      {
+        "title": "Local environment or approved package source",
+        "detail": "Contact the team that owns the control node, Python runtime, proxy, certificates, controlled package index, or mirrored repositories. Provide the selected installation path and the evidence below so ownership can be established quickly."
+      }
+    ],
+    "diagnostics": {
+      "title": "Collect evidence before requesting help",
+      "introduction": "Run the commands that apply to your installation path. Review and redact the output before sharing it; do not include passwords, activation keys, account identifiers, tokens, or private infrastructure details.",
+      "items": [
+        {
+          "command": "ansible --version\ntype -a ansible",
+          "detail": "Records the active ansible-core, Python runtime, configuration file, collection paths, and every Ansible executable on PATH."
+        },
+        {
+          "command": "ansible-config dump --only-changed\nansible-galaxy collection list",
+          "detail": "Shows configuration overrides and separately installed collections that can change behavior from the clean demonstration."
+        },
+        {
+          "command": "rpm -q ansible-core\ndnf info --installed ansible-core",
+          "detail": "Use for the RPM path to capture the complete installed package identity and its DNF repository metadata."
+        },
+        {
+          "command": "python -m pip show ansible-core\npython -m pip check",
+          "detail": "Use inside the activated virtual environment to capture package location, version, and dependency health."
+        },
+        {
+          "command": "pipx list\npipx runpip ansible-core check",
+          "detail": "Use for the pipx path to identify the managed environment, interpreter, exposed applications, and dependency health."
+        },
+        {
+          "command": "sudo rhc status\nsudo dnf repolist --enabled",
+          "detail": "Use when registration or RHEL package access is involved to capture service connectivity and enabled repositories."
+        }
+      ]
+    }
   },
   "nextStep": {
     "eyebrow": "Continue your validation",
@@ -322,7 +392,7 @@
     {
       "title": "Upstream ansible-core compatibility",
       "afterDemoId": "install-upstream-with-pipx-rhel",
-      "introduction": "The upstream Ansible project publishes ansible-core as a Python distribution on PyPI. Compatibility must be checked at both ends of the connection: the Python interpreter that runs ansible-core on the control node and the runtime used to execute modules on each managed host. Linux and Unix hosts normally use Python, Windows hosts use PowerShell and .NET, and network devices often follow collection- and connection-plugin-specific requirements instead. The matrix covers ansible-base 2.10 through the latest published release and includes lifecycle dates because a compatible release is not necessarily a maintained release.",
+      "introduction": "The upstream Ansible project publishes ansible-core as a Python distribution on PyPI. Compatibility must be checked at both ends of the connection: the Python interpreter that runs ansible-core on the control node and the runtime used to execute modules on each managed host. Linux and Unix hosts normally use Python, Windows hosts use PowerShell and .NET, and network devices often follow collection- and connection-plugin-specific requirements instead. This matrix covers ansible-base 2.10 through ansible-core 2.21 and includes lifecycle milestones because a compatible release is not necessarily a maintained release. Use the linked upstream support matrix for releases beyond this coverage boundary.",
       "eyebrow": "Upstream Python distribution",
       "summaryLabel": "View the upstream runtime matrix",
       "cellLayout": "stacked",
@@ -928,19 +998,18 @@
       "id": "install-and-validate",
       "demoId": "HOD-001-D01",
       "title": "Install Red Hat-provided ansible-core on RHEL 9",
-      "objective": "Register a RHEL 9 system, install the Red Hat-provided ansible-core RPM from AppStream, inspect its content boundary, and validate it locally with ansible.builtin.ping.",
-      "coverImage": "/demos/installing-ansible-core/demo-01-rhel-appstream.svg",
-      "coverAlt": "A signed ansible-core RPM moving from the RHEL 9 AppStream repository through DNF into a validated control node",
+      "objective": "Register a RHEL 9 system, install the Red Hat-provided ansible-core RPM from AppStream, record its installed package baseline, inspect its content boundary, and validate it locally with ansible.builtin.ping.",
       "coverImage": "/demos/installing-ansible-core/demo-01-rhel-appstream.svg",
       "coverAlt": "RHEL AppStream repository delivering a signed ansible-core RPM through DNF to a validated RHEL 9 control node",
       "outcomes": [
         "Connect RHEL to Red Hat services and verify BaseOS and AppStream",
         "Install and inspect the Red Hat-provided ansible-core RPM",
+        "Save the installed RPM identity and source repository as baseline evidence",
         "Identify the ansible.builtin content boundary",
         "Validate the control node locally with ansible.builtin.ping"
       ],
-      "duration": "13 min",
-      "durationMinutes": 13,
+      "duration": "14 min",
+      "durationMinutes": 14,
       "steps": [
     {
       "label": "System Baseline",
@@ -974,7 +1043,11 @@
       ],
       "expected": "rhc reports successful connections to Red Hat Subscription Management and Red Hat Lightspeed and activates remote host configuration. The recorded client uses the former Red Hat Insights name in its output.",
       "note": "Credential input is excluded from the replay. The neutral placeholders show where learners interact without exposing an account name or password.",
-      "troubleshooting": "If no credential prompt appears, make sure rhc connect is running in an interactive terminal. If registration fails, verify network, DNS, proxy, system time, and the account's RHEL entitlement.",
+      "troubleshooting": "Use the message returned by rhc connect to distinguish an interactive-login problem from a registration or service-connection failure.",
+      "recovery": [
+        { "symptom": "No credential prompt appears", "detail": "Run rhc connect from an interactive terminal. A background process or non-interactive shell cannot accept the Red Hat account prompts." },
+        { "symptom": "Authentication or registration fails", "detail": "Confirm network access, DNS, proxy configuration, system time, and an active RHEL entitlement, then retry this registration step.", "command": "sudo rhc connect" }
+      ],
       "media": {
         "type": "terminal",
         "source": "/demos/installing-ansible-core/recordings/02-register.cast",
@@ -992,7 +1065,11 @@
       ],
       "expected": "The system is connected to Red Hat Subscription Management and Red Hat Lightspeed. The recorded client uses the former Red Hat Insights name in its output.",
       "note": "The remote host configuration daemon may later report inactive. That optional daemon state does not prevent DNF from installing packages from subscribed repositories.",
-      "troubleshooting": "If either required connection is unavailable, retry rhc connect and review network, DNS, proxy, time synchronization, and entitlement access before continuing.",
+      "troubleshooting": "Read each rhc status line separately. Subscription Management and Red Hat Lightspeed must be connected for this workflow; remote host configuration is not required for DNF package access.",
+      "recovery": [
+        { "symptom": "Subscription Management or Lightspeed is disconnected", "detail": "Return to the Register RHEL step and reconnect the system before relying on subscribed repositories." },
+        { "symptom": "Only remote host configuration is inactive", "detail": "Continue when the two required connections are active. An inactive optional remote host configuration daemon does not block this package workflow." }
+      ],
       "media": {
         "type": "terminal",
         "source": "/demos/installing-ansible-core/recordings/03-registration-status.cast",
@@ -1011,7 +1088,10 @@
       ],
       "expected": "Both the RHEL 9 BaseOS and AppStream RPM repositories appear as enabled.",
       "note": "Repository IDs include the architecture. This recording uses aarch64; x86_64 systems show corresponding x86_64 repository IDs.",
-      "troubleshooting": "If either repository is missing, refresh subscription data, then enable the architecture-specific BaseOS and AppStream repository IDs shown in the troubleshooting guide.",
+      "troubleshooting": "Compare both command outputs and identify exactly which architecture-specific BaseOS or AppStream repository is absent before changing repository configuration.",
+      "recovery": [
+        { "symptom": "BaseOS or AppStream is not enabled", "detail": "Refresh the subscription data, enable the repository IDs matching this system's architecture, and repeat both repository-list commands from this step.", "command": "sudo subscription-manager refresh\nsudo subscription-manager repos \\\n  --enable=\"rhel-9-for-$(arch)-baseos-rpms\" \\\n  --enable=\"rhel-9-for-$(arch)-appstream-rpms\"" }
+      ],
       "media": {
         "type": "terminal",
         "source": "/demos/installing-ansible-core/recordings/04-repositories.cast",
@@ -1028,7 +1108,10 @@
         { "command": "sudo dnf info ansible-core", "explanation": "Displays metadata for the ansible-core package available to DNF, including the AppStream repository that provides it." }
       ],
       "expected": "The latest ansible-core build is available from the RHEL 9 AppStream repository.",
-      "troubleshooting": "If DNF reports no matching package, verify that AppStream is enabled, clean the DNF metadata, and rebuild the cache.",
+      "troubleshooting": "A missing package result in this step normally means that DNF cannot see current ansible-core metadata from AppStream.",
+      "recovery": [
+        { "symptom": "DNF reports no matching ansible-core package", "detail": "After confirming AppStream is enabled, clear cached metadata, rebuild the cache, and repeat the package-information command.", "command": "sudo dnf clean all\nsudo dnf makecache\nsudo dnf info ansible-core" }
+      ],
       "media": {
         "type": "terminal",
         "source": "/demos/installing-ansible-core/recordings/05-package-info.cast",
@@ -1045,7 +1128,10 @@
         { "command": "sudo dnf install ansible-core", "explanation": "Asks DNF to resolve and install the RHEL-provided ansible-core RPM and its required dependencies from enabled repositories." }
       ],
       "expected": "The transaction finishes with Complete! and lists ansible-core among the installed packages.",
-      "troubleshooting": "If dependency resolution fails, refresh package metadata and review the transaction without disabling signature checks or forcing package removal.",
+      "troubleshooting": "Use the DNF transaction error to distinguish stale metadata, dependency resolution, download, and package-signature failures for this installation.",
+      "recovery": [
+        { "symptom": "DNF cannot resolve or download the transaction", "detail": "Refresh DNF metadata and retry the installation. Do not disable signature verification or force-remove platform packages to make the transaction proceed.", "command": "sudo dnf clean metadata\nsudo dnf makecache\nsudo dnf install ansible-core" }
+      ],
       "media": {
         "type": "terminal",
         "source": "/demos/installing-ansible-core/recordings/06-install.cast",
@@ -1064,11 +1150,39 @@
         { "command": "ansible --version", "explanation": "Reports the active ansible-core release, configuration file, Python runtime, module paths, and collection paths." }
       ],
       "expected": "RPM and DNF report the installed ansible-core package, and ansible --version displays the active core release and runtime details.",
-      "troubleshooting": "If RPM or DNF does not report ansible-core, review the preceding installation transaction. If ansible --version does not start, open a new terminal or run hash -r, then confirm that the RPM remains installed.",
+      "troubleshooting": "Evaluate the RPM query, DNF query, and runtime output independently so the failed verification identifies either package state or command resolution.",
+      "recovery": [
+        { "symptom": "RPM or DNF does not report ansible-core", "detail": "The installation did not reach the expected package state. Return to the DNF installation step and resolve its transaction error before repeating this verification." },
+        { "symptom": "ansible is not found after a successful installation", "detail": "Clear the shell's remembered command locations, then check the executable again without changing the installed package.", "command": "hash -r\ncommand -v ansible\nansible --version" },
+        { "symptom": "A different Ansible executable runs", "detail": "List every matching executable and confirm that the RPM-provided /usr/bin/ansible is the command being verified.", "command": "type -a ansible\ncommand -v ansible" }
+      ],
       "media": {
         "type": "terminal",
         "source": "/demos/installing-ansible-core/recordings/07-package-runtime.cast",
         "transcript": "/demos/installing-ansible-core/recordings/07-package-runtime.txt"
+      }
+    },
+    {
+      "label": "Record Baseline",
+      "title": "Record the installed RPM baseline",
+      "image": "/demos/installing-ansible-core/assets/step-08-rpm-baseline.svg",
+      "alt": "Terminal saving the complete installed ansible-core RPM identity and AppStream source repository to a baseline file",
+      "explanation": "A maintainable installation needs evidence that identifies more than the upstream feature version. Save the installed RPM build, architecture, source package, and originating AppStream repository so the accepted environment can be reviewed later.",
+      "commands": [
+        { "command": "rpm -q ansible-core | tee ~/ansible-core-rpm-baseline.txt", "explanation": "Prints the installed ansible-core package name, version, release, and architecture while creating a baseline file in the current user's home directory." },
+        { "command": "sudo dnf info --installed ansible-core | tee -a ~/ansible-core-rpm-baseline.txt", "explanation": "Appends DNF's installed-package metadata, including the epoch, source RPM, and originating repository, while keeping the same information visible in the terminal." }
+      ],
+      "expected": "The terminal and ~/ansible-core-rpm-baseline.txt contain the installed ansible-core RPM identity and DNF metadata, including the AppStream repository shown by From repo.",
+      "note": "Repository: @System identifies the installed package database. From repo identifies the repository that supplied the installed RPM. The baseline records what is installed; it does not freeze the package or prevent approved maintenance updates.",
+      "troubleshooting": "Check the two results separately: the RPM query must identify the installed package, and the DNF query must provide the metadata appended to the baseline file.",
+      "recovery": [
+        { "symptom": "The baseline file is missing or incomplete", "detail": "Confirm the package is installed, repeat both commands from this step, and inspect the resulting user-owned file before continuing.", "command": "rpm -q ansible-core\nsudo dnf info --installed ansible-core\ncat ~/ansible-core-rpm-baseline.txt" },
+        { "symptom": "The originating repository is not shown", "detail": "Refresh the enabled repository metadata and repeat the installed-package query. Do not infer a support source from the ansible-core feature version alone.", "command": "sudo dnf repolist --enabled\nsudo dnf info --installed ansible-core" }
+      ],
+      "media": {
+        "type": "terminal",
+        "source": "/demos/installing-ansible-core/recordings/08-rpm-baseline.cast",
+        "transcript": "/demos/installing-ansible-core/recordings/08-rpm-baseline.txt"
       }
     },
     {
@@ -1083,7 +1197,11 @@
       ],
       "expected": "ansible-doc prints the available module documentation entries, and wc reports their total number. The exact count can change when Red Hat updates the package or when other collections are discoverable.",
       "note": "This counts module documentation entries, not collections or every plugin type. The ansible.builtin content is embedded in ansible-core.",
-      "troubleshooting": "If the list contains modules from additional collections, check the collection paths reported by ansible --version. Do not remove existing content from a shared system merely to reproduce the clean demonstration.",
+      "troubleshooting": "Treat an unexpected module count separately from an ansible-doc failure. Counts can change with package updates or separately installed collections.",
+      "recovery": [
+        { "symptom": "The list includes additional collection namespaces", "detail": "Inspect the active collection paths and installed collections. Additional intentional content is not an ansible-core installation failure.", "command": "ansible --version\nansible-galaxy collection list" },
+        { "symptom": "ansible-doc does not produce a module list", "detail": "Confirm that the RPM-provided ansible-doc executable starts before investigating the content path.", "command": "command -v ansible-doc\nrpm -q ansible-core\nPAGER=cat ansible-doc --list" }
+      ],
       "media": {
         "type": "terminal",
         "source": "/demos/installing-ansible-core/recordings/08-collection-inventory.cast",
@@ -1101,7 +1219,10 @@
       ],
       "expected": "Ansible displays the concise argument summary for ansible.builtin.ping.",
       "note": "PAGER=cat is a temporary environment-variable assignment for one command; it does not permanently change your shell or Ansible configuration. Omit it when you prefer paged output in a normal terminal.",
-      "troubleshooting": "If ansible-doc cannot find the module, confirm ansible-core is installed and that the Ansible executable and Python environment come from the expected RHEL package.",
+      "troubleshooting": "This step succeeds only when the active ansible-doc command can resolve the embedded ansible.builtin.ping documentation.",
+      "recovery": [
+        { "symptom": "ansible.builtin.ping cannot be found", "detail": "Confirm that ansible-doc comes from the expected RPM installation, then repeat this documentation lookup.", "command": "command -v ansible-doc\nrpm -q ansible-core\nPAGER=cat ansible-doc -s ansible.builtin.ping" }
+      ],
       "media": {
         "type": "terminal",
         "source": "/demos/installing-ansible-core/recordings/08-config-docs.cast",
@@ -1119,7 +1240,12 @@
       ],
       "expected": "localhost returns SUCCESS with ping: pong and changed: false.",
       "note": "You now have a working local ansible-core runtime. Remote managed-host readiness has not yet been tested.",
-      "troubleshooting": "If the test fails, confirm that ansible resolves to /usr/bin/ansible and that the local Python runtime reported by ansible --version is available. The acceptance criteria are localhost SUCCESS and ping pong.",
+      "troubleshooting": "Use the localhost failure to check only the active Ansible executable, its reported Python runtime, and execution of ansible.builtin.ping through the local connection.",
+      "recovery": [
+        { "symptom": "The Ansible command is missing or comes from another installation", "detail": "Confirm that this RPM workflow resolves the executable installed under /usr/bin before rerunning the smoke test.", "command": "type -a ansible\ncommand -v ansible" },
+        { "symptom": "The local Python runtime is unavailable", "detail": "Inspect the Python runtime reported by the active ansible-core installation and resolve that runtime problem before repeating the test.", "command": "ansible --version" },
+        { "symptom": "localhost does not return pong", "detail": "Repeat this step's command after the executable and Python checks pass. The acceptance result is localhost SUCCESS with ping pong.", "command": "ansible localhost -i localhost, -m ansible.builtin.ping -c local" }
+      ],
       "media": {
         "type": "terminal",
         "source": "/demos/installing-ansible-core/recordings/09-smoke-test.cast",
@@ -1127,44 +1253,30 @@
       }
     }
       ],
-      "troubleshooting": [
-    {
-      "title": "rhc connect cannot register the system",
-      "command": "sudo rhc status",
-      "detail": "Confirm internet access, DNS resolution, an accurate system clock, and any required proxy configuration. Verify that the Red Hat account has an active RHEL entitlement, then retry rhc connect."
-    },
-    {
-      "title": "BaseOS or AppStream is not enabled",
-      "command": "sudo subscription-manager refresh\nsudo subscription-manager repos \\\n  --enable=\"rhel-9-for-$(arch)-baseos-rpms\" \\\n  --enable=\"rhel-9-for-$(arch)-appstream-rpms\"",
-      "detail": "Refresh the entitlement data and enable the repository IDs that match the system architecture. Run dnf repolist --enabled again to confirm both repositories."
-    },
-    {
-      "title": "DNF reports: No match for argument ansible-core",
-      "command": "sudo dnf clean all\nsudo dnf makecache\nsudo dnf info ansible-core",
-      "detail": "This usually means AppStream is unavailable or the local metadata is stale. Rebuild the cache only after confirming the repository is enabled."
-    },
-    {
-      "title": "The localhost smoke test fails",
-      "command": "command -v ansible\nansible --version\nansible localhost -i localhost, -m ansible.builtin.ping -c local",
-      "detail": "Confirm that the RHEL-provided executable and Python runtime are active, then repeat the test with its explicit inline inventory. Continue only when the result contains SUCCESS and ping pong."
-    },
-    {
-      "title": "The module list includes content outside ansible.builtin",
-      "command": "ansible --version\nPAGER=cat ansible-doc --list",
-      "detail": "Additional collection namespaces mean this environment is not limited to the clean ansible-core content shown in the demonstration. Use the collection paths from ansible --version to locate separately installed content. Extra content is not an ansible-core installation failure."
-    }
-  ],
       "verification": [
     "rhc status reports active Subscription Management and Red Hat Lightspeed connections",
     "BaseOS and AppStream are enabled",
     "rpm -q ansible-core returns the installed package",
+    "The saved RPM baseline records the complete installed build and its AppStream source repository",
     "ansible-doc lists the available modules and returns their total count",
     "ansible-doc returns usable help for ansible.builtin.ping",
     "ansible --version starts successfully",
-    "The localhost ansible.builtin.ping test returns SUCCESS and ping: pong"
-  ],
+        "The localhost ansible.builtin.ping test returns SUCCESS and ping: pong"
+      ],
+      "completionRecord": {
+        "introduction": "Copy this record and replace bracketed fields with output from your environment before saving it with your project or support notes.",
+        "items": [
+          { "label": "Installation method", "value": "RHEL AppStream RPM with DNF" },
+          { "label": "Package source and owner", "value": "RHEL 9 AppStream · RPM/DNF" },
+          { "label": "ansible-core version", "value": "[paste rpm -q ansible-core output]" },
+          { "label": "RPM baseline", "value": "/home/rajat/ansible-core-rpm-baseline.txt · [confirm the From repo value]" },
+          { "label": "Python runtime", "value": "[paste the Python line from ansible --version]" },
+          { "label": "Executable", "value": "/usr/bin/ansible" },
+          { "label": "Local validation", "value": "localhost SUCCESS · ansible.builtin.ping returned pong" }
+        ]
+      },
       "cleanup": {
-        "explanation": "Cleanup is optional. Remove the package only if this VM will not be used for later Ansible labs. Unregistering also removes access to subscribed RHEL content.",
+        "explanation": "Cleanup is optional. Remove the package only if this VM will not be used for later Ansible labs. Unregistering also removes access to subscribed RHEL content. For an organization-managed system, complete the applicable inventory, subscription, security, and asset-retirement process as well.",
         "command": "sudo dnf remove ansible-core\n# Optional: disconnect this disposable lab VM\nsudo rhc disconnect"
       }
     },
@@ -1172,9 +1284,7 @@
       "id": "install-upstream-from-pypi-rhel",
       "demoId": "HOD-001-D02",
       "title": "Install upstream ansible-core with pip on RHEL 9",
-      "objective": "Register RHEL, install a supported Python from subscribed repositories, isolate it in a virtual environment, install upstream ansible-core from PyPI, and verify both its content boundary and runtime behavior.",
-      "coverImage": "/demos/installing-ansible-core/demo-02-pip-venv.svg",
-      "coverAlt": "Upstream ansible-core moving from PyPI through pip into an activated Python 3.12 virtual environment on RHEL 9",
+      "objective": "Register RHEL, install a supported Python from subscribed repositories, isolate it in a virtual environment, install upstream ansible-core from PyPI, capture the resolved Python package baseline, and verify its content boundary and runtime behavior.",
       "coverImage": "/demos/installing-ansible-core/demo-02-pip-venv.svg",
       "coverAlt": "Python 3.12 virtual environment receiving upstream ansible-core from PyPI through pip on RHEL 9",
       "outcomes": [
@@ -1183,10 +1293,11 @@
         "Install RHEL Python 3.12 without replacing the platform Python",
         "Create an isolated virtual environment for Ansible",
         "Install upstream ansible-core from PyPI rather than a RHEL RPM",
+        "Capture the exact resolved Python packages as baseline evidence",
         "Verify package provenance, content boundary, activation, and runtime behavior"
       ],
-      "duration": "18 min",
-      "durationMinutes": 18,
+      "duration": "19 min",
+      "durationMinutes": 19,
       "steps": [
         {
           "label": "System Baseline",
@@ -1220,7 +1331,11 @@
           ],
           "expected": "rhc reports successful connections to Red Hat Subscription Management and Red Hat Lightspeed and activates remote host configuration. The recorded client uses the former Red Hat Insights name in its output.",
           "note": "Credential input is excluded from the replay. The neutral placeholders show where learners interact without exposing an account name or password.",
-          "troubleshooting": "If no credential prompt appears, make sure rhc connect is running in an interactive terminal. If registration fails, verify network, DNS, proxy, system time, and the account's RHEL entitlement.",
+          "troubleshooting": "Use the message returned by rhc connect to distinguish an interactive-login problem from a registration or service-connection failure.",
+          "recovery": [
+            { "symptom": "No credential prompt appears", "detail": "Run rhc connect from an interactive terminal. A background process or non-interactive shell cannot accept the Red Hat account prompts." },
+            { "symptom": "Authentication or registration fails", "detail": "Confirm network access, DNS, proxy configuration, system time, and an active RHEL entitlement, then retry this registration step.", "command": "sudo rhc connect" }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/02-register.cast",
@@ -1238,7 +1353,11 @@
           ],
           "expected": "The system is connected to Red Hat Subscription Management and Red Hat Lightspeed. The recorded client uses the former Red Hat Insights name in its output.",
           "note": "The remote host configuration daemon may later report inactive. That optional daemon state does not prevent DNF from installing packages from subscribed repositories.",
-          "troubleshooting": "If either required connection is unavailable, retry rhc connect and review network, DNS, proxy, time synchronization, and entitlement access before continuing.",
+          "troubleshooting": "Read each rhc status line separately. Subscription Management and Red Hat Lightspeed must be connected for this workflow; remote host configuration is not required for DNF package access.",
+          "recovery": [
+            { "symptom": "Subscription Management or Lightspeed is disconnected", "detail": "Return to the Register RHEL step and reconnect the system before relying on subscribed repositories." },
+            { "symptom": "Only remote host configuration is inactive", "detail": "Continue when the two required connections are active. An inactive optional remote host configuration daemon does not block this package workflow." }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/03-registration-status.cast",
@@ -1257,7 +1376,10 @@
           ],
           "expected": "Both the RHEL 9 BaseOS and AppStream RPM repositories appear as enabled.",
           "note": "Repository IDs include the architecture. This recording uses aarch64; x86_64 systems show corresponding x86_64 repository IDs.",
-          "troubleshooting": "If either repository is missing, refresh subscription data, then enable the architecture-specific BaseOS and AppStream repository IDs shown in the troubleshooting guide.",
+          "troubleshooting": "Compare both command outputs and identify exactly which architecture-specific BaseOS or AppStream repository is absent before changing repository configuration.",
+          "recovery": [
+            { "symptom": "BaseOS or AppStream is not enabled", "detail": "Refresh the subscription data, enable the repository IDs matching this system's architecture, and repeat both repository-list commands from this step.", "command": "sudo subscription-manager refresh\nsudo subscription-manager repos \\\n  --enable=\"rhel-9-for-$(arch)-baseos-rpms\" \\\n  --enable=\"rhel-9-for-$(arch)-appstream-rpms\"" }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/04-repositories.cast",
@@ -1277,7 +1399,11 @@
           ],
           "expected": "Python 3.12 is not found, the default Python reports that pip is unavailable, and DNF lists python3.12 and python3.12-pip as available packages.",
           "note": "Consult the upstream compatibility matrix before choosing a Python and ansible-core pair. This demonstration uses ansible-core 2.21 with Python 3.12.",
-          "troubleshooting": "If Python 3.12 or pip is already present, identify its package owner and path before continuing. If DNF cannot find the packages, confirm that BaseOS and AppStream are enabled and refresh repository metadata.",
+          "troubleshooting": "Treat a pre-existing Python or pip command as an ownership check; treat a missing DNF package listing as a repository-metadata problem for this prerequisite step.",
+          "recovery": [
+            { "symptom": "Python 3.12 or its pip is already available", "detail": "Record the executable and RPM owner before deciding whether the existing runtime is suitable for this isolated installation.", "command": "command -v python3.12\nrpm -qf \"$(command -v python3.12)\"\npython3.12 -m pip --version" },
+            { "symptom": "DNF cannot list the Python packages", "detail": "Confirm BaseOS and AppStream are enabled, refresh metadata, and repeat only this step's package-availability query.", "command": "sudo dnf repolist --enabled\nsudo dnf clean metadata\nsudo dnf makecache\nsudo dnf list --available python3.12 python3.12-pip" }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/upstream-rhel-step-05-check-prerequisites.cast",
@@ -1297,7 +1423,11 @@
           ],
           "expected": "DNF completes the installation, Python reports version 3.12, and pip reports a location under the system's Python 3.12 package directory.",
           "note": "Repository IDs and package architecture vary between aarch64 and x86_64 systems. Match the package names and behavior rather than the recorded architecture or exact patch version.",
-          "troubleshooting": "If either package is unavailable, confirm that BaseOS and AppStream are enabled and refresh DNF metadata. If dependency resolution or signature verification fails, investigate the repository or entitlement problem without disabling signature checks, replacing the system Python, or force-removing platform packages.",
+          "troubleshooting": "Use the failing command to distinguish a DNF installation problem from a Python or pip verification problem after the transaction.",
+          "recovery": [
+            { "symptom": "The DNF transaction fails", "detail": "Refresh metadata and retry these Python packages without disabling signature verification, replacing the platform Python, or force-removing platform packages.", "command": "sudo dnf clean metadata\nsudo dnf makecache\nsudo dnf install python3.12 python3.12-pip" },
+            { "symptom": "The version checks fail after DNF completes", "detail": "Confirm both RPMs are installed, then repeat the Python and pip version commands from this step.", "command": "rpm -q python3.12 python3.12-pip\npython3.12 --version\npython3.12 -m pip --version" }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/upstream-rhel-03-install-python.cast",
@@ -1319,7 +1449,11 @@
           ],
           "expected": "The prompt identifies ansible-core-2.21, the active python command reports version 3.12, and pip's location is under /home/rajat/.venvs/ansible-core-2.21.",
           "note": "Red Hat recommends a virtual environment or a non-root --user installation for third-party Python packages. This demonstration uses a virtual environment for isolation, repeatability and easy cleanup.",
-          "troubleshooting": "If venv creation fails, confirm that python3.12 and python3.12-pip are installed. If activation succeeds but python still points to /usr/bin, inspect PATH and VIRTUAL_ENV, then open a clean Bash shell and activate the environment again.",
+          "troubleshooting": "Separate virtual-environment creation failures from activation or command-resolution failures within this step.",
+          "recovery": [
+            { "symptom": "The virtual environment cannot be created", "detail": "Confirm the selected Python and pip RPMs are installed, remove only an incomplete environment created at this path, and rerun the creation command.", "command": "rpm -q python3.12 python3.12-pip\npython3.12 -m venv --prompt ansible-core-2.21 ~/.venvs/ansible-core-2.21" },
+            { "symptom": "Activation does not select the environment's Python", "detail": "Inspect VIRTUAL_ENV and command resolution, then source this environment again in the current Bash shell.", "command": "echo \"$VIRTUAL_ENV\"\nsource ~/.venvs/ansible-core-2.21/bin/activate\ncommand -v python\npython --version" }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/upstream-rhel-04-create-venv.cast",
@@ -1338,7 +1472,11 @@
           ],
           "expected": "pip installs the newest available ansible-core 2.21.x release and its Python dependencies inside the virtual environment.",
           "note": "The feature-line constraint lets this demonstration select the newest available 2.21 maintenance release. For a repeatable environment, replace it with the exact release accepted during testing and record the resolved dependencies. Consult the current support matrix before reusing the constraint later.",
-          "troubleshooting": "If pip reports that no matching distribution exists, compare the active Python version with the upstream support matrix. Also verify DNS, HTTPS access to PyPI, proxy settings and the system clock; do not add --break-system-packages because this installation belongs in the virtual environment.",
+          "troubleshooting": "Use pip's error to distinguish an unsupported release-and-Python combination from package-index connectivity or certificate failure.",
+          "recovery": [
+            { "symptom": "No matching ansible-core distribution is found", "detail": "Confirm the active virtual-environment Python and review the versions available from the configured package index before changing the requested feature line.", "command": "python --version\npython -m pip --version\npython -m pip index versions ansible-core" },
+            { "symptom": "The package index cannot be reached or trusted", "detail": "Correct DNS, HTTPS proxy, trusted-certificate, or system-time configuration and retry this pip installation. Do not use --break-system-packages for this virtual environment." }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/upstream-rhel-05-install-upstream.cast",
@@ -1360,11 +1498,39 @@
             { "command": "ansible --version", "explanation": "Reports the active ansible-core release, executable context, Python runtime, module paths, and collection paths." }
           ],
           "expected": "No ansible-core RPM is installed; pip reports an ansible-core 2.21.x release with no broken requirements; Python and Ansible paths both belong to the virtual environment.",
-          "troubleshooting": "If command -v resolves /usr/bin/ansible or another environment, deactivate competing environments, inspect PATH, and activate ~/.venvs/ansible-core-2.21 again before repeating every verification command.",
+          "troubleshooting": "Check each result in this step independently: RPM absence, virtual-environment paths, package metadata, dependency health, and the active ansible-core runtime.",
+          "recovery": [
+            { "symptom": "An ansible-core RPM is unexpectedly installed", "detail": "Do not remove it automatically. Record the RPM and decide which installation should own the command before changing either environment.", "command": "rpm -q ansible-core\ntype -a ansible" },
+            { "symptom": "Python or Ansible resolves outside the virtual environment", "detail": "Reactivate the intended environment and confirm that both commands resolve below its bin directory.", "command": "source ~/.venvs/ansible-core-2.21/bin/activate\ncommand -v python\ncommand -v ansible" },
+            { "symptom": "pip cannot show ansible-core", "detail": "Confirm that the active Python belongs to the intended environment before inspecting its installed package again.", "command": "echo \"$VIRTUAL_ENV\"\npython -m pip show ansible-core" },
+            { "symptom": "pip check reports broken requirements", "detail": "Save the reported dependency conflict and repair or recreate this virtual environment rather than modifying RHEL's platform Python.", "command": "python -m pip check\npython -m pip list" }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/upstream-rhel-06-verify-upstream.cast",
             "transcript": "/demos/installing-ansible-core/recordings/upstream-rhel-06-verify-upstream.txt"
+          }
+        },
+        {
+          "label": "Record Baseline",
+          "title": "Capture the resolved Python baseline",
+          "image": "/demos/installing-ansible-core/assets/upstream-rhel-step-10-resolved-baseline.svg",
+          "alt": "Terminal saving exact ansible-core and dependency versions from the active Python virtual environment",
+          "explanation": "A feature-line constraint can resolve to different maintenance and dependency releases over time. Capture the exact packages in the accepted virtual environment so its state can be reviewed and used as input to a controlled rebuild.",
+          "commands": [
+            { "command": "python -m pip freeze --all | tee ~/ansible-core-2.21-requirements.txt", "explanation": "Prints every resolved Python package and exact version from the active virtual environment while saving the same list to a requirements baseline in the user's home directory." }
+          ],
+          "expected": "The terminal and ~/ansible-core-2.21-requirements.txt contain exact versions for ansible-core and every resolved Python dependency in the active virtual environment.",
+          "note": "This file records one resolved Python environment. It does not guarantee identical wheels or system libraries on another operating system or architecture, and it does not capture Ansible collections, configuration, inventory, credentials, or operating-system dependencies.",
+          "troubleshooting": "This step depends on the intended virtual environment being active and pip being able to enumerate the packages installed in that environment.",
+          "recovery": [
+            { "symptom": "The file is missing or contains packages from another Python environment", "detail": "Confirm the active virtual environment and Python path, then repeat this step's capture command without changing RHEL's platform Python.", "command": "echo \"$VIRTUAL_ENV\"\ncommand -v python\npython -m pip freeze --all | tee ~/ansible-core-2.21-requirements.txt" },
+            { "symptom": "Unexpected packages appear in the baseline", "detail": "Review the environment's package list and dependency health before accepting the file. Do not delete a package until its owner and dependency relationship are understood.", "command": "python -m pip list\npython -m pip check" }
+          ],
+          "media": {
+            "type": "terminal",
+            "source": "/demos/installing-ansible-core/recordings/upstream-rhel-step-10-resolved-baseline.cast",
+            "transcript": "/demos/installing-ansible-core/recordings/upstream-rhel-step-10-resolved-baseline.txt"
           }
         },
         {
@@ -1382,7 +1548,12 @@
           ],
           "expected": "The collection path is prepared, no separately installed collection is required, and ansible-doc lists the available modules and displays help for ansible.builtin.ping.",
           "note": "The stderr redirection keeps a known ansible._protomatter collection-discovery warning out of this focused display; it does not change the module list or count. The ansible.builtin namespace is embedded in ansible-core and is not listed as a separately installed collection.",
-          "troubleshooting": "If the directory cannot be created, verify ownership and permissions under ~/.ansible. If additional namespaces appear, use ansible --version and ansible-galaxy collection list to identify their paths before deciding whether the extra content is intentional.",
+          "troubleshooting": "Separate collection-directory permissions, unexpected collection namespaces, and failure to load the embedded ansible.builtin.ping documentation.",
+          "recovery": [
+            { "symptom": "The collection directory cannot be created", "detail": "Inspect ownership and permissions under the current user's .ansible directory before repeating the mkdir command.", "command": "ls -ld ~/.ansible ~/.ansible/collections 2>/dev/null\nmkdir -p ~/.ansible/collections/ansible_collections" },
+            { "symptom": "Additional collection namespaces appear", "detail": "Use the active collection paths and collection inventory to decide whether the additional content is intentional; do not delete shared content merely to match the demo.", "command": "ansible --version\nansible-galaxy collection list" },
+            { "symptom": "ansible.builtin.ping documentation cannot be loaded", "detail": "Confirm the active ansible-doc executable belongs to this installation, then repeat the FQCN documentation lookup.", "command": "command -v ansible-doc\nPAGER=cat ansible-doc -s ansible.builtin.ping" }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/upstream-rhel-07-content-boundary.cast",
@@ -1400,7 +1571,11 @@
           ],
           "expected": "localhost returns SUCCESS with changed: false and ping: pong.",
           "note": "You now have a working local ansible-core runtime. Remote managed-host readiness has not yet been tested.",
-          "troubleshooting": "If the command fails, confirm that the virtual environment is active and that command -v python returns its Python 3.12 executable. Continue only when the result contains localhost SUCCESS and ping pong.",
+          "troubleshooting": "This step depends only on the active virtual-environment Ansible command, its Python interpreter, and local execution of ansible.builtin.ping.",
+          "recovery": [
+            { "symptom": "The virtual environment is not active", "detail": "Activate the environment and confirm its Python and Ansible commands before repeating this localhost test.", "command": "source ~/.venvs/ansible-core-2.21/bin/activate\ncommand -v python\ncommand -v ansible" },
+            { "symptom": "localhost does not return pong", "detail": "Repeat this step's command with the active environment's Python explicitly selected. Continue only when localhost reports SUCCESS and pong.", "command": "ansible localhost -i localhost, -m ansible.builtin.ping -c local -e \"ansible_python_interpreter=$(command -v python)\"" }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/upstream-rhel-08-smoke-test.cast",
@@ -1422,44 +1597,16 @@
           ],
           "expected": "Ansible is absent from PATH after deactivation, then resolves inside the virtual environment and reports a core 2.21.x release after reactivation.",
           "note": "Activation changes only the current shell. It does not start a service, install a daemon, or modify other users' sessions.",
-          "troubleshooting": "If ansible remains available after deactivate, another installation also exists on PATH. Run type -a ansible and inspect every returned location before choosing which installation to use.",
+          "troubleshooting": "Use the before-and-after command paths to determine whether deactivation or reactivation produced the unexpected shell state.",
+          "recovery": [
+            { "symptom": "Ansible remains available after deactivation", "detail": "List every Ansible executable on PATH and identify the separate installation instead of assuming deactivation failed.", "command": "type -a ansible\ncommand -v ansible" },
+            { "symptom": "Reactivation does not restore this environment", "detail": "Source the expected activation script and confirm VIRTUAL_ENV and the restored Ansible executable in the current shell.", "command": "source ~/.venvs/ansible-core-2.21/bin/activate\necho \"$VIRTUAL_ENV\"\ncommand -v ansible\nansible --version" }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/upstream-rhel-09-use-venv.cast",
             "transcript": "/demos/installing-ansible-core/recordings/upstream-rhel-09-use-venv.txt"
           }
-        }
-      ],
-      "troubleshooting": [
-        {
-          "title": "rhc connect cannot register the system",
-          "command": "sudo rhc status",
-          "detail": "Confirm internet access, DNS resolution, an accurate system clock, and any required proxy configuration. Verify that the Red Hat account has an active RHEL entitlement, then retry rhc connect."
-        },
-        {
-          "title": "BaseOS or AppStream is not enabled",
-          "command": "sudo subscription-manager refresh\nsudo subscription-manager repos \\\n  --enable=\"rhel-9-for-$(arch)-baseos-rpms\" \\\n  --enable=\"rhel-9-for-$(arch)-appstream-rpms\"",
-          "detail": "Refresh the entitlement data and enable the repository IDs that match the system architecture. Run dnf repolist --enabled again to confirm both repositories."
-        },
-        {
-          "title": "Python 3.12 packages are unavailable",
-          "command": "sudo subscription-manager refresh\nsudo dnf repolist --enabled\nsudo dnf clean metadata\nsudo dnf makecache",
-          "detail": "Confirm that the system is registered and that architecture-specific BaseOS and AppStream repositories are enabled before retrying the package query."
-        },
-        {
-          "title": "pip cannot resolve the requested ansible-core",
-          "command": "python --version\npython -m pip --version\npython -m pip index versions ansible-core",
-          "detail": "Verify that the virtual environment uses a Python version supported by the requested ansible-core release and that the host can reach PyPI through any required proxy."
-        },
-        {
-          "title": "The wrong Ansible executable runs",
-          "command": "type -a ansible\necho \"$VIRTUAL_ENV\"\nsource ~/.venvs/ansible-core-2.21/bin/activate\ncommand -v ansible",
-          "detail": "Inspect every executable on PATH, activate the intended environment, and confirm its bin directory wins before testing the runtime."
-        },
-        {
-          "title": "The localhost test cannot use Python",
-          "command": "command -v python\nansible localhost -i localhost, -m ansible.builtin.ping -c local -e \"ansible_python_interpreter=$(command -v python)\"",
-          "detail": "Confirm that the virtual environment is active and explicitly pass its Python executable. The functional acceptance criterion is localhost SUCCESS with ping pong."
         }
       ],
       "verification": [
@@ -1469,12 +1616,25 @@
         "The virtual environment uses Python 3.12 and stores packages under /home/rajat/.venvs/ansible-core-2.21",
         "rpm reports that the RHEL ansible-core package is not installed",
         "pip reports an upstream ansible-core 2.21.x release and no broken requirements",
+        "The saved requirements baseline records exact versions for ansible-core and its resolved Python dependencies",
         "The embedded ansible.builtin namespace is usable without separately installed collections",
         "The localhost ansible.builtin.ping test returns SUCCESS and ping: pong",
         "Activation and deactivation correctly add and remove the environment's Ansible executable from PATH"
       ],
+      "completionRecord": {
+        "introduction": "Copy this record and replace bracketed fields with output from your environment before saving it with your project or support notes.",
+        "items": [
+          { "label": "Installation method", "value": "pip in a Python 3.12 virtual environment" },
+          { "label": "Package source and owner", "value": "PyPI · project-owned virtual environment" },
+          { "label": "ansible-core version", "value": "[paste the Version field from python -m pip show ansible-core]" },
+          { "label": "Python runtime", "value": "[paste command -v python and python --version output]" },
+          { "label": "Executable", "value": "/home/rajat/.venvs/ansible-core-2.21/bin/ansible" },
+          { "label": "Python package baseline", "value": "/home/rajat/ansible-core-2.21-requirements.txt · [confirm the captured package set]" },
+          { "label": "Local validation", "value": "localhost SUCCESS · ansible.builtin.ping returned pong" }
+        ]
+      },
       "cleanup": {
-        "explanation": "Cleanup removes only the user-owned upstream ansible-core environment created by this demonstration. Python 3.12 remains installed because other applications may use it; remove operating-system packages only after checking dependencies and local policy. Disconnect RHEL only when this disposable VM will not be used for later labs, because the system will lose access to protected Red Hat content and services.",
+        "explanation": "Cleanup removes only the user-owned upstream ansible-core environment created by this demonstration. Python 3.12 remains installed because other applications may use it; remove operating-system packages only after checking dependencies and local policy. Disconnect RHEL only when this disposable VM will not be used for later labs, because the system will lose access to protected Red Hat content and services. For an organization-managed system, complete the applicable inventory, subscription, security, and asset-retirement process as well.",
         "command": "deactivate 2>/dev/null || true\nrm -rf /home/rajat/.venvs/ansible-core-2.21\n# Optional: disconnect this disposable lab VM\nsudo rhc disconnect"
       }
     },
@@ -1482,7 +1642,7 @@
       "id": "install-upstream-with-pipx-rhel",
       "demoId": "HOD-001-D03",
       "title": "Install upstream ansible-core with pipx on RHEL 9",
-      "objective": "Register RHEL, install a supported Python from subscribed repositories, install pipx for the current user, use it to create an isolated upstream ansible-core environment, and verify its provenance, content boundary, and runtime behavior.",
+      "objective": "Register RHEL, install a supported Python from subscribed repositories, install pipx for the current user, use it to create an isolated upstream ansible-core environment, record and pin the accepted application baseline, and verify its provenance, content boundary, and runtime behavior.",
       "coverImage": "/demos/installing-ansible-core/demo-03-pipx.svg",
       "coverAlt": "pipx managing an isolated upstream ansible-core application environment and exposing commands on the rajat user's PATH",
       "outcomes": [
@@ -1492,10 +1652,11 @@
         "Install pipx in the rajat user's Python package directory",
         "Persist the user application directory on PATH",
         "Install upstream ansible-core from PyPI in a pipx-managed environment",
+        "Record the resolved pipx environment and pin the accepted ansible-core application",
         "Verify isolation, content boundaries, and functional execution"
       ],
-      "duration": "17 min",
-      "durationMinutes": 17,
+      "duration": "18 min",
+      "durationMinutes": 18,
       "steps": [
         {
           "label": "System Baseline",
@@ -1529,7 +1690,11 @@
           ],
           "expected": "rhc reports successful connections to Red Hat Subscription Management and Red Hat Lightspeed and activates remote host configuration. The recorded client uses the former Red Hat Insights name in its output.",
           "note": "Credential input is excluded from the replay. The neutral placeholders show where learners interact without exposing an account name or password.",
-          "troubleshooting": "If no credential prompt appears, make sure rhc connect is running in an interactive terminal. If registration fails, verify network, DNS, proxy, system time, and the account's RHEL entitlement.",
+          "troubleshooting": "Use the message returned by rhc connect to distinguish an interactive-login problem from a registration or service-connection failure.",
+          "recovery": [
+            { "symptom": "No credential prompt appears", "detail": "Run rhc connect from an interactive terminal. A background process or non-interactive shell cannot accept the Red Hat account prompts." },
+            { "symptom": "Authentication or registration fails", "detail": "Confirm network access, DNS, proxy configuration, system time, and an active RHEL entitlement, then retry this registration step.", "command": "sudo rhc connect" }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/02-register.cast",
@@ -1547,7 +1712,11 @@
           ],
           "expected": "The system is connected to Red Hat Subscription Management and Red Hat Lightspeed. The recorded client uses the former Red Hat Insights name in its output.",
           "note": "The remote host configuration daemon may later report inactive. That optional daemon state does not prevent DNF from installing packages from subscribed repositories.",
-          "troubleshooting": "If either required connection is unavailable, retry rhc connect and review network, DNS, proxy, time synchronization, and entitlement access before continuing.",
+          "troubleshooting": "Read each rhc status line separately. Subscription Management and Red Hat Lightspeed must be connected for this workflow; remote host configuration is not required for DNF package access.",
+          "recovery": [
+            { "symptom": "Subscription Management or Lightspeed is disconnected", "detail": "Return to the Register RHEL step and reconnect the system before relying on subscribed repositories." },
+            { "symptom": "Only remote host configuration is inactive", "detail": "Continue when the two required connections are active. An inactive optional remote host configuration daemon does not block this package workflow." }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/03-registration-status.cast",
@@ -1566,7 +1735,10 @@
           ],
           "expected": "Both the RHEL 9 BaseOS and AppStream RPM repositories appear as enabled.",
           "note": "Repository IDs include the architecture. This recording uses aarch64; x86_64 systems show corresponding x86_64 repository IDs.",
-          "troubleshooting": "If either repository is missing, refresh subscription data, then enable the architecture-specific BaseOS and AppStream repository IDs shown in the troubleshooting guide.",
+          "troubleshooting": "Compare both command outputs and identify exactly which architecture-specific BaseOS or AppStream repository is absent before changing repository configuration.",
+          "recovery": [
+            { "symptom": "BaseOS or AppStream is not enabled", "detail": "Refresh the subscription data, enable the repository IDs matching this system's architecture, and repeat both repository-list commands from this step.", "command": "sudo subscription-manager refresh\nsudo subscription-manager repos \\\n  --enable=\"rhel-9-for-$(arch)-baseos-rpms\" \\\n  --enable=\"rhel-9-for-$(arch)-appstream-rpms\"" }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/04-repositories.cast",
@@ -1586,7 +1758,11 @@
           ],
           "expected": "Python 3.12 and pipx are not found on the clean system, and DNF lists python3.12 and python3.12-pip as available packages.",
           "note": "Consult the upstream compatibility matrix before choosing a Python and ansible-core pair. This demonstration uses ansible-core 2.21 with Python 3.12.",
-          "troubleshooting": "If Python 3.12 or pipx already exists, identify its owner and path before continuing. If DNF cannot find the packages, confirm that BaseOS and AppStream are enabled and refresh repository metadata.",
+          "troubleshooting": "Treat a pre-existing Python or pipx command as an ownership check; treat a missing DNF package listing as a repository-metadata problem for this prerequisite step.",
+          "recovery": [
+            { "symptom": "Python 3.12 or pipx is already available", "detail": "Record every matching executable and its owner before deciding whether the existing tools are suitable for this installation.", "command": "type -a python3.12 pipx\ncommand -v python3.12\ncommand -v pipx" },
+            { "symptom": "DNF cannot list the Python packages", "detail": "Confirm BaseOS and AppStream are enabled, refresh metadata, and repeat only this step's package-availability query.", "command": "sudo dnf repolist --enabled\nsudo dnf clean metadata\nsudo dnf makecache\nsudo dnf list --available python3.12 python3.12-pip" }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/pipx-rhel-step-05-check-prerequisites.cast",
@@ -1606,7 +1782,11 @@
           ],
           "expected": "DNF completes the installation, Python reports version 3.12, and pip reports a location under the system's Python 3.12 package directory.",
           "note": "Repository IDs and package architecture vary between aarch64 and x86_64 systems. Match the package names and behavior rather than the recorded architecture or exact patch version.",
-          "troubleshooting": "If either package is unavailable, confirm that BaseOS and AppStream are enabled and refresh DNF metadata. If dependency resolution or signature verification fails, investigate the repository or entitlement problem without disabling signature checks, replacing the system Python, or force-removing platform packages.",
+          "troubleshooting": "Use the failing command to distinguish a DNF installation problem from a Python or pip verification problem after the transaction.",
+          "recovery": [
+            { "symptom": "The DNF transaction fails", "detail": "Refresh metadata and retry these Python packages without disabling signature verification, replacing the platform Python, or force-removing platform packages.", "command": "sudo dnf clean metadata\nsudo dnf makecache\nsudo dnf install python3.12 python3.12-pip" },
+            { "symptom": "The version checks fail after DNF completes", "detail": "Confirm both RPMs are installed, then repeat the Python and pip version commands from this step.", "command": "rpm -q python3.12 python3.12-pip\npython3.12 --version\npython3.12 -m pip --version" }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/pipx-rhel-03-install-python.cast",
@@ -1624,7 +1804,11 @@
             { "command": "python3.12 -m pipx --version", "explanation": "Invokes pipx through Python directly to confirm the installation before relying on the standalone command's PATH entry." }
           ],
           "expected": "pip installs pipx and its dependencies under the rajat user's home directory, and `python3.12 -m pipx` reports its version.",
-          "troubleshooting": "If PyPI cannot be reached, check DNS, HTTPS access, proxy settings, certificates, and the system clock. Do not add --break-system-packages; this is a user-scoped installation.",
+          "troubleshooting": "Use the failing command to distinguish package-index access during installation from failure to import or start the installed pipx application.",
+          "recovery": [
+            { "symptom": "pip cannot reach or trust the package index", "detail": "Correct DNS, HTTPS proxy, trusted-certificate, or system-time configuration and retry this user-scoped installation. Do not add --break-system-packages." },
+            { "symptom": "Python cannot start the installed pipx module", "detail": "Inspect pipx through the same Python 3.12 interpreter used for installation, then repeat the module-based version check.", "command": "python3.12 -m pip show pipx\npython3.12 -m pipx --version" }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/pipx-rhel-04-install-pipx.cast",
@@ -1645,7 +1829,11 @@
           ],
           "expected": "pipx resolves to /home/rajat/.local/bin/pipx and reports its installed version.",
           "note": "Run the echo command once. Repeating it adds duplicate PATH lines to .bashrc, although the resulting PATH still works.",
-          "troubleshooting": "If pipx remains unavailable, inspect the final lines of ~/.bashrc, confirm that ~/.local/bin exists, source the file again, and run command -v pipx before continuing.",
+          "troubleshooting": "Use the shell startup file and command path to distinguish a missing PATH entry from a duplicate entry added by repeating this step.",
+          "recovery": [
+            { "symptom": "pipx is still not available on PATH", "detail": "Inspect the saved PATH line, reload the Bash configuration, and confirm which pipx launcher the shell selects.", "command": "tail -n 5 ~/.bashrc\nsource ~/.bashrc\ncommand -v pipx\npipx --version" },
+            { "symptom": "The PATH line appears more than once", "detail": "Use the line-numbered output to identify duplicate entries. Keep one correct export line and edit the shell startup file carefully before sourcing it again.", "command": "grep -nF 'export PATH=\"$HOME/.local/bin:$PATH\"' ~/.bashrc" }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/pipx-rhel-05-configure-path.cast",
@@ -1663,7 +1851,11 @@
           ],
           "expected": "pipx installs ansible-core 2.21.x with Python 3.12 and lists the Ansible commands made available on the user's PATH.",
           "note": "The feature-line constraint lets this demonstration select the newest available 2.21 maintenance release. For a repeatable environment, replace it with the exact release accepted during testing and record the resolved dependencies. A warning that setuptools is absent from pipx's shared libraries does not indicate an ansible-core installation failure.",
-          "troubleshooting": "If pipx cannot resolve the requested release, compare Python 3.12 with the upstream support matrix and verify PyPI connectivity. Do not fall back to an unsupported Python or install into RHEL's platform Python.",
+          "troubleshooting": "Use pipx's result to distinguish an unavailable ansible-core release from a successfully created environment whose command launchers are not reachable through PATH.",
+          "recovery": [
+            { "symptom": "No matching ansible-core release is found", "detail": "Confirm the Python and pipx versions, then review the releases visible through the configured package index before changing the requested feature line.", "command": "python3.12 --version\npipx --version\npython3.12 -m pip index versions ansible-core" },
+            { "symptom": "pipx installs the environment but Ansible commands are unavailable", "detail": "Confirm that pipx lists the environment and that the user application directory is still present in PATH.", "command": "pipx list\ncommand -v ansible\nprintf '%s\\n' \"$PATH\"" }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/pipx-rhel-06-install-ansible-core.cast",
@@ -1685,11 +1877,42 @@
             { "command": "ansible --version", "explanation": "Reports the active ansible-core release, executable path, Python runtime, and content search paths." }
           ],
           "expected": "pipx reports ansible-core 2.21.x under /home/rajat/.local/share/pipx, RPM reports no ansible-core package, dependencies are healthy, and ansible runs through Python 3.12.",
-          "troubleshooting": "If ansible resolves somewhere else, run type -a ansible and inspect PATH. If pipx reports broken requirements, review the environment with pipx runpip ansible-core list before repairing or recreating it.",
+          "troubleshooting": "Check each result independently: pipx ownership, RPM absence, launcher resolution, package metadata, dependency health, and the active ansible-core runtime.",
+          "recovery": [
+            { "symptom": "Ansible resolves to the wrong launcher", "detail": "List every matching command and the pipx environment before changing PATH or any installation.", "command": "type -a ansible\ncommand -v ansible\npipx list" },
+            { "symptom": "An ansible-core RPM is unexpectedly installed", "detail": "Do not remove it automatically. Record both installations and decide which package owner should provide the active command.", "command": "rpm -q ansible-core\ntype -a ansible" },
+            { "symptom": "pipx does not list the ansible-core environment", "detail": "Confirm pipx's configured locations and inventory before deciding whether this installation step must be repeated.", "command": "pipx environment\npipx list" },
+            { "symptom": "pipx reports broken Python requirements", "detail": "Save the conflict and inspect packages inside this application environment before repairing or recreating only the pipx-managed environment.", "command": "pipx runpip ansible-core check\npipx runpip ansible-core list" }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/pipx-rhel-07-verify-isolation.cast",
             "transcript": "/demos/installing-ansible-core/recordings/pipx-rhel-07-verify-isolation.txt"
+          }
+        },
+        {
+          "label": "Record Baseline",
+          "title": "Record and pin the pipx application baseline",
+          "image": "/demos/installing-ansible-core/assets/pipx-rhel-step-11-record-baseline.svg",
+          "alt": "Terminal recording the pipx-managed ansible-core environment, its resolved Python packages, and successful pin status",
+          "explanation": "A pipx environment is isolated, but isolation alone does not make its contents repeatable. Record the application, interpreter, exposed commands, and resolved Python packages, then pin the accepted application so routine pipx upgrade and reinstall operations do not change it unintentionally.",
+          "commands": [
+            { "command": "pipx list --include-injected | tee ~/ansible-core-pipx-baseline.txt", "explanation": "Records the pipx-managed application, Python interpreter, environment location, exposed commands, and any injected packages while keeping the same inventory visible in the terminal." },
+            { "command": "pipx runpip ansible-core freeze --all | tee -a ~/ansible-core-pipx-baseline.txt", "explanation": "Runs pip inside the ansible-core application environment and appends every resolved Python package and exact version to the baseline file." },
+            { "command": "pipx pin ansible-core --output json | tee -a ~/ansible-core-pipx-baseline.txt", "explanation": "Pins the accepted ansible-core application against pipx upgrade and reinstall operations and appends machine-readable confirmation to the baseline file." }
+          ],
+          "expected": "The terminal and ~/ansible-core-pipx-baseline.txt identify the pipx-managed ansible-core release, Python interpreter, exposed commands, resolved dependencies, and a successful pinned status.",
+          "note": "A pipx pin controls pipx upgrade and reinstall operations; it is not a portable lock file and does not freeze collections, configuration, inventory, credentials, Python wheels, or operating-system libraries. Review and unpin the application deliberately when approving an update.",
+          "troubleshooting": "Treat inventory, dependency capture, and pinning as separate checks. The pipx environment must exist and remain healthy before its baseline can be accepted.",
+          "recovery": [
+            { "symptom": "pipx cannot find the ansible-core environment", "detail": "Inspect pipx's configured paths and environment inventory before repeating this baseline step.", "command": "pipx environment\npipx list --include-injected" },
+            { "symptom": "The dependency capture fails", "detail": "Check the application environment's Python requirements and package inventory before accepting or recreating its baseline.", "command": "pipx runpip ansible-core check\npipx runpip ansible-core list" },
+            { "symptom": "The pin result is not successful", "detail": "Confirm the pipx application name, then repeat the pin command and require a successful result before treating the application as held.", "command": "pipx list\npipx pin ansible-core --output json" }
+          ],
+          "media": {
+            "type": "terminal",
+            "source": "/demos/installing-ansible-core/recordings/pipx-rhel-step-11-record-baseline.cast",
+            "transcript": "/demos/installing-ansible-core/recordings/pipx-rhel-step-11-record-baseline.txt"
           }
         },
         {
@@ -1707,7 +1930,12 @@
           ],
           "expected": "The collection path is prepared, no separately installed collection is required, and ansible-doc lists the available modules and displays help for ansible.builtin.ping.",
           "note": "The stderr redirection keeps a known ansible._protomatter collection-discovery warning out of this focused display; it does not change the module list or count. The ansible.builtin namespace is embedded in ansible-core and is not listed as a separately installed collection.",
-          "troubleshooting": "If the directory cannot be created, verify ownership and permissions under ~/.ansible. If additional namespaces appear, use ansible --version and ansible-galaxy collection list to identify their paths before deciding whether the extra content is intentional.",
+          "troubleshooting": "Separate collection-directory permissions, unexpected collection namespaces, and failure to load the embedded ansible.builtin.ping documentation.",
+          "recovery": [
+            { "symptom": "The collection directory cannot be created", "detail": "Inspect ownership and permissions under the current user's .ansible directory before repeating the mkdir command.", "command": "ls -ld ~/.ansible ~/.ansible/collections 2>/dev/null\nmkdir -p ~/.ansible/collections/ansible_collections" },
+            { "symptom": "Additional collection namespaces appear", "detail": "Use the active collection paths and collection inventory to decide whether the additional content is intentional; do not delete shared content merely to match the demo.", "command": "ansible --version\nansible-galaxy collection list" },
+            { "symptom": "ansible.builtin.ping documentation cannot be loaded", "detail": "Confirm the active ansible-doc executable belongs to this installation, then repeat the FQCN documentation lookup.", "command": "command -v ansible-doc\nPAGER=cat ansible-doc -s ansible.builtin.ping" }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/pipx-rhel-08-content-boundary.cast",
@@ -1725,49 +1953,18 @@
           ],
           "expected": "localhost returns SUCCESS with changed: false and ping: pong, without an interpreter-discovery warning.",
           "note": "You now have a working local ansible-core runtime. Remote managed-host readiness has not yet been tested.",
-          "troubleshooting": "If the test fails, confirm that /usr/bin/python3 exists, ansible resolves to /home/rajat/.local/bin/ansible, and pipx reports a healthy ansible-core environment. Continue only when the result contains SUCCESS and ping pong.",
+          "troubleshooting": "This step depends only on the pipx-managed Ansible command, the explicitly selected managed-host Python, and local execution of ansible.builtin.ping.",
+          "recovery": [
+            { "symptom": "The selected managed-host Python does not exist", "detail": "Confirm the path used by this command. Do not substitute a different interpreter until its compatibility with the managed host has been established.", "command": "ls -l /usr/bin/python3\n/usr/bin/python3 --version" },
+            { "symptom": "Ansible resolves outside the pipx installation", "detail": "Confirm the selected launcher and pipx environment before repeating the smoke test.", "command": "type -a ansible\ncommand -v ansible\npipx list" },
+            { "symptom": "pipx reports an unhealthy environment", "detail": "Inspect this environment's dependency report and package list before repairing or recreating it.", "command": "pipx runpip ansible-core check\npipx runpip ansible-core list" },
+            { "symptom": "localhost does not return pong", "detail": "Repeat only this step's command after the interpreter and launcher checks pass. Continue when localhost reports SUCCESS and pong.", "command": "ansible localhost -i localhost, -m ansible.builtin.ping -c local -e ansible_python_interpreter=/usr/bin/python3" }
+          ],
           "media": {
             "type": "terminal",
             "source": "/demos/installing-ansible-core/recordings/pipx-rhel-09-smoke-test.cast",
             "transcript": "/demos/installing-ansible-core/recordings/pipx-rhel-09-smoke-test.txt"
           }
-        }
-      ],
-      "troubleshooting": [
-        {
-          "title": "rhc connect cannot register the system",
-          "command": "sudo rhc status",
-          "detail": "Confirm internet access, DNS resolution, an accurate system clock, and any required proxy configuration. Verify that the Red Hat account has an active RHEL entitlement, then retry rhc connect."
-        },
-        {
-          "title": "BaseOS or AppStream is not enabled",
-          "command": "sudo subscription-manager refresh\nsudo subscription-manager repos \\\n  --enable=\"rhel-9-for-$(arch)-baseos-rpms\" \\\n  --enable=\"rhel-9-for-$(arch)-appstream-rpms\"",
-          "detail": "Refresh the entitlement data and enable the repository IDs that match the system architecture. Run dnf repolist --enabled again to confirm both repositories."
-        },
-        {
-          "title": "Python 3.12 packages are unavailable",
-          "command": "sudo subscription-manager refresh\nsudo dnf repolist --enabled\nsudo dnf clean metadata\nsudo dnf makecache",
-          "detail": "Confirm that the system is registered and that architecture-specific BaseOS and AppStream repositories are enabled before retrying the package query."
-        },
-        {
-          "title": "pipx is installed but the command is missing",
-          "command": "tail -n 5 ~/.bashrc\nsource ~/.bashrc\ncommand -v pipx",
-          "detail": "Confirm that ~/.local/bin is added to PATH in the Bash startup file and reload it in the current shell."
-        },
-        {
-          "title": "pipx cannot install ansible-core",
-          "command": "python3.12 --version\npipx --version\npipx install --python python3.12 'ansible-core==2.21.*'",
-          "detail": "Verify the requested interpreter, pipx installation, upstream Python compatibility, and access to PyPI before retrying."
-        },
-        {
-          "title": "The wrong Ansible command runs",
-          "command": "type -a ansible\npipx list\ncommand -v ansible",
-          "detail": "Inspect all matching commands and confirm that ~/.local/bin appears before any competing installation on PATH."
-        },
-        {
-          "title": "The localhost test cannot execute Python",
-          "command": "test -x /usr/bin/python3 && /usr/bin/python3 --version\nansible localhost -i localhost, -m ansible.builtin.ping -c local -e ansible_python_interpreter=/usr/bin/python3",
-          "detail": "Confirm the explicit managed-host interpreter and the pipx-managed Ansible launcher, then repeat the functional test."
         }
       ],
       "verification": [
@@ -1778,11 +1975,24 @@
         "pipx manages ansible-core under /home/rajat/.local/share/pipx/venvs/ansible-core",
         "rpm reports that the RHEL ansible-core package is not installed",
         "pipx reports no broken requirements",
+        "The saved pipx baseline records the application, interpreter, exposed commands, resolved Python packages, and successful pin status",
         "The embedded ansible.builtin module documentation is available without separately installed collections",
         "The localhost ansible.builtin.ping test returns SUCCESS and ping: pong"
       ],
+      "completionRecord": {
+        "introduction": "Copy this record and replace bracketed fields with output from your environment before saving it with your project or support notes.",
+        "items": [
+          { "label": "Installation method", "value": "pipx-managed application environment" },
+          { "label": "Package source and owner", "value": "PyPI · pipx" },
+          { "label": "ansible-core version", "value": "[paste the version reported by pipx list]" },
+          { "label": "Python runtime", "value": "Python 3.12 · [confirm with ansible --version]" },
+          { "label": "Executable", "value": "/home/rajat/.local/bin/ansible" },
+          { "label": "pipx application baseline", "value": "/home/rajat/ansible-core-pipx-baseline.txt · pinned [confirm successful status]" },
+          { "label": "Local validation", "value": "localhost SUCCESS · ansible.builtin.ping returned pong" }
+        ]
+      },
       "cleanup": {
-        "explanation": "Remove the isolated ansible-core application when it is no longer needed. This leaves pipx and Python 3.12 available for other user-managed command-line applications. Disconnect RHEL only when this disposable VM will not be used for later labs, because the system will lose access to protected Red Hat content and services.",
+        "explanation": "Remove the isolated ansible-core application when it is no longer needed. This leaves pipx and Python 3.12 available for other user-managed command-line applications. Disconnect RHEL only when this disposable VM will not be used for later labs, because the system will lose access to protected Red Hat content and services. For an organization-managed system, complete the applicable inventory, subscription, security, and asset-retirement process as well.",
         "command": "pipx uninstall ansible-core\n# Optional: disconnect this disposable lab VM\nsudo rhc disconnect"
       }
     }

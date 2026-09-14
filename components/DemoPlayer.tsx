@@ -14,6 +14,7 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
   const [stepIndex, setStepIndex] = useState(0);
   const [copiedCommand, setCopiedCommand] = useState<number | null>(null);
+  const [recordCopied, setRecordCopied] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [started, setStarted] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
@@ -97,6 +98,22 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
     }
   };
 
+  const copyCompletionRecord = async () => {
+    const record = [
+      `${demo.demoId} completion record`,
+      demo.title,
+      "",
+      ...demo.completionRecord.items.map((item) => `${item.label}: ${item.value}`)
+    ].join("\n");
+    try {
+      await navigator.clipboard.writeText(record);
+      setRecordCopied(true);
+      window.setTimeout(() => setRecordCopied(false), 1600);
+    } catch {
+      setAnnouncement("Copy failed. Select the completion record manually.");
+    }
+  };
+
   const openFullscreen = async () => {
     try {
       await playerRef.current?.requestFullscreen();
@@ -124,6 +141,7 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
     if (document.fullscreenElement) document.exitFullscreen().catch(() => undefined);
     setStepIndex(0);
     setCopiedCommand(null);
+    setRecordCopied(false);
     setCompleted(false);
     setStarted(false);
     setAnnouncement("Demo closed. Progress was reset and focus returned to this demonstration.");
@@ -218,18 +236,13 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
           <details className="step-troubleshooting">
             <summary>Result looks different?</summary>
             <p>{step.troubleshooting}</p>
-          </details>
-          <details className="demo-help">
-            <summary>Demo troubleshooting guide</summary>
-            <div>
-              {demo.troubleshooting.map((item) => (
-                <article key={item.title}>
-                  <strong>{item.title}</strong>
-                  <p>{item.detail}</p>
-                  <pre tabIndex={0}><code>{item.command}</code></pre>
-                </article>
-              ))}
-            </div>
+            {step.recovery?.map((item) => (
+              <article key={item.symptom}>
+                <strong>{item.symptom}</strong>
+                <p>{item.detail}</p>
+                {item.command ? <pre tabIndex={0}><code>{item.command}</code></pre> : null}
+              </article>
+            ))}
           </details>
         </aside>
       </div> : completed ? (
@@ -240,6 +253,16 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
             <h2>Demo completed successfully</h2>
             <p>{demo.objective}</p>
             <ul>{demo.verification.map((item) => <li key={item}><span>✓</span>{item}</li>)}</ul>
+            <section className="completion-record" aria-labelledby={`completion-record-${demo.id}`}>
+              <div>
+                <h3 id={`completion-record-${demo.id}`}>Save your completion record</h3>
+                <button type="button" onClick={copyCompletionRecord}>{recordCopied ? "Copied!" : "Copy record"}</button>
+              </div>
+              <p>{demo.completionRecord.introduction}</p>
+              <dl>
+                {demo.completionRecord.items.map((item) => <div key={item.label}><dt>{item.label}</dt><dd>{item.value}</dd></div>)}
+              </dl>
+            </section>
             {demo.cleanup && (
               <details className="demo-cleanup">
                 <summary>Optional cleanup</summary>

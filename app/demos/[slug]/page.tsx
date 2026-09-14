@@ -369,6 +369,37 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
         </section>
       )}
 
+      {lab.supportGuidance ? (
+        <section className="comparison-section lab-support" aria-labelledby={`support-${lab.slug}`}>
+          <div className="comparison-heading">
+            <p className="eyebrow"><span /> Operational support</p>
+            <h2 id={`support-${lab.slug}`}>{lab.supportGuidance.title}</h2>
+            <p>{lab.supportGuidance.introduction}</p>
+          </div>
+          <div className="support-route-grid">
+            {lab.supportGuidance.routes.map((route) => (
+              <article key={route.title}>
+                <strong>{route.title}</strong>
+                <p>{route.detail}</p>
+                {route.reference ? <a href={route.reference.href} target="_blank" rel="noreferrer" data-analytics-event="official_reference_opened" data-analytics-label={route.reference.label}>{route.reference.label} ↗</a> : null}
+              </article>
+            ))}
+          </div>
+          <section className="support-diagnostics" aria-labelledby={`support-diagnostics-${lab.slug}`}>
+            <h3 id={`support-diagnostics-${lab.slug}`}>{lab.supportGuidance.diagnostics.title}</h3>
+            <p>{lab.supportGuidance.diagnostics.introduction}</p>
+            <div className="support-diagnostic-grid">
+              {lab.supportGuidance.diagnostics.items.map((item) => (
+                <article key={item.command}>
+                  <code>{item.command}</code>
+                  <p>{item.detail}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+        </section>
+      ) : null}
+
       {lab.overview?.orchestrationOptions ? (
         <section className="overview-orchestration" aria-labelledby={`orchestration-${lab.slug}`}>
           <div className="orchestration-heading">
