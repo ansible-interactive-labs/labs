@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Install Red Hat ansible-dev-tools on RHEL 9</title>
+  <desc id="desc">A Red Hat repository delivers the ansible-dev-tools RPM to a RHEL 9 development workstation and its create, lint, test, build, run, and sign toolchain.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07131f"/><stop offset="1" stop-color="#132d3b"/></linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#172f3c"/><stop offset="1" stop-color="#0d202c"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="20" stdDeviation="28" flood-color="#000" flood-opacity=".36"/></filter>
+  </defs>
+  <rect width="1600" height="900" rx="48" fill="url(#bg)"/>
+  <circle cx="1370" cy="120" r="250" fill="#ee0000" opacity=".09"/>
+  <circle cx="160" cy="820" r="310" fill="#54d3c2" opacity=".08"/>
+  <text x="110" y="105" fill="#70e1d2" font-family="system-ui,sans-serif" font-size="28" font-weight="700" letter-spacing="4">HOD-002-D01</text>
+  <text x="110" y="176" fill="#fff" font-family="system-ui,sans-serif" font-size="52" font-weight="750">Red Hat-provided development toolchain</text>
+  <text x="110" y="225" fill="#b9cbd4" font-family="system-ui,sans-serif" font-size="25">Register · enable · install · verify · create · lint</text>
+  <g filter="url(#shadow)">
+    <rect x="105" y="315" width="350" height="210" rx="30" fill="url(#card)" stroke="#385364" stroke-width="2"/>
+    <rect x="625" y="315" width="350" height="210" rx="30" fill="url(#card)" stroke="#ee5b5b" stroke-width="2"/>
+    <rect x="1145" y="315" width="350" height="210" rx="30" fill="url(#card)" stroke="#70e1d2" stroke-width="2"/>
+  </g>
+  <text x="280" y="375" text-anchor="middle" fill="#92aab6" font-family="system-ui,sans-serif" font-size="20" font-weight="700">SOURCE</text>
+  <text x="280" y="430" text-anchor="middle" fill="#fff" font-family="system-ui,sans-serif" font-size="31" font-weight="750">AAP 2.7</text>
+  <text x="280" y="470" text-anchor="middle" fill="#c2d2da" font-family="system-ui,sans-serif" font-size="22">Red Hat repository</text>
+  <text x="800" y="375" text-anchor="middle" fill="#f48a8a" font-family="system-ui,sans-serif" font-size="20" font-weight="700">INSTALL</text>
+  <text x="800" y="430" text-anchor="middle" fill="#fff" font-family="system-ui,sans-serif" font-size="31" font-weight="750">ansible-dev-tools</text>
+  <text x="800" y="470" text-anchor="middle" fill="#c2d2da" font-family="system-ui,sans-serif" font-size="22">RPM on RHEL 9</text>
+  <text x="1320" y="375" text-anchor="middle" fill="#70e1d2" font-family="system-ui,sans-serif" font-size="20" font-weight="700">VALIDATE</text>
+  <text x="1320" y="430" text-anchor="middle" fill="#fff" font-family="system-ui,sans-serif" font-size="31" font-weight="750">Create + lint</text>
+  <text x="1320" y="470" text-anchor="middle" fill="#c2d2da" font-family="system-ui,sans-serif" font-size="22">Generated project</text>
+  <path d="M470 420h135m-36-24 36 24-36 24M990 420h135m-36-24 36 24-36 24" fill="none" stroke="#70e1d2" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <g font-family="system-ui,sans-serif" font-size="22" font-weight="700">
+    <rect x="250" y="650" width="150" height="64" rx="18" fill="#163d49"/><text x="325" y="691" text-anchor="middle" fill="#fff">CREATE</text>
+    <rect x="440" y="650" width="150" height="64" rx="18" fill="#163d49"/><text x="515" y="691" text-anchor="middle" fill="#fff">LINT</text>
+    <rect x="630" y="650" width="150" height="64" rx="18" fill="#163d49"/><text x="705" y="691" text-anchor="middle" fill="#fff">TEST</text>
+    <rect x="820" y="650" width="150" height="64" rx="18" fill="#163d49"/><text x="895" y="691" text-anchor="middle" fill="#fff">BUILD</text>
+    <rect x="1010" y="650" width="150" height="64" rx="18" fill="#163d49"/><text x="1085" y="691" text-anchor="middle" fill="#fff">RUN</text>
+    <rect x="1200" y="650" width="150" height="64" rx="18" fill="#163d49"/><text x="1275" y="691" text-anchor="middle" fill="#fff">SIGN</text>
+  </g>
+  <text x="800" y="805" text-anchor="middle" fill="#9eb3bd" font-family="system-ui,sans-serif" font-size="21">A coordinated, Red Hat-built toolkit for Ansible content development</text>
+</svg>

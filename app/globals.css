@@ -388,7 +388,7 @@ body > main > footer .brand-copy small { color: #8f8992; }
 .route-player.is-running .player-footer { padding-bottom: max(12px, env(safe-area-inset-bottom)); padding-left: max(24px, env(safe-area-inset-left)); padding-right: max(24px, env(safe-area-inset-right)); }
 .player-footer > span { color: #9b959d; font-size: 11px; }
 .player-footer button { border: 0; padding: 12px 17px; cursor: pointer; font-weight: 750; }
-.player-back { justify-self: start; background: transparent; }
+.player-back { justify-self: start; color: white; background: var(--red); }
 .player-back:disabled { opacity: .35; cursor: default; }
 .player-next { justify-self: end; color: white; background: var(--red); }
 .complete-button { background: #168449; }

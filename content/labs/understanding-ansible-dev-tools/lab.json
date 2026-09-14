@@ -8,12 +8,17 @@
   "description": "Understand how ansible-dev-tools reduces setup and compatibility work across separately released Ansible development utilities, then compare the upstream Python distribution with Red Hat-supported packages and development environments.",
   "coverImage": "/demos/understanding-ansible-dev-tools/cover.svg",
   "coverAlt": "Ansible development workflow showing connected create, lint, test, build, run, and sign stages",
-  "duration": "8 min read",
-  "durationMinutes": 8,
+  "duration": "26 min",
+  "durationMinutes": 26,
   "difficulty": "Beginner",
   "topic": "Ansible development tools",
-  "platform": "Linux · macOS · Windows",
-  "status": "Coming soon",
+  "platform": "RHEL 9",
+  "status": "Available",
+  "seoTitle": "Install Red Hat ansible-dev-tools on RHEL 9",
+  "seoDescription": "Understand ansible-dev-tools, compare its community and Red Hat delivery paths, then install and validate the Red Hat RPM on RHEL 9.",
+  "socialImage": "/demos/understanding-ansible-dev-tools/social.png",
+  "socialImageWidth": 1600,
+  "socialImageHeight": 900,
   "hodNumber": 2,
   "publishedOrder": 2,
   "tags": [
@@ -78,22 +83,32 @@
   },
   "prerequisites": [
     {
-      "label": "Community install",
-      "value": "Python 3.11 or later",
-      "detail": "The current PyPI package metadata requires Python 3.11 or later. Install it in an isolated Python environment rather than the operating system's managed Python environment.",
-      "href": "https://pypi.org/project/ansible-dev-tools/"
-    },
-    {
-      "label": "Red Hat RPM",
-      "value": "RHEL 9 and an AAP entitlement",
-      "detail": "The Red Hat account used to register the system must provide an Ansible Automation Platform subscription or product trial. A RHEL-only subscription does not expose the versioned repository containing the Red Hat ansible-dev-tools RPM.",
+      "label": "System",
+      "value": "Supported RHEL 9",
+      "detail": "A current, fully updated RHEL 9 physical or virtual machine using the x86_64 or AArch64 architecture. Enable the Ansible Automation Platform repository that matches the host architecture.",
       "href": "https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.7/install-proc_devtools_install_rpm"
     },
     {
-      "label": "Container workflows",
-      "value": "Podman on RHEL",
-      "detail": "This demonstration installs Podman so ansible-navigator can pull and run execution-environment images. Other platforms can use a container engine supported by ansible-navigator.",
-      "href": "https://docs.ansible.com/projects/navigator/installation/"
+      "label": "Access",
+      "value": "sudo privileges",
+      "detail": "A non-root user that can run administrative commands with sudo to register the host, manage repositories, and install RPM packages."
+    },
+    {
+      "label": "Subscription access",
+      "value": "RHEL and AAP entitlements",
+      "detail": "A Red Hat account with access to RHEL content and an Ansible Automation Platform subscription or product trial. The demonstration registers the host and enables the versioned AAP 2.7 repository that provides the ansible-dev-tools RPM.",
+      "href": "https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.7/install-proc_devtools_install_rpm"
+    },
+    {
+      "label": "Connectivity",
+      "value": "Internet, DNS and HTTPS",
+      "detail": "Outbound access to Red Hat registration and content services. Access to registry.redhat.io is also required when an execution-environment image is pulled. Configure any required proxy and trusted certificate chain before starting.",
+      "href": "https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.7/install-con_devtools_requirements"
+    },
+    {
+      "label": "Starting state",
+      "value": "Clean package state",
+      "detail": "Begin with a fully updated RHEL 9 host where ansible-dev-tools is not already installed. The demonstration installs Podman before using tools that rely on a container engine."
     }
   ],
   "prerequisiteCallouts": [
@@ -376,5 +391,224 @@
       ]
     }
   ],
-  "demos": []
+  "demos": [
+    {
+      "id": "install-red-hat-adt-rhel",
+      "demoId": "HOD-002-D01",
+      "title": "Install Red Hat ansible-dev-tools on RHEL 9",
+      "objective": "Register RHEL, enable the matching Ansible Automation Platform repository, install the Red Hat ansible-dev-tools RPM, inventory its toolchain, and validate a generated project.",
+      "coverImage": "/demos/understanding-ansible-dev-tools/demo-01-red-hat-rpm.svg",
+      "coverAlt": "Red Hat AAP repository delivering ansible-dev-tools to a RHEL 9 workstation for project creation and linting",
+      "outcomes": [
+        "Connect RHEL to Red Hat services and enable the architecture-matched AAP 2.7 repository",
+        "Install Podman and the Red Hat ansible-dev-tools RPM",
+        "Verify the principal tool packages and their active versions",
+        "Create an Ansible project and validate it with ansible-lint"
+      ],
+      "duration": "18 min",
+      "durationMinutes": 18,
+      "steps": [
+        {
+          "label": "Inspect System",
+          "title": "Inspect the RHEL 9 starting environment",
+          "image": "/demos/understanding-ansible-dev-tools/assets/01-inspect-rhel.svg",
+          "alt": "Terminal identifying RHEL 9, the system architecture, hostname, and clean ansible-dev-tools state",
+          "explanation": "Establish the host release, architecture, identity, and package state before making changes. The architecture determines which AAP repository must be enabled.",
+          "commands": [
+            {"command": "cat /etc/redhat-release", "explanation": "Reads the operating-system release file and confirms that the control node is running RHEL 9."},
+            {"command": "uname -m", "explanation": "Prints the machine architecture used to select the matching AAP repository."},
+            {"command": "hostnamectl --static", "explanation": "Displays the static hostname so the demonstration control node is clearly identified."},
+            {"command": "rpm -q ansible-dev-tools", "explanation": "Queries the RPM database and confirms whether ansible-dev-tools is already installed."}
+          ],
+          "expected": "The host reports RHEL 9, its architecture and hostname, followed by a package-not-installed result for ansible-dev-tools.",
+          "note": "This recording uses aarch64. Select the x86_64 repository later when uname -m reports x86_64.",
+          "troubleshooting": "Stop if this is not RHEL 9. If the package is already installed, remove it only on a disposable lab host or use the demo as a verification walkthrough.",
+          "media": {"type": "terminal", "source": "/demos/understanding-ansible-dev-tools/recordings/01-inspect-rhel.cast", "transcript": "/demos/understanding-ansible-dev-tools/recordings/01-inspect-rhel.txt"}
+        },
+        {
+          "label": "Register RHEL",
+          "title": "Register RHEL with Red Hat services",
+          "image": "/demos/understanding-ansible-dev-tools/assets/02-register-rhel.svg",
+          "alt": "Terminal showing a successful interactive Red Hat registration",
+          "explanation": "Registration gives the system authenticated access to entitled Red Hat content. Credential input is excluded from the published replay.",
+          "commands": [
+            {"command": "sudo rhc connect", "explanation": "Registers the host with Subscription Management and connects supported Red Hat services using an interactive account login."}
+          ],
+          "expected": "rhc confirms a successful Red Hat connection after the learner enters an entitled account name and password.",
+          "note": "This workflow requires both RHEL access and an Ansible Automation Platform subscription or product trial.",
+          "troubleshooting": "Use the returned rhc message to distinguish authentication, entitlement, DNS, proxy, certificate, and service-connectivity failures.",
+          "recovery": [
+            {"symptom": "No credential prompt appears", "detail": "Run the command in an interactive terminal that can accept the Red Hat account prompts."},
+            {"symptom": "Registration fails", "detail": "Confirm DNS, HTTPS access, proxy settings, system time, and the required entitlements before retrying.", "command": "sudo rhc connect"}
+          ],
+          "media": {"type": "terminal", "source": "/demos/understanding-ansible-dev-tools/recordings/02-register-rhel.cast", "transcript": "/demos/understanding-ansible-dev-tools/recordings/02-register-rhel.txt"}
+        },
+        {
+          "label": "Verify Connection",
+          "title": "Verify the Red Hat connection",
+          "image": "/demos/understanding-ansible-dev-tools/assets/03-verify-registration.svg",
+          "alt": "Terminal showing the Red Hat connection status for the registered RHEL host",
+          "explanation": "Confirm registration independently before enabling protected content. Subscription Management is the connection required for the repository workflow.",
+          "commands": [
+            {"command": "sudo rhc status", "explanation": "Reports the host connections to Subscription Management, Red Hat Lightspeed, and remote host configuration."}
+          ],
+          "expected": "Subscription Management and Red Hat Lightspeed are connected. Remote host configuration can be inactive without blocking DNF.",
+          "note": "The recorded client uses the former Red Hat Insights name. That label does not change this package-installation workflow.",
+          "troubleshooting": "If Subscription Management is disconnected, return to registration. Do not treat an inactive optional remote host configuration daemon as a DNF failure.",
+          "media": {"type": "terminal", "source": "/demos/understanding-ansible-dev-tools/recordings/03-verify-registration.cast", "transcript": "/demos/understanding-ansible-dev-tools/recordings/03-verify-registration.txt"}
+        },
+        {
+          "label": "Enable Repository",
+          "title": "Enable the AAP 2.7 repository",
+          "image": "/demos/understanding-ansible-dev-tools/assets/04-enable-aap-repository.svg",
+          "alt": "Terminal enabling the AArch64 Ansible Automation Platform 2.7 repository",
+          "explanation": "Enable the versioned AAP repository that supplies Red Hat ansible-dev-tools packages. The repository ID must match the host architecture.",
+          "commands": [
+            {"command": "sudo subscription-manager repos --enable=\"ansible-automation-platform-2.7-for-rhel-9-aarch64-rpms\"", "explanation": "Enables the AAP 2.7 RPM repository for an AArch64 RHEL 9 host without listing unrelated repositories."}
+          ],
+          "expected": "Subscription Manager reports that the AAP 2.7 AArch64 repository is enabled.",
+          "note": "On x86_64, use ansible-automation-platform-2.7-for-rhel-9-x86_64-rpms instead. Do not copy the recorded architecture blindly.",
+          "troubleshooting": "A missing repository normally indicates a mismatched architecture, absent AAP entitlement, or stale subscription data.",
+          "recovery": [
+            {"symptom": "The repository is unavailable", "detail": "Confirm uname -m, refresh subscription data, and use the corresponding entitled repository ID.", "command": "uname -m\nsudo subscription-manager refresh"}
+          ],
+          "media": {"type": "terminal", "source": "/demos/understanding-ansible-dev-tools/recordings/04-enable-aap-repository.cast", "transcript": "/demos/understanding-ansible-dev-tools/recordings/04-enable-aap-repository.txt"}
+        },
+        {
+          "label": "Install Podman",
+          "title": "Install the container engine",
+          "image": "/demos/understanding-ansible-dev-tools/assets/05-install-podman.svg",
+          "alt": "DNF transaction installing Podman on RHEL 9",
+          "explanation": "Install Podman before the development toolkit so ansible-navigator and ansible-builder have a container engine for execution-environment workflows.",
+          "commands": [
+            {"command": "sudo dnf install podman", "explanation": "Installs the Podman engine and required dependencies from enabled RHEL repositories."}
+          ],
+          "expected": "DNF completes the Podman installation successfully.",
+          "note": "The podman package is sufficient here. The broader container-tools meta-package also installs Buildah, Skopeo, CRIU, and Udica.",
+          "troubleshooting": "Resolve repository, metadata, download, dependency, or signature errors reported by DNF; do not bypass package-signature checks.",
+          "media": {"type": "terminal", "source": "/demos/understanding-ansible-dev-tools/recordings/05-install-podman.cast", "transcript": "/demos/understanding-ansible-dev-tools/recordings/05-install-podman.txt"}
+        },
+        {
+          "label": "Inspect Package",
+          "title": "Inspect the Red Hat package metadata",
+          "image": "/demos/understanding-ansible-dev-tools/assets/06-inspect-adt-package.svg",
+          "alt": "DNF information for the available Red Hat ansible-dev-tools package",
+          "explanation": "Review the package source, version, architecture, size, and description before approving a system change.",
+          "commands": [
+            {"command": "sudo dnf info ansible-dev-tools", "explanation": "Displays metadata for the ansible-dev-tools RPM available from the enabled AAP repository."}
+          ],
+          "expected": "DNF finds an ansible-dev-tools package whose architecture matches the host and whose repository is the enabled AAP 2.7 channel.",
+          "troubleshooting": "If no package is found, revisit the repository step and confirm entitlement, architecture, and current DNF metadata.",
+          "recovery": [
+            {"symptom": "No matching package is available", "detail": "Refresh DNF metadata after confirming the correct AAP repository is enabled, then repeat the query.", "command": "sudo dnf clean metadata\nsudo dnf makecache\nsudo dnf info ansible-dev-tools"}
+          ],
+          "media": {"type": "terminal", "source": "/demos/understanding-ansible-dev-tools/recordings/06-inspect-adt-package.cast", "transcript": "/demos/understanding-ansible-dev-tools/recordings/06-inspect-adt-package.txt"}
+        },
+        {
+          "label": "Install Toolchain",
+          "title": "Install Red Hat ansible-dev-tools",
+          "image": "/demos/understanding-ansible-dev-tools/assets/07-install-adt.svg",
+          "alt": "DNF completing the Red Hat ansible-dev-tools installation",
+          "explanation": "Let DNF resolve the coordinated Red Hat package set and review the transaction before approving the installation.",
+          "commands": [
+            {"command": "sudo dnf install ansible-dev-tools", "explanation": "Installs the ansible-dev-tools RPM and its required Red Hat-built dependencies from enabled repositories."}
+          ],
+          "expected": "The transaction finishes with Complete! and includes ansible-dev-tools among the installed packages.",
+          "note": "This recording installed 89 packages. Treat that count and all versions as observed evidence, not a permanent product guarantee.",
+          "troubleshooting": "Use the DNF error to identify metadata, dependency, download, storage, or signature problems before retrying the transaction.",
+          "media": {"type": "terminal", "source": "/demos/understanding-ansible-dev-tools/recordings/07-install-adt.cast", "transcript": "/demos/understanding-ansible-dev-tools/recordings/07-install-adt.txt"}
+        },
+        {
+          "label": "Verify Packages",
+          "title": "Verify the installed RPM packages",
+          "image": "/demos/understanding-ansible-dev-tools/assets/08-verify-rpm-packages.svg",
+          "alt": "RPM queries confirming the installed Ansible development tool packages",
+          "explanation": "Verify the principal user-facing components through the RPM database. This proves package ownership and records the Red Hat build identities installed on the host.",
+          "commands": [
+            {"command": "sudo rpm -q ansible-dev-tools", "explanation": "Prints the installed ansible-dev-tools RPM name, version, release, and architecture."},
+            {"command": "sudo rpm -q ansible-{core,builder,creator,dev-environment,lint,navigator,sign} molecule", "explanation": "Queries the main Ansible command-line and content-development RPMs installed with the toolkit."},
+            {"command": "sudo rpm -q python3.12-{pytest-ansible,tox-ansible}", "explanation": "Queries the Python-versioned RPMs that provide pytest-ansible and tox-ansible in this package set."}
+          ],
+          "expected": "Every RPM query returns an installed package identity and no package-not-installed result.",
+          "note": "Python-versioned RPM names can change in a later supported package set. Verify the names supplied by the current repositories rather than assuming 3.12 indefinitely.",
+          "troubleshooting": "A missing package should be checked against the completed DNF transaction and the dependencies of the currently available ansible-dev-tools build.",
+          "media": {"type": "terminal", "source": "/demos/understanding-ansible-dev-tools/recordings/08-verify-rpm-packages.cast", "transcript": "/demos/understanding-ansible-dev-tools/recordings/08-verify-rpm-packages.txt"}
+        },
+        {
+          "label": "Inventory Toolchain",
+          "title": "Inventory the active tool versions",
+          "image": "/demos/understanding-ansible-dev-tools/assets/09-inventory-toolchain.svg",
+          "alt": "ADT and Podman commands reporting the active development toolchain versions",
+          "explanation": "Record the executable versions visible to the current shell and confirm that the container engine starts. This complements RPM package verification with runtime evidence.",
+          "commands": [
+            {"command": "adt --version", "explanation": "Reports the installed ansible-dev-tools version and inventories the tool versions detected in the active environment."},
+            {"command": "podman --version", "explanation": "Confirms that the Podman executable starts and prints its active version."}
+          ],
+          "expected": "adt prints a populated development-tool inventory, and Podman reports its version.",
+          "note": "adt --version describes the current environment; it does not lock those versions or replace dependency and lifecycle controls.",
+          "troubleshooting": "If a command is missing, compare the RPM queries in the prior step with the executable path resolved by the current shell.",
+          "recovery": [
+            {"symptom": "An installed executable is not found", "detail": "Clear cached command paths and inspect every matching executable before changing packages.", "command": "hash -r\ncommand -v adt\ncommand -v podman"}
+          ],
+          "media": {"type": "terminal", "source": "/demos/understanding-ansible-dev-tools/recordings/09-inventory-toolchain.cast", "transcript": "/demos/understanding-ansible-dev-tools/recordings/09-inventory-toolchain.txt"}
+        },
+        {
+          "label": "Create Project",
+          "title": "Create an Ansible playbook project",
+          "image": "/demos/understanding-ansible-dev-tools/assets/10-create-project.svg",
+          "alt": "ansible-creator generating a playbook project under the user home directory",
+          "explanation": "Move beyond version checks by using ansible-creator to scaffold a real project. This validates that an installed development tool can perform its primary function.",
+          "commands": [
+            {"command": "mkdir -p ~/ansible-projects", "explanation": "Creates a reusable parent directory for Ansible development projects without failing if it already exists."},
+            {"command": "cd ~/ansible-projects", "explanation": "Changes into the parent directory so the generated project is created in a predictable location."},
+            {"command": "ansible-creator init playbook rajat.demo adt-demo", "explanation": "Uses ansible-creator to scaffold a playbook project named adt-demo with the namespace rajat.demo."}
+          ],
+          "expected": "ansible-creator reports a successful initialization and creates ~/ansible-projects/adt-demo.",
+          "troubleshooting": "If creation fails, preserve the error and check whether the destination already contains a partial project before retrying.",
+          "recovery": [
+            {"symptom": "The destination already exists", "detail": "Inspect the existing directory and choose a different disposable project name rather than overwriting unknown work."}
+          ],
+          "media": {"type": "terminal", "source": "/demos/understanding-ansible-dev-tools/recordings/10-create-project.cast", "transcript": "/demos/understanding-ansible-dev-tools/recordings/10-create-project.txt"}
+        },
+        {
+          "label": "Lint Project",
+          "title": "Validate the generated project with ansible-lint",
+          "image": "/demos/understanding-ansible-dev-tools/assets/11-lint-project.svg",
+          "alt": "ansible-lint completing successfully for the generated site playbook",
+          "explanation": "Finish with a functional lint check against the generated playbook. A clean result proves that the project and linting tool can work together.",
+          "commands": [
+            {"command": "cd adt-demo", "explanation": "Changes into the generated project directory so its files and configuration are the active linting context."},
+            {"command": "ansible-lint site.yml 2> /dev/null", "explanation": "Checks site.yml against ansible-lint rules while hiding non-error advisory text from this concise recording."}
+          ],
+          "expected": "ansible-lint returns to the prompt without findings. No output is the successful result for the generated playbook in this recording.",
+          "note": "For normal development, run ansible-lint site.yml without redirecting standard error so warnings and explanatory messages remain visible.",
+          "troubleshooting": "Treat any reported rule violation as project feedback. If the executable fails to start, return to the package and tool-inventory checks.",
+          "media": {"type": "terminal", "source": "/demos/understanding-ansible-dev-tools/recordings/11-lint-project.cast", "transcript": "/demos/understanding-ansible-dev-tools/recordings/11-lint-project.txt"}
+        }
+      ],
+      "verification": [
+        "Subscription Management is connected and the architecture-matched AAP 2.7 repository is enabled",
+        "DNF installs Podman and ansible-dev-tools successfully",
+        "RPM queries identify every principal development-tool package",
+        "adt --version inventories the active toolchain and podman --version starts successfully",
+        "ansible-creator generates the adt-demo playbook project",
+        "ansible-lint completes without findings for ansible-projects/adt-demo/site.yml"
+      ],
+      "completionRecord": {
+        "introduction": "Save this concise evidence with your project notes so another engineer can identify the tested package source, installed toolchain, and functional result.",
+        "items": [
+          {"label": "Installation method", "value": "Red Hat RPM packages with DNF"},
+          {"label": "Package source", "value": "AAP 2.7 repository matching the RHEL 9 architecture"},
+          {"label": "ansible-dev-tools", "value": "[paste sudo rpm -q ansible-dev-tools output]"},
+          {"label": "Tool inventory", "value": "[save adt --version output]"},
+          {"label": "Container engine", "value": "[paste podman --version output]"},
+          {"label": "Functional validation", "value": "ansible-creator project generated · ansible-lint completed without findings"}
+        ]
+      },
+      "cleanup": {
+        "explanation": "Cleanup is optional on a disposable lab VM. Removing the packages does not remove every generated project file; review ~/ansible-projects separately. Disconnect only when the host should no longer consume subscribed content.",
+        "command": "sudo dnf remove ansible-dev-tools podman\n# Optional: disconnect this disposable lab VM\nsudo rhc disconnect"
+      }
+    }
+  ]
 }

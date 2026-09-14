@@ -2,7 +2,7 @@
 
 ## Readiness
 
-The theory and comparison page is ready for local review. Recorded demonstrations remain intentionally marked as in preparation.
+The theory, comparison, and first recorded demonstration are ready for local review. The demonstration installs the Red Hat ansible-dev-tools RPM on RHEL 9 and validates the resulting development workflow.
 
 ## Findings
 
@@ -23,7 +23,10 @@ The theory and comparison page is ready for local review. Recorded demonstration
 
 ## Learner experience
 
+- The prerequisites now describe the RHEL host, administrative access, Red Hat entitlements, network access, and clean package state required for the recorded RPM installation. Distribution-specific explanations remain in the comparison instead of being repeated as prerequisites.
 - Each tool receives a short role-based explanation rather than a marketing description.
 - The comparison is collapsed by default so the core concept remains readable before the learner opens the detailed table.
-- The page clearly states that demonstrations are being prepared and does not expose a nonfunctional Start Demo control.
-- A dedicated cover illustration and catalog card make HOD-002 distinct from HOD-001.
+- HOD-002-D01 uses eleven action-and-object steps, and every command includes a concise explanation, expected result, and focused troubleshooting guidance.
+- The replay records RHEL 9.8 on AArch64, Red Hat ansible-dev-tools 26.8.0, ansible-core 2.16.19, and Podman 5.8.2. These are observed results rather than permanent version promises.
+- Package queries verify the principal installed tools, while `adt --version`, project generation, and linting provide executable and functional evidence.
+- A dedicated HOD cover, demo cover, and social-sharing image distinguish the catalog page, HOD page, and individual demonstration.

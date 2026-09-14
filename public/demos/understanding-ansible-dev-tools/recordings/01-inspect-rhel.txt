@@ -1,0 +1,13 @@
+[rajat@demo ~]$ cat /etc/redhat-release
+Red Hat Enterprise Linux release 9.8 (Plow)
+
+[rajat@demo ~]$ uname -m
+aarch64
+
+[rajat@demo ~]$ hostnamectl --static
+demo.ansible.com
+
+[rajat@demo ~]$ rpm -q ansible-dev-tools
+package ansible-dev-tools is not installed
+
+[rajat@demo ~]$

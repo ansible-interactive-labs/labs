@@ -1,0 +1,23 @@
+[rajat@demo ~]$ sudo dnf info ansible-dev-tools
+Updating Subscription Management repositories.
+Last metadata expiration check: 0:01:20 ago on Mon 14 Sep 2026 09:54:53 AM.
+Available Packages
+Name         : ansible-dev-tools
+Version      : 26.8.0
+Release      : 1.el9ap
+Architecture : noarch
+Size         : 96 k
+Source       : ansible-dev-tools-26.8.0-1.el9ap.src.rpm
+Repository   : ansible-automation-platform-2.7-for-rhel-9-aarch64-rpms
+Summary      : Ansible Developtment Tools kit bundles all tools needed for content creation and testing
+URL          : https://github.com/ansible/ansible-dev-tools
+License      : GPL-3.0-only
+Description  : The ansible-dev-tools python package provides an easy way to install and
+             : discover the best tools available to create and test ansible content.
+             :
+             : The curated list of tools installed as part of the Ansible automation developer
+             : tools package includes: ansible-core, ansible-builder, ansible-creator,
+             : ansible-dev-environment, ansible-lint, ansible-navigator, ansible-sign, molecule,
+             : pytest-ansible and tox-ansible.
+
+[rajat@demo ~]$

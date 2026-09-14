@@ -1,0 +1,11 @@
+{"version":2,"width":120,"height":34,"idle_time_limit":1.25,"title":"inventory toolchain","env":{"SHELL":"/bin/bash","TERM":"xterm-256color"}}
+[0,"o","\r\n"]
+[0.000093,"o","\r\n[rajat@demo ~]$ "]
+[1.250093,"o","adt --version\r\n"]
+[1.31376,"o","ansible-builder                          3.1.1\r\nansible-core                             2.16.19\r\nansible-creator                          26.8.0\r\nansible-dev-environment                  26.8.0\r\nansible-dev-tools                        26.8.0\r\nansible-lint                             26.8.0\r\nansible-navigator                        26.8.0\r\nansible-sign                             0.1.6\r\nmolecule                                 26.8.0\r\npytest-ansible                           26.8.0\r\ntox-ansible                              26.8.0\r\n\r\n"]
+[1.321555,"o","[rajat@demo ~]$ "]
+[2.571555,"o","podman --version\r\n"]
+[2.598723,"o","podman version 5.8.2\r\n\r\n"]
+[2.599301,"o",""]
+[2.599403,"o","[rajat@demo ~]$ "]
+[3.849403,"o",""]

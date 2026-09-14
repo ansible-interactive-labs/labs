@@ -35,7 +35,7 @@ const rebasedEvents = trimmedEvents.map(([time, type, data]) => {
       previousOutputTrailingNewlines = 0;
       previousOutputEndsWithVenvPrefix = true;
     }
-    normalizedData = promptNormalizedData.replace(promptPattern, (prompt, offset) => {
+    normalizedData = promptNormalizedData.includes("Updating profile information") ? "" : promptNormalizedData.replace(promptPattern, (prompt, offset) => {
       const prefix = promptNormalizedData.slice(0, offset);
       const trailingNewlines = offset > 0
         ? (prefix.match(/(?:\r?\n)+$/)?.[0].match(/\n/g)?.length ?? 0)
@@ -96,6 +96,11 @@ replaceAcrossOutputEvents(
   /(?:\r?\n(?:\u001b\[[0-?]*[ -/]*[@-~])*){3,}(?=(?:\([^\r\n)]+\) )?\[(?:rajat|learner)@[^\]\r\n]+\][#$] )/g,
   "\r\n\r\n",
 );
+
+// Failed local sudo attempts and a final spinner redraw are not part of the
+// command result learners need to interpret. Remove them without changing the
+// successful registration or repository output that follows.
+replaceAcrossOutputEvents(/Sorry, try again\.\r?\n/g, "");
 
 // Freeze the published replay on the final returned prompt. Stopping a shell
 // can emit bracketed-paste resets, carriage returns, or newlines after that

@@ -1,0 +1,4 @@
+[rajat@demo ~]$ sudo subscription-manager repos --enable="ansible-automation-platform-2.7-for-rhel-9-aarch64-rpms"
+Repository 'ansible-automation-platform-2.7-for-rhel-9-aarch64-rpms' is enabled for this system.
+
+[rajat@demo ~]$

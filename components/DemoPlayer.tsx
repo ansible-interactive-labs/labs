@@ -281,7 +281,7 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
 
       <footer className={`player-footer${started ? "" : " ready-footer"}`}>
         {!started ? <><span>{completed ? "Verification complete. Run it again whenever you want." : `${brand.demoTagline} Every session begins fresh at step 1.`}</span><button className="player-next start-lab-button" type="button" onClick={startLab}>Start Demo</button></> : <>
-          <button className="player-back" type="button" onClick={() => setStepIndex((current) => Math.max(current - 1, 0))} disabled={stepIndex === 0}>← Back</button>
+          <button className="player-back" type="button" onClick={() => setStepIndex((current) => Math.max(current - 1, 0))} disabled={stepIndex === 0}>← Previous step</button>
           <span>Use ← → arrow keys to navigate</span>
           {stepIndex < demo.steps.length - 1 ? (
           <button className="player-next" type="button" onClick={() => setStepIndex((current) => Math.min(current + 1, demo.steps.length - 1))}>Next step →</button>

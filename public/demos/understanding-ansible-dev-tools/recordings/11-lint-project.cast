@@ -1,0 +1,9 @@
+{"version":2,"width":120,"height":34,"idle_time_limit":1.25,"title":"lint project","env":{"SHELL":"/bin/bash","TERM":"xterm-256color"}}
+[0,"o","\r\n"]
+[0.000117,"o","\r\n[rajat@demo ansible-projects]$ "]
+[1.250117,"o","cd adt-demo\r\n\r\n"]
+[1.250351,"o",""]
+[1.250431,"o","[rajat@demo adt-demo]$ "]
+[2.500431,"o","ansible-lint site.yml 2> /dev/null\r\n\r\n"]
+[3.611529,"o","[rajat@demo adt-demo]$ "]
+[4.861529,"o",""]

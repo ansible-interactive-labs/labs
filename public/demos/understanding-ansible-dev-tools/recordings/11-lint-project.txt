@@ -1,0 +1,5 @@
+[rajat@demo ansible-projects]$ cd adt-demo
+
+[rajat@demo adt-demo]$ ansible-lint site.yml 2> /dev/null
+
+[rajat@demo adt-demo]$

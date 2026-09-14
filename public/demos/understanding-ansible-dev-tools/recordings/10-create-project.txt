@@ -1,0 +1,8 @@
+[rajat@demo ~]$ mkdir -p ~/ansible-projects
+
+[rajat@demo ~]$ cd ~/ansible-projects
+
+[rajat@demo ansible-projects]$ ansible-creator init playbook rajat.demo adt-demo
+    Note: playbook project created at /home/rajat/ansible-projects/adt-demo
+
+[rajat@demo ansible-projects]$
