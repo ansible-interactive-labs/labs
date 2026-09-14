@@ -4,8 +4,8 @@
   "hodId": "HOD-002",
   "slug": "understanding-ansible-dev-tools",
   "title": "Understanding ansible-dev-tools",
-  "shortDescription": "Learn what ansible-dev-tools installs and how the upstream and Red Hat delivery paths differ.",
-  "description": "Map the tools used to create and test Ansible content, then compare the upstream Python distribution with Red Hat-supported packages and development environments.",
+  "shortDescription": "Learn why ansible-dev-tools assembles the Ansible content-development toolchain and how its upstream and Red Hat delivery paths differ.",
+  "description": "Understand how ansible-dev-tools reduces setup and compatibility work across separately released Ansible development utilities, then compare the upstream Python distribution with Red Hat-supported packages and development environments.",
   "coverImage": "/demos/understanding-ansible-dev-tools/cover.svg",
   "coverAlt": "Ansible development workflow showing connected create, lint, test, build, run, and sign stages",
   "duration": "8 min read",
@@ -26,11 +26,12 @@
   "outcomes": [
     "Explain the purpose of the ansible-dev-tools package",
     "Identify the role of each user-facing tool in the suite",
+    "Explain what the coordinated installation reduces and what it does not guarantee",
     "Choose between the upstream and Red Hat delivery paths"
   ],
   "overview": {
     "title": "What is ansible-dev-tools?",
-    "introduction": "ansible-dev-tools, commonly shortened to ADT, is a curated development toolkit for people who create and test Ansible content. It brings project scaffolding, linting, execution-environment builds, local execution, signing, and several test frameworks into one installable toolset. The package also provides the adt command, which can report the versions of the tools available in the current development environment.",
+    "introduction": "ansible-dev-tools, commonly shortened to ADT, is a curated development toolkit for people who create and test Ansible content. Its utilities remain separate projects with their own releases and dependencies, but ADT brings them into one installable dependency graph for project scaffolding, linting, execution-environment builds, local execution, signing, and testing. The adt command also reports the tool versions present in the current development environment.",
     "itemsLabel": "User-facing tools in the curated suite",
     "items": [
       {
@@ -114,6 +115,115 @@
     }
   ],
   "comparisons": [
+    {
+      "title": "Why install ansible-dev-tools instead of each tool separately?",
+      "introduction": "The development utilities are separate Python projects, and several depend on one another or share dependencies such as ansible-core and ansible-compat. Installing them one at a time leaves the developer to select versions, resolve conflicts, inventory the result, and retest the combined environment after every change. ansible-dev-tools makes that integration an explicit package boundary.",
+      "eyebrow": "Why install the suite",
+      "notesLabel": "What ansible-dev-tools changes",
+      "notes": [
+        {
+          "title": "One requested toolchain",
+          "detail": "A single ansible-dev-tools installation requests the maintained development utilities together. The Python or RPM package manager then resolves their declared requirements as one dependency graph instead of relying on a sequence of unrelated installation choices.",
+          "reference": {
+            "label": "Review the upstream package requirements",
+            "href": "https://github.com/ansible/ansible-dev-tools/blob/main/pyproject.toml"
+          }
+        },
+        {
+          "title": "Release order reflects shared dependencies",
+          "detail": "The upstream team releases lower-level projects before tools that depend on them, then releases ansible-dev-tools and validates the resulting Python package and container image. This coordination reduces the integration work that each developer would otherwise repeat.",
+          "reference": {
+            "label": "Review the upstream release process",
+            "href": "https://docs.ansible.com/projects/team-devtools/guides/releases/"
+          }
+        },
+        {
+          "title": "Coordinated does not mean permanently locked",
+          "detail": "The upstream package metadata mainly declares minimum versions, not an exact lock for every dependency. A fresh installation can therefore resolve newer compatible releases. Record the resolved versions, use an isolated environment, and retest the toolchain when its package set changes.",
+          "reference": {
+            "label": "Review the test-isolation guidance",
+            "href": "https://docs.ansible.com/projects/dev-tools/user-guide/test-isolation/"
+          }
+        }
+      ],
+      "summaryLabel": "Compare suite and individual installation",
+      "rowHeader": "Decision area",
+      "columns": [
+        "Install tools individually",
+        "Install ansible-dev-tools"
+      ],
+      "rows": [
+        {
+          "aspect": "Initial setup",
+          "values": [
+            "Select, install, and document every required utility separately. The list grows as a project adds scaffolding, linting, execution environments, signing, or test frameworks.",
+            "Request the curated toolchain through one package. The installation brings in the declared utilities and their supporting Python dependencies."
+          ]
+        },
+        {
+          "aspect": "Dependency resolution",
+          "values": [
+            "You own the combined version selection. Installing or upgrading one utility later can change shared dependencies or expose a requirement conflict with another tool.",
+            "The package manager evaluates the suite's declared requirements together and either finds a satisfiable set or reports the conflict. This reduces accidental combinations, but it cannot prove every project-specific workflow."
+          ]
+        },
+        {
+          "aspect": "Release coordination",
+          "values": [
+            "Track each project's releases and decide which combinations to test. Similar calendar-version numbers do not, by themselves, prove compatibility.",
+            "The upstream release process follows dependency order and validates the final ansible-dev-tools package and image. Red Hat separately selects and tests the package set delivered for an Ansible Automation Platform release."
+          ]
+        },
+        {
+          "aspect": "Version inventory",
+          "values": [
+            "Run each utility's version command and maintain your own inventory of the combined toolchain.",
+            "Use adt --version to see the versions of the content-development tools discovered in the current environment."
+          ]
+        },
+        {
+          "aspect": "Repeatability",
+          "values": [
+            "Exact pins, a constraints or lock file, and an isolated environment are your responsibility from the start.",
+            "ADT gives the environment a clear package boundary, but the upstream package is not a complete lock file. Capture exact resolved versions or use an image pinned by digest when identical rebuilds are required."
+          ]
+        },
+        {
+          "aspect": "Updates",
+          "values": [
+            "An individual tool can be upgraded independently, but every change must be checked against the rest of the shared environment.",
+            "Treat an ADT package or image update as one toolchain change. Review the resolved versions and run the project's lint, test, build, and execution checks before accepting it."
+          ]
+        },
+        {
+          "aspect": "Control and footprint",
+          "values": [
+            "Best when a workflow needs only one or two utilities, or when a team deliberately maintains a custom version matrix. It has a smaller footprint but transfers integration ownership to that team.",
+            "Best when authors use several stages of the Ansible content-development workflow and want a discoverable, coordinated starting point. It installs more software than a single-purpose environment."
+          ]
+        }
+      ],
+      "takeawayLabel": "Use the suite as a tested starting point",
+      "takeaway": "Install ansible-dev-tools when the work spans several development utilities and you want one maintained package boundary, one dependency-resolution transaction, and one version inventory. Install individual tools when the environment is intentionally narrow or governed by a custom compatibility matrix. In either case, isolate the environment, record exact resolved versions, and test the workflows your project actually uses.",
+      "sources": [
+        {
+          "label": "Upstream ansible-dev-tools project",
+          "href": "https://github.com/ansible/ansible-dev-tools"
+        },
+        {
+          "label": "Upstream ansible-dev-tools package metadata",
+          "href": "https://github.com/ansible/ansible-dev-tools/blob/main/pyproject.toml"
+        },
+        {
+          "label": "Ansible DevTools release process",
+          "href": "https://docs.ansible.com/projects/team-devtools/guides/releases/"
+        },
+        {
+          "label": "Ansible Development Tools test isolation",
+          "href": "https://docs.ansible.com/projects/dev-tools/user-guide/test-isolation/"
+        }
+      ]
+    },
     {
       "title": "Community ansible-dev-tools vs Red Hat Ansible development tools",
       "introduction": "Both paths use the Ansible development-tools ecosystem. The practical differences are how the software is delivered, which versions are selected and tested together, where it can run, and who supports the resulting installation.",

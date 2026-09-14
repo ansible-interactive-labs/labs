@@ -225,6 +225,8 @@ export type Lab = {
   coverImage: string;
   coverAlt: string;
   socialImage?: string;
+  socialImageWidth?: number;
+  socialImageHeight?: number;
   duration: string;
   durationMinutes: number;
   difficulty: "Beginner" | "Intermediate" | "Expert";

@@ -3,6 +3,7 @@ import 'asciinema-player/dist/bundle/asciinema-player.css';
 import './globals.css';
 import { brand } from '@/lib/brand';
 import MotionController from '@/components/MotionController';
+import { searchIndexingEnabled } from '@/lib/search-indexing';
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
@@ -29,6 +30,22 @@ export const metadata: Metadata = {
   publisher: brand.siteName,
   category: 'technology',
   keywords: ['Rajat Agrawal', 'technology portfolio', 'hands-on demos', 'automation', 'Ansible', 'infrastructure', 'cloud native', 'applied AI'],
+  robots: searchIndexingEnabled
+    ? { index: true, follow: true }
+    : {
+        index: false,
+        follow: false,
+        noarchive: true,
+        nosnippet: true,
+        noimageindex: true,
+        googleBot: {
+          index: false,
+          follow: false,
+          noarchive: true,
+          nosnippet: true,
+          noimageindex: true,
+        },
+      },
   icons: { icon: `${basePath}/favicon.svg` },
   openGraph: {
     title: brand.siteName,

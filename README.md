@@ -51,6 +51,8 @@ HOD pages emit a small, provider-neutral event set for page views, installation-
 
 Analytics is disabled unless `NEXT_PUBLIC_ANALYTICS_ENDPOINT` is configured. The endpoint must accept JSON `POST` requests. GitHub Pages builds read the optional `ANALYTICS_ENDPOINT` repository variable. When an existing analytics integration supplies `window.plausible`, the same anonymous events are also forwarded through that function. Provider-side IP handling, retention, consent, and regional requirements remain the site owner's responsibility.
 
+Search indexing is disabled by default while the platform is in testing. The static build emits site-wide `noindex` metadata, blocks crawlers in `robots.txt`, and leaves the sitemap empty. A future production launch must deliberately set `SITE_INDEXING_ENABLED=true` at build time and update the Pages workflow before search engines are invited to index the site.
+
 ## Publish with GitHub Pages
 
 1. Push this project to the `main` branch of a GitHub repository.

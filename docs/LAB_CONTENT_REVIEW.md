@@ -28,6 +28,9 @@ Before publishing, review how the HOD communicates its value as well as how it t
 - Expand Hands-On Demo on the first visible HOD reference for visitors who do not yet know the abbreviation.
 - Give the completed HOD one visually primary continuation action. Planned learning paths and reference material remain secondary.
 - Use a search-focused metadata title and description, canonical URL, meaningful social preview, and appropriate structured data without forcing the visible page title to carry every keyword.
+- For a page promoted on LinkedIn, declare the Open Graph site, article title, description, canonical URL, author, locale, image URL, alternative text, and actual image dimensions. Keep the important artwork and text away from the image edges, then refresh and inspect the published URL with LinkedIn Post Inspector before launching the campaign.
+- Identify the HOD as a free educational resource in structured data, connect the author to the internal profile and public professional profile, expose learning outcomes and ordered HowTo steps, and include breadcrumb data. Permit large image previews for search crawlers.
+- After publishing a new HOD, confirm its canonical URL in the generated sitemap, submit or refresh the sitemap in Google Search Console, inspect the page with URL Inspection, and check the same canonical URL in LinkedIn Post Inspector. These launch checks use the deployed page; they cannot be completed against localhost.
 - If aggregate measurement is enabled, collect only the events required to improve the learning journey, avoid learner or persistent session identifiers, honor browser privacy signals, and document the external provider's retention and consent responsibilities.
 
 ## Instructional audit

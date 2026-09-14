@@ -11,6 +11,7 @@
     "validate:browsers": "node scripts/check-browser-support.mjs",
     "validate:site": "pnpm validate:labs && pnpm validate:browsers",
     "build": "pnpm validate:site && next build",
+    "postbuild": "node scripts/validate-staging-indexing.mjs",
     "start": "next start",
     "lint": "eslint . --ignore-pattern out --ignore-pattern .next"
   },

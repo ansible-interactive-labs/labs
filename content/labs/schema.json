@@ -7,7 +7,14 @@
   "allOf": [
     {
       "if": { "properties": { "status": { "const": "Available" } }, "required": ["status"] },
-      "then": { "properties": { "demos": { "minItems": 1 } } }
+      "then": {
+        "required": ["seoTitle", "seoDescription", "socialImage", "socialImageWidth", "socialImageHeight"],
+        "properties": { "demos": { "minItems": 1 } }
+      }
+    },
+    {
+      "if": { "required": ["socialImage"] },
+      "then": { "required": ["socialImageWidth", "socialImageHeight"] }
     }
   ],
   "required": [
@@ -30,6 +37,8 @@
     "coverImage": { "type": "string", "pattern": "^/demos/.+\\.(png|jpg|jpeg|webp|svg)$" },
     "coverAlt": { "type": "string", "minLength": 10 },
     "socialImage": { "type": "string", "pattern": "^/demos/.+\\.(png|jpg|jpeg|webp)$" },
+    "socialImageWidth": { "type": "integer", "minimum": 600 },
+    "socialImageHeight": { "type": "integer", "minimum": 315 },
     "duration": { "type": "string", "minLength": 3 },
     "durationMinutes": { "type": "integer", "minimum": 1 },
     "difficulty": { "enum": ["Beginner", "Intermediate", "Expert"] },

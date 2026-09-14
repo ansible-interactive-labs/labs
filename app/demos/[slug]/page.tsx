@@ -9,6 +9,7 @@ import PrimaryNav from "@/components/PrimaryNav";
 import { getLab, getLabSlugs } from "@/content/labs/loader";
 import type { LabComparison, LabNextStep } from "@/content/labs/types";
 import { brand } from "@/lib/brand";
+import { searchIndexingEnabled } from "@/lib/search-indexing";
 
 /* Native images keep public asset paths compatible with static deployment paths. */
 /* eslint-disable @next/next/no-img-element */
@@ -30,16 +31,48 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const canonical = new URL(`demos/${lab.slug}/`, `${siteUrl.replace(/\/$/, "")}/`).toString();
   const title = lab.seoTitle ?? lab.title;
   const description = lab.seoDescription ?? lab.shortDescription;
+  const imageMetadata = lab.socialImage && lab.socialImageWidth && lab.socialImageHeight
+    ? { url: image, width: lab.socialImageWidth, height: lab.socialImageHeight, alt: lab.coverAlt, type: image.endsWith(".png") ? "image/png" : undefined }
+    : { url: image, alt: lab.coverAlt };
   return {
     title,
     description,
     alternates: { canonical },
+    robots: searchIndexingEnabled
+      ? {
+          index: true,
+          follow: true,
+          googleBot: {
+            index: true,
+            follow: true,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+            "max-video-preview": -1
+          }
+        }
+      : {
+          index: false,
+          follow: false,
+          noarchive: true,
+          nosnippet: true,
+          noimageindex: true,
+          googleBot: {
+            index: false,
+            follow: false,
+            noarchive: true,
+            nosnippet: true,
+            noimageindex: true
+          }
+        },
     openGraph: {
       title: `${lab.hodId} · ${title}`,
       description: `${description} Created by ${brand.creator}.`,
       url: canonical,
       type: "article",
-      images: [{ url: image, alt: lab.coverAlt }]
+      siteName: brand.siteName,
+      locale: "en_CA",
+      authors: [brand.linkedin],
+      images: [imageMetadata]
     },
     twitter: {
       card: "summary_large_image",
@@ -202,25 +235,61 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
   if (!lab) notFound();
 
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
-  const structuredData = {
-    "@context": "https://schema.org",
+  const canonical = new URL(`demos/${lab.slug}/`, `${siteUrl}/`).toString();
+  const demosUrl = new URL("demos/", `${siteUrl}/`).toString();
+  const authorUrl = new URL(brand.creatorPath.replace(/^\//, ""), `${siteUrl}/`).toString();
+  const imageUrl = new URL((lab.socialImage ?? lab.coverImage).replace(/^\//, ""), `${siteUrl}/`).toString();
+  const image = lab.socialImage && lab.socialImageWidth && lab.socialImageHeight ? {
+    "@type": "ImageObject",
+    url: imageUrl,
+    width: lab.socialImageWidth,
+    height: lab.socialImageHeight,
+    caption: lab.coverAlt
+  } : imageUrl;
+  const article = {
     "@type": "TechArticle",
+    "@id": `${canonical}#article`,
+    url: canonical,
     headline: lab.seoTitle ?? lab.title,
     description: lab.seoDescription ?? lab.shortDescription,
-    author: { "@type": "Person", name: brand.creator, url: brand.linkedin },
-    publisher: { "@type": "Organization", name: brand.siteName },
-    image: new URL((lab.socialImage ?? lab.coverImage).replace(/^\//, ""), `${siteUrl}/`).toString(),
-    mainEntityOfPage: new URL(`demos/${lab.slug}/`, `${siteUrl}/`).toString(),
-    about: [...new Set([lab.topic, lab.platform, ...lab.tags])],
+    inLanguage: "en",
+    isAccessibleForFree: true,
+    author: { "@type": "Person", name: brand.creator, url: authorUrl, sameAs: [brand.linkedin] },
+    publisher: { "@type": "Organization", name: brand.siteName, url: `${siteUrl}/` },
+    image,
+    primaryImageOfPage: image,
+    mainEntityOfPage: { "@type": "WebPage", "@id": canonical },
+    about: [...new Set([lab.title, lab.topic, lab.platform, ...lab.tags])],
+    keywords: [...new Set([lab.title, lab.topic, lab.platform, ...lab.tags])].join(", "),
     proficiencyLevel: lab.difficulty,
+    educationalLevel: lab.difficulty,
+    learningResourceType: "Hands-on demonstration",
+    teaches: lab.outcomes,
     timeRequired: `PT${lab.durationMinutes}M`,
-    hasPart: lab.demos.map((demo) => ({
+    hasPart: lab.demos.map((demo, demoIndex) => ({
       "@type": "HowTo",
+      "@id": `${canonical}#demo-${demo.id}`,
+      url: `${canonical}#demo-${demo.id}`,
+      position: demoIndex + 1,
       name: demo.title,
       description: demo.objective,
       totalTime: `PT${demo.durationMinutes}M`,
-      step: demo.steps.map((step) => ({ "@type": "HowToStep", name: step.title, text: step.explanation }))
+      step: demo.steps.map((step, stepIndex) => ({ "@type": "HowToStep", position: stepIndex + 1, name: step.title, text: step.explanation }))
     }))
+  };
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      article,
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: brand.siteName, item: `${siteUrl}/` },
+          { "@type": "ListItem", position: 2, name: "Hands-On Demos", item: demosUrl },
+          { "@type": "ListItem", position: 3, name: lab.title, item: canonical }
+        ]
+      }
+    ]
   };
 
   return (

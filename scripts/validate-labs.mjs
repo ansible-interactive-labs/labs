@@ -83,6 +83,14 @@ for (const directory of directories) {
   if (lab.socialImage !== undefined && !/^\/demos\/.+\.(png|jpe?g|webp)$/i.test(lab.socialImage)) {
     fail(directory, "socialImage must be a PNG, JPG, or WebP path under /demos");
   }
+  if (lab.socialImage !== undefined) {
+    if (!Number.isInteger(lab.socialImageWidth) || lab.socialImageWidth < 600) {
+      fail(directory, "socialImageWidth must record the social image width and be at least 600 pixels");
+    }
+    if (!Number.isInteger(lab.socialImageHeight) || lab.socialImageHeight < 315) {
+      fail(directory, "socialImageHeight must record the social image height and be at least 315 pixels");
+    }
+  }
   if (titles.has(lab.title)) fail(directory, `duplicate title ${lab.title}`);
   titles.add(lab.title);
 
@@ -105,7 +113,14 @@ for (const directory of directories) {
     if (!Array.isArray(lab[key]) || lab[key].length === 0) fail(directory, `${key} must contain at least one item`);
   });
   if (!Array.isArray(lab.demos)) fail(directory, "demos must be an array");
-  if (lab.status === "Available" && lab.demos?.length === 0) fail(directory, "an available HOD must contain at least one demo");
+  if (lab.status === "Available") {
+    if (lab.demos?.length === 0) fail(directory, "an available HOD must contain at least one demo");
+    ["seoTitle", "seoDescription", "socialImage", "socialImageWidth", "socialImageHeight"].forEach((key) => {
+      if (lab[key] === undefined || lab[key] === "") fail(directory, `${key} is required for an available HOD`);
+    });
+    if ((lab.seoTitle ?? "").length > 70) warn(directory, "seoTitle may be truncated because it exceeds 70 characters");
+    if ((lab.seoDescription ?? "").length > 170) warn(directory, "seoDescription may be truncated because it exceeds 170 characters");
+  }
   ["tags", "outcomes"].forEach((key) => {
     (lab[key] ?? []).forEach((item, index) => {
       if (!nonEmptyString(item)) fail(directory, `${key}[${index}] must be a non-empty string`);

@@ -1,11 +1,14 @@
 import type { MetadataRoute } from "next";
 import { getLabSummaries } from "@/content/labs/loader";
+import { searchIndexingEnabled } from "@/lib/search-indexing";
 import { primaryNavigation } from "@/lib/site-structure";
 
 export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+
+  if (!searchIndexingEnabled) return [];
 
   return [
     {
