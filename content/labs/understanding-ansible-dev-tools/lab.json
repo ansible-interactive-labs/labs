@@ -3,9 +3,9 @@
   "schemaVersion": 2,
   "hodId": "HOD-002",
   "slug": "understanding-ansible-dev-tools",
-  "title": "Understanding ansible-dev-tools",
-  "shortDescription": "Learn why ansible-dev-tools assembles the Ansible content-development toolchain and how its upstream and Red Hat delivery paths differ.",
-  "description": "Understand how ansible-dev-tools reduces setup and compatibility work across separately released Ansible development utilities, then compare the upstream Python distribution with Red Hat-supported packages and development environments.",
+  "title": "Getting started with ansible-dev-tools",
+  "shortDescription": "Understand the ansible-dev-tools toolchain, compare its upstream and Red Hat delivery paths, and install the Red Hat-provided package on RHEL 9.",
+  "description": "Learn how ansible-dev-tools assembles a coordinated Ansible content-development toolchain, how upstream and Red Hat delivery paths differ, and how to install and validate the Red Hat-provided package on RHEL 9.",
   "coverImage": "/demos/understanding-ansible-dev-tools/cover.svg",
   "coverAlt": "Ansible development workflow showing connected create, lint, test, build, run, and sign stages",
   "duration": "26 min",
@@ -32,11 +32,12 @@
     "Explain the purpose of the ansible-dev-tools package",
     "Identify the role of each user-facing tool in the suite",
     "Explain what the coordinated installation reduces and what it does not guarantee",
-    "Choose between the upstream and Red Hat delivery paths"
+    "Choose between the upstream and Red Hat delivery paths",
+    "Install and functionally validate the Red Hat-provided toolchain on RHEL 9"
   ],
   "overview": {
     "title": "What is ansible-dev-tools?",
-    "introduction": "ansible-dev-tools, commonly shortened to ADT, is a curated development toolkit for people who create and test Ansible content. Its utilities remain separate projects with their own releases and dependencies, but ADT brings them into one installable dependency graph for project scaffolding, linting, execution-environment builds, local execution, signing, and testing. The adt command also reports the tool versions present in the current development environment.",
+    "introduction": "ansible-dev-tools, commonly shortened to ADT, is a curated toolkit for developers who create and test Ansible content. It brings together independently released tools for scaffolding projects, linting and testing content, building and running execution environments, and signing automation. The tools remain separate projects, while ADT provides a coordinated way to install them and inspect the versions available in a development environment.",
     "itemsLabel": "User-facing tools in the curated suite",
     "items": [
       {
