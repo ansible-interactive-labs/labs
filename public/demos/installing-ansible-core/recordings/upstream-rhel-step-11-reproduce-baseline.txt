@@ -1,0 +1,80 @@
+[rajat@demo ~]$ BASELINE="$HOME/ansible-core-2.21-requirements.txt"
+
+[rajat@demo ~]$ python3.12 -m venv --prompt ansible-core-2.21-rebuild "$HOME/.venvs/ansible-core-2.21-rebuild"
+
+[rajat@demo ~]$ source "$HOME/.venvs/ansible-core-2.21-rebuild/bin/activate"
+
+(ansible-core-2.21-rebuild) [rajat@demo ~]$ python -m pip install -r "$BASELINE"
+Collecting ansible-core==2.21.4 (from -r /home/rajat/ansible-core-2.21-requirements.txt (line 1))
+  Obtaining dependency information for ansible-core==2.21.4 from https://files.pythonhosted.org/packages/a1/05/d4e28474dd027db4d60fef2422cf6bc80df100ab32e5fa5e7aad898ffd55/ansible_core-2.21.4-py3-none-any.whl.metadata
+  Using cached ansible_core-2.21.4-py3-none-any.whl.metadata (7.8 kB)
+Collecting cffi==2.1.1 (from -r /home/rajat/ansible-core-2.21-requirements.txt (line 2))
+  Obtaining dependency information for cffi==2.1.1 from https://files.pythonhosted.org/packages/44/de/f98430906df1545ffde0d543dd124a7a439bc2cd32b36b9c53f805df7333/cffi-2.1.1-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.whl.metadata
+  Using cached cffi-2.1.1-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.whl.metadata (2.5 kB)
+Collecting cryptography==50.0.1 (from -r /home/rajat/ansible-core-2.21-requirements.txt (line 3))
+  Obtaining dependency information for cryptography==50.0.1 from https://files.pythonhosted.org/packages/39/3b/e96c1ef71edef71057c7e3c3d982ce8fda554e0c52d0cc19c18845cde3eb/cryptography-50.0.1-cp311-abi3-manylinux_2_34_aarch64.whl.metadata
+  Using cached cryptography-50.0.1-cp311-abi3-manylinux_2_34_aarch64.whl.metadata (4.3 kB)
+Collecting Jinja2==3.1.6 (from -r /home/rajat/ansible-core-2.21-requirements.txt (line 4))
+  Obtaining dependency information for Jinja2==3.1.6 from https://files.pythonhosted.org/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl.metadata
+  Using cached jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting MarkupSafe==3.0.3 (from -r /home/rajat/ansible-core-2.21-requirements.txt (line 5))
+  Obtaining dependency information for MarkupSafe==3.0.3 from https://files.pythonhosted.org/packages/1e/2c/799f4742efc39633a1b54a92eec4082e4f815314869865d876824c257c1e/markupsafe-3.0.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata
+  Using cached markupsafe-3.0.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (2.7 kB)
+Collecting packaging==26.3 (from -r /home/rajat/ansible-core-2.21-requirements.txt (line 6))
+  Obtaining dependency information for packaging==26.3 from https://files.pythonhosted.org/packages/63/34/ba1c580383c9eada3711951fef0795c80b829a078d72188184bcab9dd527/packaging-26.3-py3-none-any.whl.metadata
+  Using cached packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+Collecting pip==26.2.1 (from -r /home/rajat/ansible-core-2.21-requirements.txt (line 7))
+  Obtaining dependency information for pip==26.2.1 from https://files.pythonhosted.org/packages/f3/6e/1736e5b4ae2b778ef2f81c47d797de9f891d4d8acb047a24ca37a60294dd/pip-26.2.1-py3-none-any.whl.metadata
+  Using cached pip-26.2.1-py3-none-any.whl.metadata (4.6 kB)
+Collecting pycparser==3.0 (from -r /home/rajat/ansible-core-2.21-requirements.txt (line 8))
+  Obtaining dependency information for pycparser==3.0 from https://files.pythonhosted.org/packages/0c/c3/44f3fbbfa403ea2a7c779186dc20772604442dde72947e7d01069cbe98e3/pycparser-3.0-py3-none-any.whl.metadata
+  Using cached pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
+Collecting PyYAML==6.0.3 (from -r /home/rajat/ansible-core-2.21-requirements.txt (line 9))
+  Obtaining dependency information for PyYAML==6.0.3 from https://files.pythonhosted.org/packages/ed/23/7a778b6bd0b9a8039df8b1b1d80e2e2ad78aa04171592c8a5c43a56a6af4/pyyaml-6.0.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata
+  Using cached pyyaml-6.0.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (2.4 kB)
+Collecting resolvelib==1.2.1 (from -r /home/rajat/ansible-core-2.21-requirements.txt (line 10))
+  Obtaining dependency information for resolvelib==1.2.1 from https://files.pythonhosted.org/packages/e2/23/c941a0d0353681ca138489983c4309e0f5095dfd902e1357004f2357ddf2/resolvelib-1.2.1-py3-none-any.whl.metadata
+  Using cached resolvelib-1.2.1-py3-none-any.whl.metadata (3.7 kB)
+Using cached ansible_core-2.21.4-py3-none-any.whl (2.5 MB)
+Using cached cffi-2.1.1-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.whl (222 kB)
+Using cached cryptography-50.0.1-cp311-abi3-manylinux_2_34_aarch64.whl (4.7 MB)
+Using cached jinja2-3.1.6-py3-none-any.whl (134 kB)
+Using cached markupsafe-3.0.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (24 kB)
+Using cached packaging-26.3-py3-none-any.whl (129 kB)
+Using cached pip-26.2.1-py3-none-any.whl (1.8 MB)
+Using cached pycparser-3.0-py3-none-any.whl (48 kB)
+Using cached pyyaml-6.0.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (775 kB)
+Using cached resolvelib-1.2.1-py3-none-any.whl (18 kB)
+Installing collected packages: resolvelib, PyYAML, pycparser, pip, packaging, MarkupSafe, Jinja2, cffi, cryptography, ansible-core
+  Attempting uninstall: pip
+    Found existing installation: pip 23.2.1
+    Uninstalling pip-23.2.1:
+      Successfully uninstalled pip-23.2.1
+Successfully installed Jinja2-3.1.6 MarkupSafe-3.0.3 PyYAML-6.0.3 ansible-core-2.21.4 cffi-2.1.1 cryptography-50.0.1 packaging-26.3 pip-26.2.1 pycparser-3.0 resolvelib-1.2.1
+
+(ansible-core-2.21-rebuild) [rajat@demo ~]$ REBUILD="$HOME/ansible-core-2.21-rebuild.txt"
+
+(ansible-core-2.21-rebuild) [rajat@demo ~]$ python -m pip freeze --all > "$REBUILD"
+
+(ansible-core-2.21-rebuild) [rajat@demo ~]$ cmp "$REBUILD" "$BASELINE" && echo "Verified: baseline matches"
+Verified: baseline matches
+
+(ansible-core-2.21-rebuild) [rajat@demo ~]$ ansible --version
+ansible [core 2.21.4]
+  config file = None
+  configured module search path = ['/home/rajat/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /home/rajat/.venvs/ansible-core-2.21-rebuild/lib64/python3.12/site-packages/ansible
+  ansible collection location = /home/rajat/.ansible/collections:/usr/share/ansible/collections
+  executable location = /home/rajat/.venvs/ansible-core-2.21-rebuild/bin/ansible
+  python version = 3.12.14 (main, Aug 13 2026, 00:00:00) [GCC 11.5.0 20240719 (Red Hat 11.5.0-14)] (/home/rajat/.venvs/ansible-core-2.21-rebuild/bin/python)
+  jinja version = 3.1.6
+  pyyaml version = 6.0.3 (with libyaml v0.2.5)
+
+(ansible-core-2.21-rebuild) [rajat@demo ~]$ deactivate
+
+[rajat@demo ~]$ source "$HOME/.venvs/ansible-core-2.21/bin/activate"
+
+(ansible-core-2.21) [rajat@demo ~]$ command -v ansible
+/home/rajat/.venvs/ansible-core-2.21/bin/ansible
+
+(ansible-core-2.21) [rajat@demo ~]$

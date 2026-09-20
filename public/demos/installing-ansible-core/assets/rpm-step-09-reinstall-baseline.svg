@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Reinstall the recorded RPM baseline</title>
+  <desc id="desc">Static fallback generated from rpm-step-09-reinstall-baseline.txt</desc>
+  <defs>
+    <linearGradient id="terminal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#17151a"/>
+      <stop offset="1" stop-color="#252129"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="#0d0c10"/>
+  <rect x="24" y="24" width="1552" height="852" rx="22" fill="url(#terminal)" stroke="#49434c" stroke-width="2"/>
+  <circle cx="66" cy="66" r="9" fill="#ff5f57"/>
+  <circle cx="96" cy="66" r="9" fill="#febc2e"/>
+  <circle cx="126" cy="66" r="9" fill="#28c840"/>
+  <text x="800" y="72" fill="#bdb6c0" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22">Reinstall the recorded RPM baseline</text>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">
+    <text x="68" y="134" fill="#ff8d80">[rajat@demo ~]$ RPM_NEVRA=$(head -n 1 &quot;$HOME/ansible-core-rpm-baseline.txt&quot;)</text>
+    <text x="68" y="161" fill="#e8e4ea">…</text>
+    <text x="68" y="188" fill="#e8e4ea">ansible-core-2.14.18-3.el9_8.1.aarch64.rpm                                              2.2 MB/s | 2.6 MB    …</text>
+    <text x="68" y="215" fill="#e8e4ea">-------------------------------------------------------------------------------------------------------------…</text>
+    <text x="68" y="242" fill="#e8e4ea">Total                                                                                   2.2 MB/s | 2.6 MB    …</text>
+    <text x="68" y="269" fill="#e8e4ea">Running transaction check</text>
+    <text x="68" y="296" fill="#e8e4ea">Transaction check succeeded.</text>
+    <text x="68" y="323" fill="#e8e4ea">Running transaction test</text>
+    <text x="68" y="350" fill="#e8e4ea">Transaction test succeeded.</text>
+    <text x="68" y="377" fill="#e8e4ea">Running transaction</text>
+    <text x="68" y="404" fill="#e8e4ea">  Preparing        :                                                                                         …</text>
+    <text x="68" y="431" fill="#e8e4ea">  Reinstalling     : ansible-core-1:2.14.18-3.el9_8.1.aarch64                                                …</text>
+    <text x="68" y="458" fill="#e8e4ea">  Cleanup          : ansible-core-1:2.14.18-3.el9_8.1.aarch64                                                …</text>
+    <text x="68" y="485" fill="#e8e4ea">  Running scriptlet: ansible-core-1:2.14.18-3.el9_8.1.aarch64                                                …</text>
+    <text x="68" y="512" fill="#e8e4ea">  Verifying        : ansible-core-1:2.14.18-3.el9_8.1.aarch64                                                …</text>
+    <text x="68" y="539" fill="#e8e4ea">  Verifying        : ansible-core-1:2.14.18-3.el9_8.1.aarch64                                                …</text>
+    <text x="68" y="566" fill="#e8e4ea">Installed products updated.</text>
+    <text x="68" y="593" fill="#e8e4ea"> </text>
+    <text x="68" y="620" fill="#e8e4ea">Reinstalled:</text>
+    <text x="68" y="647" fill="#e8e4ea">  ansible-core-1:2.14.18-3.el9_8.1.aarch64</text>
+    <text x="68" y="674" fill="#e8e4ea"> </text>
+    <text x="68" y="701" fill="#e8e4ea">Complete!</text>
+    <text x="68" y="728" fill="#e8e4ea"> </text>
+    <text x="68" y="755" fill="#ff8d80">[rajat@demo ~]$ test &quot;$(rpm -q ansible-core)&quot; = &quot;$RPM_NEVRA&quot; &amp;&amp; printf 'Verified: %s\n' &quot;$RPM_NEVRA&quot;</text>
+    <text x="68" y="782" fill="#e8e4ea">Verified: ansible-core-2.14.18-3.el9_8.1.aarch64</text>
+    <text x="68" y="809" fill="#e8e4ea"> </text>
+    <text x="68" y="836" fill="#ff8d80">[rajat@demo ~]$</text>
+  </g>
+</svg>

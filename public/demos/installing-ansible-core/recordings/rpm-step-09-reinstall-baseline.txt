@@ -1,0 +1,44 @@
+[rajat@demo ~]$ RPM_NEVRA=$(head -n 1 "$HOME/ansible-core-rpm-baseline.txt")
+
+[rajat@demo ~]$ sudo dnf reinstall "$RPM_NEVRA"
+Updating Subscription Management repositories.
+Last metadata expiration check: 0:03:25 ago on Sat 19 Sep 2026 06:27:49 PM.
+Dependencies resolved.
+========================================================================================================================
+ Package               Architecture     Version                        Repository                                  Size
+========================================================================================================================
+Reinstalling:
+ ansible-core          aarch64          1:2.14.18-3.el9_8.1            rhel-9-for-aarch64-appstream-rpms          2.6 M
+
+Transaction Summary
+========================================================================================================================
+
+Total download size: 2.6 M
+Installed size: 10 M
+Is this ok [y/N]: y
+Downloading Packages:
+ansible-core-2.14.18-3.el9_8.1.aarch64.rpm                                              2.2 MB/s | 2.6 MB     00:01
+------------------------------------------------------------------------------------------------------------------------
+Total                                                                                   2.2 MB/s | 2.6 MB     00:01
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                                                                1/1
+  Reinstalling     : ansible-core-1:2.14.18-3.el9_8.1.aarch64                                                       1/2
+  Cleanup          : ansible-core-1:2.14.18-3.el9_8.1.aarch64                                                       2/2
+  Running scriptlet: ansible-core-1:2.14.18-3.el9_8.1.aarch64                                                       2/2
+  Verifying        : ansible-core-1:2.14.18-3.el9_8.1.aarch64                                                       1/2
+  Verifying        : ansible-core-1:2.14.18-3.el9_8.1.aarch64                                                       2/2
+Installed products updated.
+
+Reinstalled:
+  ansible-core-1:2.14.18-3.el9_8.1.aarch64
+
+Complete!
+
+[rajat@demo ~]$ test "$(rpm -q ansible-core)" = "$RPM_NEVRA" && printf 'Verified: %s\n' "$RPM_NEVRA"
+Verified: ansible-core-2.14.18-3.el9_8.1.aarch64
+
+[rajat@demo ~]$

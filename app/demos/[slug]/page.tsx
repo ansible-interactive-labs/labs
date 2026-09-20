@@ -419,6 +419,12 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
               </header>
               <div className="player-shell" aria-label={`${demo.title} player`}>
                 <DemoPlayer lab={lab} demo={demo} />
+                {demo.relatedHod ? (
+                  <aside className="demo-related-hod">
+                    <div><strong>{demo.relatedHod.title}</strong><p>{demo.relatedHod.detail}</p></div>
+                    <Link href={demo.relatedHod.href}>{demo.relatedHod.linkLabel} →</Link>
+                  </aside>
+                ) : null}
               </div>
             </article>
             {lab.comparisons?.map((comparison, comparisonIndex) => (
@@ -509,6 +515,33 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
               </div>
             </article>
           ))}
+        </section>
+      ) : null}
+
+      {lab.recap ? (
+        <section className="lab-recap" aria-labelledby={`recap-${lab.slug}`}>
+          <div className="lab-recap-heading">
+            <p className="eyebrow"><span /> Preview. Practice. Prove.</p>
+            <h2 id={`recap-${lab.slug}`}>{lab.recap.title}</h2>
+            <p>{lab.recap.introduction}</p>
+          </div>
+          <div className="lab-recap-grid">
+            {lab.recap.items.map((item, index) => (
+              <article key={item.title}><span>{String(index + 1).padStart(2, "0")}</span><strong>{item.title}</strong><p>{item.detail}</p></article>
+            ))}
+          </div>
+          {lab.recap.selfCheck ? (
+            <div className="lab-recap-self-check">
+              <div>
+                <span>Self-check</span>
+                <h3>{lab.recap.selfCheck.title}</h3>
+                <p>{lab.recap.selfCheck.introduction}</p>
+              </div>
+              <ol>
+                {lab.recap.selfCheck.questions.map((question) => <li key={question}>{question}</li>)}
+              </ol>
+            </div>
+          ) : null}
         </section>
       ) : null}
 

@@ -1,0 +1,101 @@
+[rajat@demo ~]$ BASELINE="$HOME/ansible-core-pipx-requirements.txt"
+
+[rajat@demo ~]$ REBUILD="$HOME/ansible-core-pipx-rebuild.txt"
+
+[rajat@demo ~]$ ANSIBLE_CORE_SPEC=$(grep '^ansible-core==' "$BASELINE")
+
+[rajat@demo ~]$ pipx unpin ansible-core
+pipx unpinned 1 package in venv ansible-core
+  - ansible-core
+
+[rajat@demo ~]$ pipx uninstall ansible-core
+uninstalled ansible-core! ✨ 🌟 ✨
+
+[rajat@demo ~]$ pipx install --python python3.12 --pip-args="-r $BASELINE" "$ANSIBLE_CORE_SPEC"
+installing ansible-core from spec 'ansible-core==2.21.4'...
+Collecting ansible-core==2.21.4
+  Using cached ansible_core-2.21.4-py3-none-any.whl.metadata (7.8 kB)
+Collecting cffi==2.1.1 (from -r /home/rajat/ansible-core-pipx-requirements.txt (line 2))
+  Using cached cffi-2.1.1-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.whl.metadata (2.5 kB)
+Collecting cryptography==50.0.1 (from -r /home/rajat/ansible-core-pipx-requirements.txt (line 3))
+  Using cached cryptography-50.0.1-cp311-abi3-manylinux_2_34_aarch64.whl.metadata (4.3 kB)
+Collecting Jinja2==3.1.6 (from -r /home/rajat/ansible-core-pipx-requirements.txt (line 4))
+  Using cached jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting MarkupSafe==3.0.3 (from -r /home/rajat/ansible-core-pipx-requirements.txt (line 5))
+  Using cached markupsafe-3.0.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (2.7 kB)
+Collecting packaging==26.3 (from -r /home/rajat/ansible-core-pipx-requirements.txt (line 6))
+  Using cached packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+Requirement already satisfied: pip==26.2.1 in /home/rajat/.local/share/pipx/shared/lib/python3.12/site-packages (from -r /home/rajat/ansible-core-pipx-requirements.txt (line 7)) (26.2.1)
+Collecting pycparser==3.0 (from -r /home/rajat/ansible-core-pipx-requirements.txt (line 8))
+  Using cached pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
+Collecting PyYAML==6.0.3 (from -r /home/rajat/ansible-core-pipx-requirements.txt (line 9))
+  Using cached pyyaml-6.0.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (2.4 kB)
+Collecting resolvelib==1.2.1 (from -r /home/rajat/ansible-core-pipx-requirements.txt (line 10))
+  Using cached resolvelib-1.2.1-py3-none-any.whl.metadata (3.7 kB)
+Using cached ansible_core-2.21.4-py3-none-any.whl (2.5 MB)
+Using cached resolvelib-1.2.1-py3-none-any.whl (18 kB)
+Using cached cffi-2.1.1-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.whl (222 kB)
+Using cached cryptography-50.0.1-cp311-abi3-manylinux_2_34_aarch64.whl (4.7 MB)
+Using cached jinja2-3.1.6-py3-none-any.whl (134 kB)
+Using cached markupsafe-3.0.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (24 kB)
+Using cached packaging-26.3-py3-none-any.whl (129 kB)
+Using cached pycparser-3.0-py3-none-any.whl (48 kB)
+Using cached pyyaml-6.0.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (775 kB)
+Installing collected packages: resolvelib, PyYAML, pycparser, packaging, MarkupSafe, Jinja2, cffi, cryptography, ansible-core
+
+Successfully installed Jinja2-3.1.6 MarkupSafe-3.0.3 PyYAML-6.0.3 ansible-core-2.21.4 cffi-2.1.1 cryptography-50.0.1 packaging-26.3 pycparser-3.0 resolvelib-1.2.1
+  installed package ansible-core 2.21.4, installed using Python 3.12.14
+  These apps are now available
+    - ansible
+    - ansible-config
+    - ansible-console
+    - ansible-doc
+    - ansible-galaxy
+    - ansible-inventory
+    - ansible-playbook
+    - ansible-pull
+    - ansible-test
+    - ansible-vault
+done! ✨ 🌟 ✨
+
+[rajat@demo ~]$ pipx runpip ansible-core freeze --all > "$REBUILD"
+
+[rajat@demo ~]$ cmp "$REBUILD" "$BASELINE" && echo "Verified: baseline matches"
+Verified: baseline matches
+
+[rajat@demo ~]$ pipx pin ansible-core --output json
+{
+  "command": [
+    "pin"
+  ],
+  "data": {
+    "packages": [
+      {
+        "environment": "ansible-core",
+        "injected": false,
+        "location": "/home/rajat/.local/share/pipx/venvs/ansible-core",
+        "package": "ansible-core",
+        "status": "pinned",
+        "version": "2.21.4"
+      }
+    ],
+    "skipped": []
+  },
+  "errors": [],
+  "exit_code": 0,
+  "pipx_result_version": "1",
+  "status": "success"
+}
+
+[rajat@demo ~]$ ansible --version
+ansible [core 2.21.4]
+  config file = None
+  configured module search path = ['/home/rajat/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /home/rajat/.local/share/pipx/venvs/ansible-core/lib64/python3.12/site-packages/ansible
+  ansible collection location = /home/rajat/.ansible/collections:/usr/share/ansible/collections
+  executable location = /home/rajat/.local/bin/ansible
+  python version = 3.12.14 (main, Aug 13 2026, 00:00:00) [GCC 11.5.0 20240719 (Red Hat 11.5.0-14)] (/home/rajat/.local/share/pipx/venvs/ansible-core/bin/python)
+  jinja version = 3.1.6
+  pyyaml version = 6.0.3 (with libyaml v0.2.5)
+
+[rajat@demo ~]$

@@ -1,4 +1,7 @@
-[rajat@demo ~]$ pipx list --include-injected | tee ~/ansible-core-pipx-baseline.txt
+[rajat@demo ~]$ pipx --version | tee "$HOME/ansible-core-pipx-baseline.txt"
+1.17.2
+
+[rajat@demo ~]$ pipx list --include-injected | tee -a "$HOME/ansible-core-pipx-baseline.txt"
 venvs are in /home/rajat/.local/share/pipx/venvs
 apps are exposed on your $PATH at /home/rajat/.local/bin
 manual pages are exposed at /home/rajat/.local/share/man
@@ -15,7 +18,7 @@ shell completions are exposed at /home/rajat/.local/share
     - ansible-test
     - ansible-vault
 
-[rajat@demo ~]$ pipx runpip ansible-core freeze --all | tee -a ~/ansible-core-pipx-baseline.txt
+[rajat@demo ~]$ pipx runpip ansible-core freeze --all | tee "$HOME/ansible-core-pipx-requirements.txt"
 ansible-core==2.21.4
 cffi==2.1.1
 cryptography==50.0.1
@@ -27,7 +30,7 @@ pycparser==3.0
 PyYAML==6.0.3
 resolvelib==1.2.1
 
-[rajat@demo ~]$ pipx pin ansible-core --output json | tee -a ~/ansible-core-pipx-baseline.txt
+[rajat@demo ~]$ pipx pin ansible-core --output json | tee -a "$HOME/ansible-core-pipx-baseline.txt"
 {
   "command": [
     "pin"

@@ -60,10 +60,10 @@ Implemented in this review:
 - Added a reusable top-of-page “What is ansible-core?” overview covering its CLI tools, automation language, execution runtime, built-in content, and collection extensibility.
 - Reframed the overview around the developer and automation-content-author workflow: build, test, troubleshoot, and validate content locally with `ansible-core`, then run approved team production automation through a controller rather than treating a developer workstation as the production control plane.
 - Removed the repeated capability list from the introductory paragraph and added a dedicated “What ansible-core provides” label above the numbered capability cards, keeping definition, capabilities, operating guidance, and related tooling visually distinct.
-- Renamed the first capability card to “Built-in command-line tools” and made it explicit that installing `ansible-core` provides native execution, inspection, configuration, content-management, security, and developer-testing commands, including `ansible-test`.
+- Renamed the first capability card to “Built-in command-line tools” and identified the execution, inspection, configuration, content-management, and security commands common to both distributions. The card now distinguishes the upstream PyPI distribution’s `ansible-test` entry point from the RHEL 9 AppStream RPM, which does not install that command.
 - Replaced the product-heavy “Keep in mind” paragraph with a concise operating principle, then added a reusable orchestration-options comparison for Automation Controller, AWX, Semaphore UI, and Rundeck.
 - Distinguished Ansible-native controllers from Semaphore UI's multi-tool self-hosted control plane and Rundeck's broader runbook-automation integration. Added evaluation criteria covering isolation, secrets, RBAC, approvals, auditing, availability, scaling, lifecycle, integrations, and support.
-- Renamed the first capability to “Built-in command-line tools” and explicitly identified representative executables installed with `ansible-core`, including the content-development and validation command `ansible-test`. This distinguishes native executables from embedded `ansible.builtin` content, separately installed collections, and related applications such as `ansible-navigator`.
+- Renamed the first capability to “Built-in command-line tools” and explicitly identified representative executables while preserving the packaging distinction for `ansible-test`. This separates native executables from embedded `ansible.builtin` content, separately installed collections, and related applications such as `ansible-navigator`.
 - Distinguished the self-supported upstream AWX project from Red Hat-supported Automation Controller, advised learners to evaluate AWX's current release and maintenance status before production adoption, and clarified that both orchestrate automation through `ansible-core`; they do not replace its execution engine.
 - Added a reusable related-tool callout for `ansible-dev-tools`. It explains that the toolkit is installed separately from `ansible-core`, identifies its development workflow, and links directly to HOD 002.
 - Positioned HOD 002 as the next learning path for understanding the tools included with `ansible-dev-tools`, including `ansible-navigator`, and the upstream and Red Hat delivery paths.
@@ -175,3 +175,53 @@ Official sources reviewed:
 - Expanded Demo 01 with a recorded RPM-baseline step after package and runtime verification. It saves the installed package identity and DNF metadata, explains `@System` versus `From repo`, and links the practical workflow to the lifecycle and repeatability guidance without freezing maintenance updates.
 - Expanded Demo 02 with a recorded resolved-package baseline after provenance verification. The step saves `pip freeze --all` output from the active virtual environment and explains the boundary between a Python package snapshot and a portable, fully governed runtime.
 - Expanded Demo 03 with a recorded pipx application baseline after isolation and provenance verification. The step inventories the managed application and injected packages, captures exact resolved Python packages, pins the accepted application against routine pipx upgrades, and explains what the pin does not govern.
+- Applied the enforced Preview → Practice → Prove structure. Each Start Demo screen previews success evidence; each completion identifies the local validation boundary, maintenance path, and next actions; and the HOD closes with a concise ownership and evidence recap.
+- Replaced learner-facing `/home/rajat` paths and user labels with portable home-directory notation while preserving the `rajat` identity inside the recorded terminal evidence.
+- Resolved the clean-environment contradiction in all three starting-state steps. A detected ansible-core installation now tells the learner to stop and reset or use a separate clean RHEL 9 environment rather than continuing into ambiguous package ownership or PATH results.
+- Clarified the cleanup boundary for every installation path. Runtime removal intentionally preserves baseline evidence, and the pip and pipx paths identify the shared Python, pipx, PATH, and collection-directory state that remains afterward.
+- Added governed shared execution as the first branch in the installation decision. Learners who need shared credentials, approvals, scheduling, controlled access, or audit history are directed to treat this HOD as the runtime decision and evaluate an execution environment and controller separately.
+- Added a four-question closing self-check covering package ownership, maintenance and removal, the localhost validation boundary, and the learner's reason for selecting an installation model.
+- Audited every primary, recovery, diagnostic, and cleanup command against the portable-user rule. HOD 001 uses `$HOME`, `~`, shell discovery, or system paths throughout; absolute `/home/rajat` values remain only in authentic replay and transcript output.
+- Expanded Demo 01 with a recorded RPM reproducibility check. It reads the saved NEVRA through `$HOME`, asks DNF to reinstall that exact AppStream build, and compares the installed RPM identity with the recorded baseline. The step explicitly limits the proof to the package baseline rather than claiming to reproduce the complete host or automation environment.
+- Expanded Demo 02 with a recorded Python-baseline rebuild. It creates a separate Python 3.12 virtual environment through `$HOME`, installs the exact saved requirements, compares the complete rebuilt package inventory with the accepted baseline, verifies ansible-core, and returns the shell to the accepted environment without replacing it.
+- Updated Demo 03 so the pipx inventory and pin evidence remain in `~/ansible-core-pipx-baseline.txt` while the exact, installable Python package set is saved separately in `~/ansible-core-pipx-requirements.txt`. A new recorded step deliberately unpins and removes the application, recreates it through pipx from that exact baseline, verifies the package inventory, restores the pin, and confirms the runtime.
+- Added a compact compatibility summary before the demonstrations so learners know that the RPM path uses the RHEL 9 ansible-core 2.14 stream with RHEL-provided Python 3.9, while both upstream paths use ansible-core 2.21 with Python 3.12. The detailed historical matrices remain post-demo reference material.
+- Reordered Demo 02 so the shell-activation lesson precedes content inspection and the `ansible.builtin.ping` smoke test remains the final functional proof.
+- Extended Demo 03's recorded pipx baseline to capture the pipx version before the application inventory, exact package set, and pin result.
+- Replaced obsolete activation-key registration and collection-guidance references with current official documentation pages.
+- Completed a final cross-demo audit of every step title, introduction, command explanation, expected result, note, and recovery path. Command-identical shared steps remain text-identical, shared commands now use the same explanation when their purpose is unchanged, and environment-specific provenance or runtime checks retain the wording needed for their package owner.
+- Kept `/home/rajat` only where pip, pipx, or ansible-core naturally resolve `$HOME` in authentic recorded output. All learner-entered commands, recovery commands, completion evidence, and cleanup paths use `$HOME` or `~`.
+
+## Role-based review
+
+### Technical Support Engineer
+
+- Each command has a scoped expected result and recovery guidance, while the support section separates RHEL, upstream package, collection, and local-environment ownership. Diagnostic commands include a redaction reminder and capture the executable, runtime, configuration, collections, dependency health, and repository state. The HOD intentionally stops at local runtime validation and does not present itself as a remote-host troubleshooting guide.
+
+### Solution Architect / Pre-Sales
+
+- The installation decision distinguishes package provenance, environment ownership, lifecycle, support, repeatability, and content compatibility before recommending a path. Separate clean environments prevent misleading side-by-side results. The HOD does not claim production readiness; controller, managed-host, availability, security, and operating-model decisions remain outside its demonstrated boundary.
+
+### Technical Consultant
+
+- The workflows produce baselines that can be carried into project documentation and adapted to controlled repositories or disconnected environments. Maintenance and cleanup responsibilities are explicit for DNF, project virtual environments, and pipx. Organizational registration, governance, promotion, and asset-retirement processes are identified without turning the HOD into an implementation design document.
+
+### Instructor
+
+- The sequence previews the installation decision, lets learners choose one independent workflow, explains every command, checks results at each step, and ends with verification and recap. Shared commands use shared wording across demos, reducing unnecessary variation. Compatibility and lifecycle material follows the hands-on work unless it is needed for the initial choice.
+
+### Student
+
+- A learner can see the objective, outcomes, success evidence, duration, and step count before starting. Commands are individually copyable, expected results are visible, and troubleshooting stays beside the command that can fail. Completion identifies what succeeded, what remains untested, how the environment is maintained, and what to do next.
+
+### Technical Marketing Manager
+
+- The page leads with the learner's installation decision rather than a generic feature list. Claims are supported by replayed evidence, package metadata, and official references; SEO and social metadata describe the actual RHEL 9 workflows. The three paths are differentiated by ownership and support rather than presented as a contest with a universally superior option.
+
+### Technical Account Manager
+
+- Subscription expectations, support routing, update channels, version baselines, controlled-source adaptation, and the local-validation boundary are explicit. The completion record gives a repeatable evidence set for follow-up conversations. Remote-host acceptance, organizational policy, and production orchestration are correctly deferred to separate validation and platform decisions.
+
+### Sales
+
+- The HOD is transparent that RHEL repository access can come from the no-cost Developer Subscription while vendor support and production platforms have separate requirements. It presents upstream and Red Hat-provided paths accurately without unsupported savings, performance, or support claims. The most appropriate next conversation depends on the learner's ownership, governance, and support needs rather than the demonstration alone.

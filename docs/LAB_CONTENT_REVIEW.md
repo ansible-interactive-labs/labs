@@ -1,6 +1,16 @@
 # Lab content review standard
 
-Every lab receives a content review before it is published. Passing the JSON validator proves that the structure is complete; it does not prove that the teaching sequence is complete. The review therefore combines automated checks with an instructional audit.
+Every lab receives a content review before it is published. The JSON validator enforces the minimum teaching structure and technical contract; the instructional audit confirms that the required content is accurate, coherent, and useful rather than merely present.
+
+## Required teaching structure
+
+Every available HOD follows **Preview → Practice → Prove**:
+
+1. **Preview the outcome:** State the learner, problem, prerequisites, objective, demonstrable outcomes, and visible success criteria before the demo starts.
+2. **Practice the workflow:** Give every step an action-and-object label, purpose, explained commands, expected result, contextual troubleshooting, and evidence aligned with the replay.
+3. **Prove the result:** End every demo with verification checks, an explicit validation boundary, a copyable completion record, a maintenance path, and actionable next steps. End the HOD with a concise recap that connects its durable lessons without repeating the walkthrough.
+
+An available HOD cannot pass `pnpm validate:labs` without this structure. The validator requires HOD outcomes, prerequisites, an HOD recap, demo outcomes, verification, a validation boundary, maintenance ownership, next actions, and complete instructional fields for every step.
 
 ## Required review report
 
@@ -13,6 +23,21 @@ For every new or substantially changed lab, provide the owner with a short repor
 5. **Learner experience:** Mobile, keyboard, replay, transcript, screenshot-fallback, command-copying, progress, and accessibility observations.
 
 If no gaps are found, say so explicitly rather than omitting the review.
+
+## Mandatory role-based review
+
+Every HOD review report must assess the content from all eight perspectives below. Each role section records what the role needs, what the HOD already provides, any remaining limitation, and whether that limitation blocks publication.
+
+- **Technical Support Engineer:** Failure isolation, diagnostic evidence, redaction, recovery safety, escalation ownership, and support boundaries.
+- **Solution Architect / Pre-Sales:** Architectural fit, decision criteria, prerequisites, integration boundaries, lifecycle, scale, security, and what the demonstration does not prove.
+- **Technical Consultant:** Implementation readiness, repeatability, controlled-source adaptation, operational handoff, maintenance ownership, and cleanup consequences.
+- **Instructor:** Learning sequence, prerequisites, terminology, cognitive load, explanation quality, demonstrations, checks for understanding, and recap.
+- **Student:** Clarity, pacing, command readability, expected results, recovery help, accessible interaction, confidence, and the next learning action.
+- **Technical Marketing Manager:** Audience, problem statement, differentiated value, evidence, accurate claims, discoverability, social presentation, and calls to action.
+- **Technical Account Manager:** Customer lifecycle, entitlement and support expectations, adoption risks, upgrade planning, governance, and the evidence needed for ongoing conversations.
+- **Sales:** Qualification context, business relevance, subscription or trial requirements, honest limitations, suitable next conversation, and avoidance of unsupported product promises.
+
+`pnpm validate:labs` rejects a review report that omits any role or leaves a role section without a substantive finding.
 
 ## Technical marketing audit
 
@@ -44,7 +69,10 @@ Review each lab through all of these lenses:
 - Every HOD uses a dedicated 16:9 editorial cover that represents its subject; recording frames and step screenshots are not used as catalog artwork.
 - Every demo module uses its own 16:9 editorial cover that represents the specific workflow. It must differ from the HOD cover, every sibling demo cover, and every step image, including when the HOD contains only one demo.
 - Each HOD may contain one or more demo modules. Every module has its own objective, duration, steps, verification checks, step-specific recovery guidance, and optional cleanup.
+- Preview each demo's existing verification criteria on its Start Demo screen so learners know what successful evidence will look like before they begin.
 - Give every recorded demo a copyable completion record that identifies the installation method, artifact source and owner, resolved version, runtime, executable, and functional result. Use placeholders when the learner must supply output from their own environment.
+- Record the maintenance path that owns future updates, state what the final check does and does not prove, and give the learner two to six concrete next actions.
+- End every available HOD with a short recap containing at least three durable takeaways. Do not repeat command sequences or long comparison tables in the recap.
 - When ownership can span vendors or projects, provide concise support routing and list the diagnostic evidence a learner should collect and redact before requesting help.
 - Describe a version matrix with an explicit first and last covered release. Avoid calling a static table “latest” unless its currency is maintained automatically.
 - Prerequisites state the operating system, privileges, access, accounts or subscriptions, connectivity, and starting state.
@@ -59,7 +87,7 @@ Review each lab through all of these lenses:
 - Each learner-visible command has its own one- or two-line explanation. Separate commands render as distinct rows while multiline commands remain grouped as one command.
 - Every reference to an Ansible module, plugin, role, or other collection-provided object uses its fully qualified collection name when one exists. Verify commands and all surrounding prose, headings, alternative text, expected results, and troubleshooting against the relevant collection documentation.
 - Credential entry and other secrets are excluded rather than simulated in the recording.
-- Terminal prompts intentionally preserve the public demonstration username `rajat`; private infrastructure, credentials, and subscription identifiers remain prohibited.
+- Every published terminal session is recorded while signed in as the public demonstration user `rajat`, and terminal prompts preserve `[rajat@HOSTNAME]` as creator branding. Learner-visible commands use `$HOME` or `~` instead of hardcoded `/home/rajat` paths. Resolved command output may show `/home/rajat` as authentic evidence, while surrounding guidance remains portable or clearly labels it as the recorded example. Private infrastructure, credentials, and subscription identifiers remain prohibited.
 - Every shell prompt begins on a new line, with no more than one blank terminal row between completed output and the returned prompt.
 - The replay freezes on the final returned prompt. No newline, carriage return, terminal reset, or other output may move the cursor onto an empty line before playback ends.
 - Every step introduction describes the purpose and context without narrating its command sequence. Command rows explain what each command does, while expected results and troubleshooting cover success and recovery.

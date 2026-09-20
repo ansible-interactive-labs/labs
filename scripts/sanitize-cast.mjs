@@ -17,7 +17,7 @@ const visibleEvents = clearIndex >= 0 ? events.slice(clearIndex + 1) : events;
 const exitIndex = visibleEvents.findIndex((event) => event[1] === "o" && event[2].startsWith("exit\r\n"));
 const trimmedEvents = exitIndex >= 0 ? visibleEvents.slice(0, exitIndex) : visibleEvents;
 const firstTime = trimmedEvents[0]?.[0] ?? 0;
-const promptPattern = /\[(?:rajat|learner)@[^\]\r\n]+\][#$] /g;
+const promptPattern = /\[rajat@[^\]\r\n]+\][#$] /g;
 let previousOutputTrailingNewlines = 2;
 let previousOutputEndsWithVenvPrefix = false;
 let previousRebasedOutput;
@@ -30,7 +30,7 @@ const rebasedEvents = trimmedEvents.map(([time, type, data]) => {
     const promptNormalizedData = data
       .replace(/\(\(([^)\r\n]+)\) \) /g, "($1) ")
       .replace(/(\([^)\r\n]+\) )(?:\r?\n)+(?=\[rajat@)/g, "$1");
-    if (/^\[(?:rajat|learner)@/.test(promptNormalizedData) && previousRebasedOutput && /\([^)\r\n]+\) \r?\n$/.test(previousRebasedOutput[2])) {
+    if (/^\[rajat@/.test(promptNormalizedData) && previousRebasedOutput && /\([^)\r\n]+\) \r?\n$/.test(previousRebasedOutput[2])) {
       previousRebasedOutput[2] = previousRebasedOutput[2].replace(/\r?\n$/, "");
       previousOutputTrailingNewlines = 0;
       previousOutputEndsWithVenvPrefix = true;
@@ -93,7 +93,7 @@ function replaceAcrossOutputEvents(pattern, replacement) {
 // is represented by two CRLF sequences. Recorders can emit an additional
 // newline while the shell redraws; remove only that excess prompt spacing.
 replaceAcrossOutputEvents(
-  /(?:\r?\n(?:\u001b\[[0-?]*[ -/]*[@-~])*){3,}(?=(?:\([^\r\n)]+\) )?\[(?:rajat|learner)@[^\]\r\n]+\][#$] )/g,
+  /(?:\r?\n(?:\u001b\[[0-?]*[ -/]*[@-~])*){3,}(?=(?:\([^\r\n)]+\) )?\[rajat@[^\]\r\n]+\][#$] )/g,
   "\r\n\r\n",
 );
 
@@ -101,6 +101,9 @@ replaceAcrossOutputEvents(
 // command result learners need to interpret. Remove them without changing the
 // successful registration or repository output that follows.
 replaceAcrossOutputEvents(/Sorry, try again\.\r?\n/g, "");
+// Password input is never captured, and the corresponding sudo prompt is not
+// part of the learner-facing command result. Remove it before publication.
+replaceAcrossOutputEvents(/\[sudo\] password for rajat:\s*/g, "");
 
 // Freeze the published replay on the final returned prompt. Stopping a shell
 // can emit bracketed-paste resets, carriage returns, or newlines after that
@@ -109,7 +112,7 @@ let finalPromptEventIndex = -1;
 let finalPromptEnd = -1;
 rebasedEvents.forEach((event, index) => {
   if (event[1] !== "o") return;
-  const matches = [...event[2].matchAll(/\[(?:rajat|learner)@[^\]\r\n]+\][#$] /g)];
+  const matches = [...event[2].matchAll(/\[rajat@[^\]\r\n]+\][#$] /g)];
   const finalMatch = matches.at(-1);
   if (!finalMatch) return;
   finalPromptEventIndex = index;

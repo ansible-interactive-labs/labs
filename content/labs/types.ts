@@ -48,6 +48,20 @@ export type LabProof = {
   }>;
 };
 
+export type LabRecap = {
+  title: string;
+  introduction: string;
+  items: Array<{
+    title: string;
+    detail: string;
+  }>;
+  selfCheck?: {
+    title: string;
+    introduction: string;
+    questions: string[];
+  };
+};
+
 export type LabSupportGuidance = {
   title: string;
   introduction: string;
@@ -194,13 +208,22 @@ export type LabDemo = {
   objective: string;
   coverImage: string;
   coverAlt: string;
-  outcomes?: string[];
+  outcomes: string[];
   duration: string;
   durationMinutes: number;
+  validationBoundary: string;
+  nextActions: string[];
+  relatedHod?: {
+    title: string;
+    detail: string;
+    href: string;
+    linkLabel: string;
+  };
   steps: LabStep[];
   verification: string[];
   completionRecord: {
     introduction: string;
+    maintenancePath: string;
     items: Array<{
       label: string;
       value: string;
@@ -239,6 +262,7 @@ export type Lab = {
   outcomes: string[];
   overview?: LabOverview;
   proof?: LabProof;
+  recap?: LabRecap;
   supportGuidance?: LabSupportGuidance;
   prerequisites: LabPrerequisite[];
   prerequisiteCallouts?: LabGuidanceCallout[];

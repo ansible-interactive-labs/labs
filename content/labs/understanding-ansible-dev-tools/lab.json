@@ -130,6 +130,28 @@
       ]
     }
   ],
+  "recap": {
+    "title": "What you learned",
+    "introduction": "The demonstration connects the purpose of ansible-dev-tools to evidence from a Red Hat-provided installation. Keep the package source, tool inventory, functional result, and remaining validation boundary together.",
+    "items": [
+      {
+        "title": "ADT coordinates a toolkit",
+        "detail": "ansible-dev-tools brings independently released content-development utilities into one maintained installation request while the individual tools retain their own projects and responsibilities."
+      },
+      {
+        "title": "Distribution ownership matters",
+        "detail": "This workflow uses Red Hat RPMs from an entitled AAP repository. An upstream Python installation follows a different package, update, and support path even when familiar commands are exposed."
+      },
+      {
+        "title": "Verification includes real work",
+        "detail": "RPM queries and adt --version identify the installed toolchain, while ansible-creator and ansible-lint prove that two principal development functions work together."
+      },
+      {
+        "title": "The result has a boundary",
+        "detail": "A generated and linted project does not prove execution-environment registry access, image builds, Molecule scenarios, signing workflows, controller integration, or remote automation readiness."
+      }
+    ]
+  },
   "comparisons": [
     {
       "title": "Why install ansible-dev-tools instead of each tool separately?",
@@ -408,6 +430,19 @@
       ],
       "duration": "18 min",
       "durationMinutes": 18,
+      "validationBoundary": "This proves that the Red Hat ansible-dev-tools RPM and its principal tool packages are installed, their commands are discoverable, and a generated playbook project passes ansible-lint. It does not validate registry authentication, execution-environment builds or pulls, Molecule scenarios, signing workflows, controller integration, or remote automation readiness.",
+      "nextActions": [
+        "Save the RPM identities, adt --version output, Podman version, and project validation result with the development-environment notes.",
+        "Keep DNF and the enabled AAP repository as the owners of this Red Hat-provided toolchain.",
+        "Repeat the package inventory, project generation, and lint validation after approved toolchain updates.",
+        "Configure approved registry access and validate execution-environment workflows before relying on containerized automation."
+      ],
+      "relatedHod": {
+        "title": "Looking for the upstream installation path?",
+        "detail": "HOD 001 demonstrates isolated upstream Python installation patterns with pip and pipx. Apply the same environment-isolation and verification approach to ansible-dev-tools while following its current upstream package requirements.",
+        "href": "/demos/installing-ansible-core/",
+        "linkLabel": "Review HOD 001"
+      },
       "steps": [
         {
           "label": "Inspect System",
@@ -562,9 +597,10 @@
           "commands": [
             {"command": "mkdir -p ~/ansible-projects", "explanation": "Creates a reusable parent directory for Ansible development projects without failing if it already exists."},
             {"command": "cd ~/ansible-projects", "explanation": "Changes into the parent directory so the generated project is created in a predictable location."},
-            {"command": "ansible-creator init playbook rajat.demo adt-demo", "explanation": "Uses ansible-creator to scaffold a playbook project named adt-demo with the namespace rajat.demo."}
+            {"command": "ansible-creator init playbook rajat.demo adt-demo", "explanation": "Uses ansible-creator to scaffold adt-demo with the branded example namespace rajat.demo; substitute your own valid namespace when adapting the project."}
           ],
           "expected": "ansible-creator reports a successful initialization and creates ~/ansible-projects/adt-demo.",
+          "note": "The rajat.demo value is an Ansible content namespace used for this recorded example, not a home-directory path or a requirement to use the rajat operating-system account. Replace it with the namespace approved for your own content.",
           "troubleshooting": "If creation fails, preserve the error and check whether the destination already contains a partial project before retrying.",
           "recovery": [
             {"symptom": "The destination already exists", "detail": "Inspect the existing directory and choose a different disposable project name rather than overwriting unknown work."}
@@ -597,6 +633,7 @@
       ],
       "completionRecord": {
         "introduction": "Save this concise evidence with your project notes so another engineer can identify the tested package source, installed toolchain, and functional result.",
+        "maintenancePath": "Use DNF and the architecture-matched, approved AAP repository to update or remove the Red Hat-provided toolchain. Do not replace its RPM-owned packages with pip or pipx in the same environment.",
         "items": [
           {"label": "Installation method", "value": "Red Hat RPM packages with DNF"},
           {"label": "Package source", "value": "AAP 2.7 repository matching the RHEL 9 architecture"},

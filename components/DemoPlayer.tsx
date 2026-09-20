@@ -103,7 +103,12 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
       `${demo.demoId} completion record`,
       demo.title,
       "",
-      ...demo.completionRecord.items.map((item) => `${item.label}: ${item.value}`)
+      ...demo.completionRecord.items.map((item) => `${item.label}: ${item.value}`),
+      `Maintenance path: ${demo.completionRecord.maintenancePath}`,
+      `Validation boundary: ${demo.validationBoundary}`,
+      "",
+      "Next actions:",
+      ...demo.nextActions.map((item) => `- ${item}`)
     ].join("\n");
     try {
       await navigator.clipboard.writeText(record);
@@ -253,6 +258,10 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
             <h2>Demo completed successfully</h2>
             <p>{demo.objective}</p>
             <ul>{demo.verification.map((item) => <li key={item}><span>✓</span>{item}</li>)}</ul>
+            <section className="completion-boundary">
+              <strong>Validation boundary</strong>
+              <p>{demo.validationBoundary}</p>
+            </section>
             <section className="completion-record" aria-labelledby={`completion-record-${demo.id}`}>
               <div>
                 <h3 id={`completion-record-${demo.id}`}>Save your completion record</h3>
@@ -261,7 +270,12 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
               <p>{demo.completionRecord.introduction}</p>
               <dl>
                 {demo.completionRecord.items.map((item) => <div key={item.label}><dt>{item.label}</dt><dd>{item.value}</dd></div>)}
+                <div><dt>Maintenance path</dt><dd>{demo.completionRecord.maintenancePath}</dd></div>
               </dl>
+            </section>
+            <section className="completion-next-actions">
+              <h3>What to do next</h3>
+              <ol>{demo.nextActions.map((item) => <li key={item}>{item}</li>)}</ol>
             </section>
             {demo.cleanup && (
               <details className="demo-cleanup">
@@ -275,7 +289,19 @@ export default function DemoPlayer({ lab, demo }: { lab: Lab; demo: LabDemo }) {
       ) : (
         <div className="player-ready">
           <div className="player-ready-visual"><img src={`${basePath}${demo.coverImage}`} alt={demo.coverAlt} /></div>
-          <aside><p className="step-label">{demo.demoId} · Ready when you are</p><h2>{demo.title}</h2><p>{demo.objective}</p><p className="player-creator">Created and verified by <a href={brand.linkedin} target="_blank" rel="noreferrer">{brand.creator} ↗</a></p><ul>{(demo.outcomes ?? lab.outcomes).map((outcome) => <li key={outcome}>{outcome}</li>)}</ul></aside>
+          <aside>
+            <p className="step-label">{demo.demoId} · Ready when you are</p>
+            <h2>{demo.title}</h2>
+            <p>{demo.objective}</p>
+            <p className="player-creator">Created and verified by <a href={brand.linkedin} target="_blank" rel="noreferrer">{brand.creator} ↗</a></p>
+            <h3 className="ready-section-title">What you will accomplish</h3>
+            <ul>{demo.outcomes.map((outcome) => <li key={outcome}>{outcome}</li>)}</ul>
+            <section className="success-preview">
+              <strong>Success looks like</strong>
+              <ul>{demo.verification.slice(0, 4).map((item) => <li key={item}>{item}</li>)}</ul>
+              {demo.verification.length > 4 ? <small>Plus {demo.verification.length - 4} additional verification checks at completion.</small> : null}
+            </section>
+          </aside>
         </div>
       )}
 

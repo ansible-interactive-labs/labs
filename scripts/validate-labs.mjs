@@ -31,6 +31,20 @@ const validateGuidanceCallout = (callout, sourceName) => {
     try { new URL(link?.href); } catch { fail(sourceName, `links[${linkIndex}].href must be a valid URL`); }
   });
 };
+const validatePortableCommandPaths = (value, sourceName, path = []) => {
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => validatePortableCommandPaths(item, sourceName, [...path, index]));
+    return;
+  }
+  if (!value || typeof value !== "object") return;
+  Object.entries(value).forEach(([key, item]) => {
+    const itemPath = [...path, key];
+    if (key === "command" && typeof item === "string" && /\/home\/rajat(?:\/|\b)/.test(item)) {
+      fail(sourceName, `${itemPath.join(".")} must use $HOME or ~ instead of a hardcoded /home/rajat path`);
+    }
+    validatePortableCommandPaths(item, sourceName, itemPath);
+  });
+};
 
 const directories = readdirSync(labsRoot, { withFileTypes: true })
   .filter((entry) => entry.isDirectory() && existsSync(join(labsRoot, entry.name, "lab.json")))
@@ -56,8 +70,31 @@ for (const directory of directories) {
     fail(directory, "review.md is required; complete the instructional audit before publishing");
   } else {
     const review = readFileSync(reviewSource, "utf8");
-    ["## Readiness", "## Findings", "## Comparison review", "## Learner experience"].forEach((heading) => {
+    const requiredReviewHeadings = [
+      "## Readiness",
+      "## Findings",
+      "## Comparison review",
+      "## Learner experience",
+      "## Role-based review",
+      "### Technical Support Engineer",
+      "### Solution Architect / Pre-Sales",
+      "### Technical Consultant",
+      "### Instructor",
+      "### Student",
+      "### Technical Marketing Manager",
+      "### Technical Account Manager",
+      "### Sales",
+    ];
+    requiredReviewHeadings.forEach((heading) => {
       if (!review.includes(heading)) fail(directory, `review.md must include ${heading}`);
+    });
+    requiredReviewHeadings.filter((heading) => heading.startsWith("### ")).forEach((heading) => {
+      const start = review.indexOf(heading);
+      if (start < 0) return;
+      const contentStart = start + heading.length;
+      const nextHeading = review.indexOf("\n### ", contentStart);
+      const section = review.slice(contentStart, nextHeading >= 0 ? nextHeading : review.length).trim();
+      if (section.length < 40) fail(directory, `${heading} must contain a substantive review finding`);
     });
   }
   let lab;
@@ -67,6 +104,7 @@ for (const directory of directories) {
     fail(directory, `invalid JSON (${error.message})`);
     continue;
   }
+  validatePortableCommandPaths(lab, directory);
 
   if (lab.schemaVersion !== 2) fail(directory, "schemaVersion must be 2");
   if (!slugPattern.test(lab.slug ?? "")) fail(directory, "slug must contain lowercase words separated by hyphens");
@@ -115,11 +153,25 @@ for (const directory of directories) {
   if (!Array.isArray(lab.demos)) fail(directory, "demos must be an array");
   if (lab.status === "Available") {
     if (lab.demos?.length === 0) fail(directory, "an available HOD must contain at least one demo");
-    ["seoTitle", "seoDescription", "socialImage", "socialImageWidth", "socialImageHeight"].forEach((key) => {
+    ["seoTitle", "seoDescription", "socialImage", "socialImageWidth", "socialImageHeight", "recap"].forEach((key) => {
       if (lab[key] === undefined || lab[key] === "") fail(directory, `${key} is required for an available HOD`);
     });
     if ((lab.seoTitle ?? "").length > 70) warn(directory, "seoTitle may be truncated because it exceeds 70 characters");
     if ((lab.seoDescription ?? "").length > 170) warn(directory, "seoDescription may be truncated because it exceeds 170 characters");
+  }
+  if (lab.recap) {
+    if (!nonEmptyString(lab.recap.title) || !nonEmptyString(lab.recap.introduction)) fail(directory, "recap requires a title and introduction");
+    if (!Array.isArray(lab.recap.items) || lab.recap.items.length < 3) fail(directory, "recap.items must contain at least three takeaways");
+    (lab.recap.items ?? []).forEach((item, itemIndex) => {
+      if (!nonEmptyString(item?.title) || !nonEmptyString(item?.detail)) fail(directory, `recap.items[${itemIndex}] requires a title and detail`);
+    });
+    if (lab.recap.selfCheck) {
+      if (!nonEmptyString(lab.recap.selfCheck.title) || !nonEmptyString(lab.recap.selfCheck.introduction)) fail(directory, "recap.selfCheck requires a title and introduction");
+      if (!Array.isArray(lab.recap.selfCheck.questions) || lab.recap.selfCheck.questions.length < 3) fail(directory, "recap.selfCheck.questions must contain at least three questions");
+      (lab.recap.selfCheck.questions ?? []).forEach((question, questionIndex) => {
+        if (!nonEmptyString(question)) fail(directory, `recap.selfCheck.questions[${questionIndex}] must be a non-empty string`);
+      });
+    }
   }
   ["tags", "outcomes"].forEach((key) => {
     (lab[key] ?? []).forEach((item, index) => {
@@ -300,9 +352,27 @@ for (const directory of directories) {
     if (demoTrackingIds.has(demo?.demoId)) fail(sourceName, `duplicate demoId ${demo.demoId}`);
     demoTrackingIds.add(demo?.demoId);
     if (!Number.isInteger(demo?.durationMinutes) || demo.durationMinutes < 1) fail(sourceName, "durationMinutes must be a positive integer");
+    if (!Array.isArray(demo?.outcomes) || demo.outcomes.length === 0 || demo.outcomes.some((item) => !nonEmptyString(item))) {
+      fail(sourceName, "outcomes must preview at least one demonstrable result");
+    }
+    if (!nonEmptyString(demo?.validationBoundary) || demo.validationBoundary.trim().length < 40) {
+      fail(sourceName, "validationBoundary must state what the final check proves and does not prove");
+    }
+    if (!Array.isArray(demo?.nextActions) || demo.nextActions.length < 2 || demo.nextActions.length > 6 || demo.nextActions.some((item) => !nonEmptyString(item))) {
+      fail(sourceName, "nextActions must contain between two and six actionable follow-up items");
+    }
+    if (demo?.relatedHod) {
+      ["title", "detail", "href", "linkLabel"].forEach((key) => {
+        if (!nonEmptyString(demo.relatedHod[key])) fail(sourceName, `relatedHod.${key} is required`);
+      });
+      if (!/^\/demos\/[a-z0-9]+(?:-[a-z0-9]+)*\/$/.test(demo.relatedHod.href ?? "")) {
+        fail(sourceName, "relatedHod.href must be a canonical internal HOD route");
+      }
+    }
     if (!Array.isArray(demo?.steps) || demo.steps.length === 0) fail(sourceName, "steps must contain at least one item");
     if (!Array.isArray(demo?.verification) || demo.verification.length === 0) fail(sourceName, "verification must contain at least one item");
     if (!nonEmptyString(demo?.completionRecord?.introduction)) fail(sourceName, "completionRecord.introduction is required");
+    if (!nonEmptyString(demo?.completionRecord?.maintenancePath)) fail(sourceName, "completionRecord.maintenancePath is required");
     if (!Array.isArray(demo?.completionRecord?.items) || demo.completionRecord.items.length < 4) fail(sourceName, "completionRecord.items must contain at least four entries");
     (demo?.completionRecord?.items ?? []).forEach((item, itemIndex) => {
       if (!nonEmptyString(item?.label) || !nonEmptyString(item?.value)) fail(sourceName, `completionRecord.items[${itemIndex}] requires a label and value`);
@@ -467,7 +537,7 @@ for (const directory of directories) {
               if (type !== "o") continue;
               const eventStart = joinedOutput.length;
               finalOutputTime = time;
-              for (const match of data.matchAll(/\[(?:rajat|learner)@[^\]\r\n]+\][#$] /g)) {
+              for (const match of data.matchAll(/\[rajat@[^\]\r\n]+\][#$] /g)) {
                 const offset = match.index ?? 0;
                 const followsNewlineInEvent = offset > 0 && /[\r\n]$/.test(data.slice(0, offset));
                 const followsVenvPrefix = offset > 0 && /\([^)\r\n]+\) $/.test(data.slice(0, offset));
@@ -490,15 +560,15 @@ for (const directory of directories) {
             const visibleOutput = joinedOutput
               .replace(/\u001b\][^\u0007]*(?:\u0007|\u001b\\)/g, "")
               .replace(/\u001b\[[0-?]*[ -/]*[@-~]/g, "");
-            for (const match of visibleOutput.matchAll(/((?:\r?\n)+)(?=(?:\([^\r\n)]+\) )?\[(?:rajat|learner)@[^\]\r\n]+\][#$] )/g)) {
+            for (const match of visibleOutput.matchAll(/((?:\r?\n)+)(?=(?:\([^\r\n)]+\) )?\[rajat@[^\]\r\n]+\][#$] )/g)) {
               const lineBreaks = match[1].match(/\n/g)?.length ?? 0;
               if (lineBreaks > 2) {
                 fail(sourceName, "terminal source must use exactly one blank row before each returned prompt");
                 break;
               }
             }
-            if (!/(?:\([^)\r\n]+\) )?\[(?:rajat|learner)@[^\]\r\n]+\][#$]$/.test(visibleEnding)) {
-              fail(sourceName, "terminal source must end on a returned shell prompt");
+            if (!/(?:\([^)\r\n]+\) )?\[rajat@[^\]\r\n]+\][#$]$/.test(visibleEnding)) {
+              fail(sourceName, "terminal source must end on a returned shell prompt for the rajat demonstration user");
             }
             if (lastPromptEnd !== undefined && joinedOutput.slice(lastPromptEnd).length > 0) {
               fail(sourceName, "terminal source must not emit output or cursor movement after the final prompt");
@@ -510,18 +580,18 @@ for (const directory of directories) {
             fail(sourceName, "terminal source must begin with a valid asciicast JSON header");
           }
         } else {
-          for (const match of contents.matchAll(/\[(?:rajat|learner)@[^\]\r\n]+\][#$] /g)) {
+          for (const match of contents.matchAll(/\[rajat@[^\]\r\n]+\][#$] /g)) {
             const offset = match.index ?? 0;
             const prefix = contents.slice(0, offset);
             const beginsLine = offset === 0 || /[\r\n]$/.test(prefix);
             const followsVenvPrefix = /(?:^|[\r\n])\([^)\r\n]+\) $/.test(prefix);
             if (!beginsLine && !followsVenvPrefix) fail(sourceName, "transcript contains a terminal prompt attached to command output");
           }
-          if (!/(?:\([^)\r\n]+\) )?\[(?:rajat|learner)@[^\]\r\n]+\][#$]$/.test(contents.trimEnd())) {
-            fail(sourceName, "transcript must end on a returned shell prompt");
+          if (!/(?:\([^)\r\n]+\) )?\[rajat@[^\]\r\n]+\][#$]$/.test(contents.trimEnd())) {
+            fail(sourceName, "transcript must end on a returned shell prompt for the rajat demonstration user");
           }
           if ((step.commands ?? []).every((item) => !item.command.includes("\n"))) {
-            const recordedCommands = [...contents.matchAll(/^(?:\([^\r\n)]*\) )?\[(?:rajat|learner)@[^\]\r\n]+\][#$] (.+)$/gm)]
+            const recordedCommands = [...contents.matchAll(/^(?:\([^\r\n)]*\) )?\[rajat@[^\]\r\n]+\][#$] (.+)$/gm)]
               .map((match) => match[1].trim())
               .filter(Boolean);
             const documentedCommands = step.commands.map((item) => item.command.trim());
