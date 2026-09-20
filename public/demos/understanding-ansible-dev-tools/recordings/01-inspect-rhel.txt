@@ -10,4 +10,8 @@ demo.ansible.com
 [rajat@demo ~]$ rpm -q ansible-dev-tools
 package ansible-dev-tools is not installed
 
+[rajat@demo ~]$ rpm -q podman container-tools
+package podman is not installed
+package container-tools is not installed
+
 [rajat@demo ~]$

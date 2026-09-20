@@ -7,7 +7,7 @@ import LabAnalytics, { DemoStartLink } from "@/components/LabAnalytics";
 import SiteFooter from "@/components/SiteFooter";
 import PrimaryNav from "@/components/PrimaryNav";
 import { getLab, getLabSlugs } from "@/content/labs/loader";
-import type { LabComparison, LabNextStep } from "@/content/labs/types";
+import type { LabComparison } from "@/content/labs/types";
 import { brand } from "@/lib/brand";
 import { searchIndexingEnabled } from "@/lib/search-indexing";
 
@@ -207,28 +207,6 @@ function ComparisonSection({ labSlug, comparison, index }: { labSlug: string; co
   );
 }
 
-function NextStepCard({ labSlug, nextStep }: { labSlug: string; nextStep: LabNextStep }) {
-  return (
-    <section className={`lab-next-step${nextStep.href ? "" : " secondary-next-step"}`} aria-labelledby={`next-step-${labSlug}`}>
-      <article>
-        <div className="lab-next-step-heading">
-          <p>{nextStep.eyebrow}</p>
-          <span>{nextStep.status}</span>
-        </div>
-        <h2 id={`next-step-${labSlug}`}>{nextStep.title}</h2>
-        <p>{nextStep.detail}</p>
-        <ul>
-          {nextStep.items.map((item) => <li key={item}>{item}</li>)}
-        </ul>
-        <div className="lab-next-step-links">
-          {nextStep.href ? <Link href={nextStep.href} data-analytics-event="next_hod_selected" data-analytics-label={nextStep.title}>{nextStep.linkLabel ?? "Open the next HOD"} →</Link> : null}
-          {nextStep.reference ? <a href={nextStep.reference.href} target="_blank" rel="noreferrer" data-analytics-event="official_reference_opened" data-analytics-label={nextStep.reference.label}>{nextStep.reference.label} ↗</a> : null}
-        </div>
-      </article>
-    </section>
-  );
-}
-
 export default async function DemoPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const lab = getLab(slug);
@@ -393,7 +371,7 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
       {lab.proof ? (
         <section className="lab-proof" aria-labelledby={`proof-${lab.slug}`}>
           <div>
-            <p className="eyebrow"><span /> Demonstrated evidence</p>
+            <p className="eyebrow"><span /> {lab.proof.eyebrow ?? "Demonstrated evidence"}</p>
             <h2 id={`proof-${lab.slug}`}>{lab.proof.title}</h2>
             <p>{lab.proof.introduction}</p>
           </div>
@@ -544,8 +522,6 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
           ) : null}
         </section>
       ) : null}
-
-      {lab.nextStep ? <NextStepCard labSlug={lab.slug} nextStep={lab.nextStep} /> : null}
 
       <section className="feedback-band">
         <div><strong>Created and demonstrated by {brand.creator}</strong><p>Practical automation guidance built from tested workflows, inspectable evidence, and documented platform boundaries.</p></div>

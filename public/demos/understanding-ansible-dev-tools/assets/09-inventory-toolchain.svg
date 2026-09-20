@@ -30,6 +30,9 @@
     <text x="68" y="485" fill="#ff8d80">[rajat@demo ~]$ podman --version</text>
     <text x="68" y="512" fill="#e8e4ea">podman version 5.8.2</text>
     <text x="68" y="539" fill="#e8e4ea"> </text>
-    <text x="68" y="566" fill="#ff8d80">[rajat@demo ~]$</text>
+    <text x="68" y="566" fill="#ff8d80">[rajat@demo ~]$ podman info --format 'Host: {{.Host.OS}}/{{.Host.Arch}} | Rootless: {{.Host.Security.Rootless}}'</text>
+    <text x="68" y="593" fill="#e8e4ea">Host: linux/arm64 | Rootless: true</text>
+    <text x="68" y="620" fill="#e8e4ea"> </text>
+    <text x="68" y="647" fill="#ff8d80">[rajat@demo ~]$</text>
   </g>
 </svg>

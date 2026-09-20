@@ -94,14 +94,14 @@ Review each lab through all of these lenses:
 - Compare each documented command sequence with its transcript in order. The top-bar label, step heading, introduction, expected result, note, and “Result looks different?” message must describe what the replay actually shows.
 - When the same ordered command sequence appears in more than one demo, reuse all learner-facing step content verbatim. Different replay files and fallback images are allowed when they show different environments; instructional wording is not duplicated or rewritten.
 - Keep every “Result looks different?” summary and recovery item limited to symptoms that can be produced by commands in the current step. Put a diagnostic or corrective command in the step that generated the symptom; do not repeat a demo-wide troubleshooting guide throughout the player.
-- When command-identical steps are reused across demos, keep their recovery symptoms, explanations, and commands identical as part of the shared learner-facing content.
+- When an identical ordered command sequence is reused anywhere on the platform, treat it as one canonical instructional step. Across demos in the same HOD and across different HODs, keep the label, heading, alternative text, introduction, command explanations, expected result, note, troubleshooting summary, and recovery guidance identical. Improve every occurrence together when the canonical wording needs correction; do not create an HOD-specific variation of a shared step.
 - Commands are safe to copy and do not expose credentials, local addresses, account identifiers, or destructive shortcuts.
 - Version-dependent output is identified so learners do not expect an exact match unnecessarily.
 - When a demonstration uses a feature-line constraint, place an exact-version warning beside that installation step instead of relying only on later lifecycle guidance.
 - Troubleshooting covers the likely failure points and does not weaken security controls.
 - The final check proves function, not merely installation.
 - State the boundary of the final check. A localhost test must not be described as proof that remote inventory, transport, credentials, privilege escalation, network policy, or managed-host dependencies are ready.
-- When that boundary requires a separate workflow, add a post-demo `nextStep` card describing the follow-on acceptance test. Do not add an internal link until the destination HOD exists.
+- Keep each HOD independently useful and do not add a linear next-step card. State untested acceptance boundaries directly. Link another published HOD only when it is a materially relevant alternative or deeper reference, and never present it as a required sequence.
 - When multiple installation paths can coexist on a machine, explain package ownership, command precedence, platform-Python protection, and whether learners should use separate clean environments.
 - Version-pinning guidance records the approved artifact source as well as the selected release; a pin alone does not establish repository trust or organizational approval.
 - Keep source controls proportional and practical: identify the approved repository or server, preserve certificate and signature validation, and state when exact versions or hashes are expected.

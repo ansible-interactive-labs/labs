@@ -15,4 +15,52 @@ molecule-26.8.0-1.el9ap.noarch
 python3.12-pytest-ansible-26.8.0-1.el9ap.noarch
 python3.12-tox-ansible-26.8.0-1.el9ap.noarch
 
+[rajat@demo ~]$ sudo dnf info --installed ansible-dev-tools podman
+Updating Subscription Management repositories.
+Installed Packages
+Name         : ansible-dev-tools
+Version      : 26.8.0
+Release      : 1.el9ap
+Architecture : noarch
+Size         : 366 k
+Source       : ansible-dev-tools-26.8.0-1.el9ap.src.rpm
+Repository   : @System
+From repo    : ansible-automation-platform-2.7-for-rhel-9-aarch64-rpms
+Summary      : Ansible Developtment Tools kit bundles all tools needed for content creation and testing
+URL          : https://github.com/ansible/ansible-dev-tools
+License      : GPL-3.0-only
+Description  : The ansible-dev-tools python package provides an easy way to install and
+             : discover the best tools available to create and test ansible content.
+             :
+             : The curated list of tools installed as part of the Ansible automation developer
+             : tools package includes: ansible-core, ansible-builder, ansible-creator,
+             : ansible-dev-environment, ansible-lint, ansible-navigator, ansible-sign, molecule,
+             : pytest-ansible and tox-ansible.
+
+Name         : podman
+Epoch        : 6
+Version      : 5.8.2
+Release      : 6.el9_8
+Architecture : aarch64
+Size         : 53 M
+Source       : podman-5.8.2-6.el9_8.src.rpm
+Repository   : @System
+From repo    : rhel-9-for-aarch64-appstream-rpms
+Summary      : Manage Pods, Containers and Container Images
+URL          : https://podman.io/
+License      : Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND ISC AND MIT AND MPL-2.0
+Description  : podman (Pod Manager) is a fully featured container engine that is a simple
+             : daemonless tool.  podman provides a Docker-CLI comparable command line that
+             : eases the transition from other container engines and allows the management of
+             : pods, containers and images.  Simply put: alias docker=podman.
+             : Most podman commands can be run as a regular user, without requiring
+             : additional privileges.
+             :
+             : podman uses Buildah(1) internally to create container images.
+             : Both tools share image (not container) storage, hence each can use or
+             : manipulate images (but not containers) created by the other.
+             :
+             : Manage Pods, Containers and Container Images
+             : podman Simple management tool for pods, containers and images
+
 [rajat@demo ~]$

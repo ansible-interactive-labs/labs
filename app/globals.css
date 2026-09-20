@@ -481,25 +481,6 @@ body > main > footer .brand-copy small { color: #8f8992; }
 .orchestration-note { margin: 18px 0 0; color: var(--muted); font-size: 12px; line-height: 1.65; }
 .orchestration-note strong { color: var(--ink); }
 .overview-related-tools { max-width: 1400px; margin: 0 auto 78px; padding: 0 clamp(22px, 5vw, 72px); }
-.lab-next-step { max-width: 1400px; margin: 0 auto 78px; padding: 0 clamp(22px, 5vw, 72px); }
-.lab-next-step article { padding: clamp(28px, 4vw, 52px); color: #fff; border-radius: 22px; background: linear-gradient(135deg, #211f23, #343039); box-shadow: 0 24px 70px rgba(9,10,14,.16); }
-.lab-next-step-heading { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
-.lab-next-step-heading p { margin: 0; color: #ff8d80; text-transform: uppercase; letter-spacing: .13em; font-size: 10px; font-weight: 850; }
-.lab-next-step-heading span { padding: 7px 10px; color: #d9d3da; border: 1px solid #575159; font: 700 10px/1.2 var(--font-geist-mono); }
-.lab-next-step h2 { max-width: 820px; margin: 18px 0 12px; color: #fff; font-size: clamp(30px, 4vw, 48px); }
-.lab-next-step article > p { max-width: 920px; margin: 0; color: #c6c0c7; line-height: 1.7; }
-.lab-next-step ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 30px; margin: 26px 0 0; padding: 0; list-style: none; }
-.lab-next-step li { position: relative; padding: 13px 16px 13px 38px; color: #eee9ef; border: 1px solid #4a454c; background: rgba(255,255,255,.035); font-size: 13px; line-height: 1.5; }
-.lab-next-step li::before { content: "→"; position: absolute; left: 15px; color: #ff8d80; font-weight: 900; }
-.lab-next-step-links { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 24px; }
-.lab-next-step-links a { color: #ffb1a8; font-size: 12px; font-weight: 750; text-decoration: underline; text-underline-offset: 4px; }
-.secondary-next-step article { color: var(--ink); border: 1px solid var(--line); background: #eee9e4; box-shadow: none; }
-.secondary-next-step .lab-next-step-heading p { color: var(--red-dark); }
-.secondary-next-step .lab-next-step-heading span { color: var(--muted); border-color: #cbc4be; }
-.secondary-next-step h2 { color: var(--ink); font-size: clamp(28px, 3vw, 40px); }
-.secondary-next-step article > p { color: var(--muted); }
-.secondary-next-step li { color: var(--ink); border-color: #d7d0c9; background: rgba(255,255,255,.55); }
-.secondary-next-step .lab-next-step-links a { color: var(--red-dark); }
 .overview-related-tools article { padding: 24px; border: 1px solid #4a454c; border-left: 4px solid #ff5d58; background: #211f23; }
 .overview-related-tools article.primary-next-hod { padding: clamp(28px, 4vw, 44px); border-color: #ff6e65; background: linear-gradient(135deg, #211f23, #39282b); box-shadow: 0 24px 70px rgba(9,10,14,.16); }
 .primary-next-hod .related-tool-links a:first-child { padding: 12px 16px; color: #211f23; border-radius: 8px; background: #ff8d80; text-decoration: none; }
@@ -823,11 +804,9 @@ body > main > footer .brand-copy small { color: #8f8992; }
   .overview-grid { grid-template-columns: 1fr; }
   .overview-orchestration { margin-bottom: 24px; padding: 42px 22px; }
   .orchestration-grid { grid-template-columns: 1fr; }
-  .overview-related-tools, .lab-next-step { margin-bottom: 54px; padding-right: 22px; padding-left: 22px; }
+  .overview-related-tools { margin-bottom: 54px; padding-right: 22px; padding-left: 22px; }
   .lab-proof { margin: 0 22px 54px; padding: 30px 22px; }
   .lab-proof-grid { grid-template-columns: 1fr; }
-  .lab-next-step ul { grid-template-columns: 1fr; }
-  .lab-next-step-heading { align-items: flex-start; flex-direction: column; }
   .related-tool-heading { align-items: flex-start; flex-direction: column; }
   .comparison-section { margin-bottom: 54px; padding-top: 42px; padding-bottom: 42px; }
   .comparison-notes-panel { padding: 22px 20px 2px; }
@@ -868,7 +847,7 @@ body > main > footer .brand-copy small { color: #8f8992; }
 
 @media print {
   .topbar, .hero, .path-section, .lab-standard, .player-tools, .player-progress, .player-footer, .feedback-band { display: none !important; }
-  .lab-hero, .lab-overview, .overview-orchestration, .overview-related-tools, .lab-next-step, .lab-prerequisites, .lab-proof, .comparison-section, .demo-modules, .demo-module-heading { display: block; padding: 24px 0; }
+  .lab-hero, .lab-overview, .overview-orchestration, .overview-related-tools, .lab-prerequisites, .lab-proof, .comparison-section, .demo-modules, .demo-module-heading { display: block; padding: 24px 0; }
   .player-stage { display: block; }
   .stage-media { min-height: 0; background: white; }
   .stage-media img { max-height: 420px; }
@@ -1312,8 +1291,7 @@ body > main > footer .brand-copy small { color: #8f8992; }
   .comparison-section { overflow: hidden; }
   .comparison-section.interstitial-comparison { margin-top: 18px; }
 
-  .overview-related-tools,
-  .lab-next-step {
+  .overview-related-tools {
     margin: 0 14px 18px;
     padding-right: 0;
     padding-left: 0;

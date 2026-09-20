@@ -31,6 +31,15 @@
     <text x="68" y="512" fill="#e8e4ea">python3.12-pytest-ansible-26.8.0-1.el9ap.noarch</text>
     <text x="68" y="539" fill="#e8e4ea">python3.12-tox-ansible-26.8.0-1.el9ap.noarch</text>
     <text x="68" y="566" fill="#e8e4ea"> </text>
-    <text x="68" y="593" fill="#ff8d80">[rajat@demo ~]$</text>
+    <text x="68" y="593" fill="#ff8d80">[rajat@demo ~]$ sudo dnf info --installed ansible-dev-tools podman</text>
+    <text x="68" y="620" fill="#e8e4ea">Installed Packages</text>
+    <text x="68" y="647" fill="#e8e4ea">Name         : ansible-dev-tools</text>
+    <text x="68" y="674" fill="#e8e4ea">Version      : 26.8.0</text>
+    <text x="68" y="701" fill="#e8e4ea">From repo    : ansible-automation-platform-2.7-for-rhel-9-aarch64-rpms</text>
+    <text x="68" y="728" fill="#e8e4ea">Name         : podman</text>
+    <text x="68" y="755" fill="#e8e4ea">Version      : 5.8.2</text>
+    <text x="68" y="782" fill="#e8e4ea">From repo    : rhel-9-for-aarch64-appstream-rpms</text>
+    <text x="68" y="809" fill="#e8e4ea"> </text>
+    <text x="68" y="836" fill="#ff8d80">[rajat@demo ~]$</text>
   </g>
 </svg>

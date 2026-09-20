@@ -59,6 +59,7 @@ const orders = new Set();
 const hodNumbers = new Set();
 const hodIds = new Set();
 const demoTrackingIds = new Set();
+const crossLabStepsByCommandSequence = new Map();
 let totalSteps = 0;
 let totalImages = 0;
 let totalRecordings = 0;
@@ -240,22 +241,6 @@ for (const directory of directories) {
       validateGuidanceCallout(callout, `${directory} prerequisiteDetails.items[${calloutIndex}]`);
     });
   }
-  if (lab.nextStep) {
-    ["eyebrow", "title", "detail", "status"].forEach((key) => {
-      if (!nonEmptyString(lab.nextStep?.[key])) fail(directory, `nextStep.${key} is required`);
-    });
-    if (!Array.isArray(lab.nextStep.items) || lab.nextStep.items.length < 3 || lab.nextStep.items.some((item) => !nonEmptyString(item))) {
-      fail(directory, "nextStep.items must contain at least three non-empty items");
-    }
-    if (lab.nextStep.href && !/^\/demos\/[a-z0-9]+(?:-[a-z0-9]+)*\/$/.test(lab.nextStep.href)) {
-      fail(directory, "nextStep.href must be a canonical internal HOD route");
-    }
-    if (lab.nextStep.href && !nonEmptyString(lab.nextStep.linkLabel)) fail(directory, "nextStep.linkLabel is required when href is supplied");
-    if (lab.nextStep.reference) {
-      if (!nonEmptyString(lab.nextStep.reference.label)) fail(directory, "nextStep.reference.label is required");
-      try { new URL(lab.nextStep.reference.href); } catch { fail(directory, "nextStep.reference.href must be a valid URL"); }
-    }
-  }
   (lab.comparisons ?? []).forEach((comparison, index) => {
     const sourceName = `${directory} comparison ${index + 1}`;
     ["title", "introduction"].forEach((key) => {
@@ -397,6 +382,8 @@ for (const directory of directories) {
     const commandSequence = JSON.stringify((step.commands ?? []).map((item) => item.command));
     if (!stepsByCommandSequence.has(commandSequence)) stepsByCommandSequence.set(commandSequence, []);
     stepsByCommandSequence.get(commandSequence).push({ demo, step, stepIndex });
+    if (!crossLabStepsByCommandSequence.has(commandSequence)) crossLabStepsByCommandSequence.set(commandSequence, []);
+    crossLabStepsByCommandSequence.get(commandSequence).push({ directory, demo, step, stepIndex });
   });
   const sharedStepFields = ["label", "title", "alt", "explanation", "expected", "note", "troubleshooting"];
   stepsByCommandSequence.forEach((matchingSteps) => {
@@ -610,6 +597,27 @@ for (const directory of directories) {
   if (/VNC Password|SSH Password|192\.168\.\d+\.\d+|password\s*=/i.test(raw)) fail(directory, "possible credential or local address found in lab data");
 
 }
+
+const crossLabSharedFields = ["label", "title", "alt", "explanation", "expected", "note", "troubleshooting"];
+crossLabStepsByCommandSequence.forEach((matchingSteps) => {
+  if (new Set(matchingSteps.map(({ directory }) => directory)).size < 2) return;
+  const baseline = matchingSteps[0];
+  const baselineCommandExplanations = baseline.step.commands.map((item) => item.explanation);
+  matchingSteps.slice(1).forEach((candidate) => {
+    const sourceName = `${baseline.directory}/${baseline.demo.id} and ${candidate.directory}/${candidate.demo.id}`;
+    crossLabSharedFields.forEach((field) => {
+      if ((baseline.step[field] ?? "") !== (candidate.step[field] ?? "")) {
+        fail(sourceName, `cross-HOD steps with the same command sequence must use the same ${field}`);
+      }
+    });
+    if (JSON.stringify(baselineCommandExplanations) !== JSON.stringify(candidate.step.commands.map((item) => item.explanation))) {
+      fail(sourceName, "cross-HOD steps with the same command sequence must use the same command explanations");
+    }
+    if (JSON.stringify(baseline.step.recovery ?? []) !== JSON.stringify(candidate.step.recovery ?? [])) {
+      fail(sourceName, "cross-HOD steps with the same command sequence must use the same recovery guidance");
+    }
+  });
+});
 
 warnings.forEach((message) => console.warn(`WARN ${message}`));
 if (errors.length) {

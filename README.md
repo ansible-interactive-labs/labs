@@ -63,7 +63,7 @@ The workflow detects whether the repository is a root site (`owner.github.io`) o
 
 ## Browser and mobile support
 
-The project explicitly targets Chrome 111+, Edge 111+, Firefox 128+, Safari 16.4+, and iOS Safari 16.4+. Responsive release checks cover narrow phones, current phones, tablets, compact laptops, and desktops. See [`docs/BROWSER_SUPPORT.md`](docs/BROWSER_SUPPORT.md) for the support contract, progressive-enhancement behavior, and QA checklist.
+The project explicitly targets Chrome 125+, Edge 125+, Firefox 124+, Safari 17.3+, and the latest Mobile Safari and Chrome for Android releases. Responsive release checks cover narrow phones, current phones, tablets, compact laptops, and desktops. See [`docs/BROWSER_SUPPORT.md`](docs/BROWSER_SUPPORT.md) for the support contract, progressive-enhancement behavior, and QA checklist.
 
 ## Add another demo
 
@@ -73,13 +73,13 @@ The project explicitly targets Chrome 111+, Edge 111+, Firefox 128+, Safari 16.4
 4. Record every terminal workflow while signed in as the public demonstration user `rajat`, using an asciicast v2 file at exactly 120 columns × 34 rows. Generate a text transcript and retain a clean 16:9 screenshot as a resilient fallback. Use sequential names and reference all media from the lab JSON.
 5. Give every step a concise, descriptive action-and-object label of at least two words, such as `Check Repositories` or `Verify Installation`; avoid single-word labels such as `Check` or `Verify`. Follow it with an introduction that explains the step's purpose and context without narrating individual commands. Store each learner-visible command separately with its own one- or two-line explanation, then include the expected result and troubleshooting guidance.
 6. Use the fully qualified collection name for every Ansible module, plugin, role, and other collection-provided object whenever an FQCN exists. Apply this rule to commands, prose, headings, alternative text, expected results, and troubleshooting—for example, write `ansible.builtin.ping`, not `ping` or `the built-in ping module`.
-7. When two demos contain the same ordered command sequence, reuse the same step label, heading, alternative text, introduction, command explanations, expected result, note, and recovery guidance. Only the replay and fallback image may differ when the environment shown is different.
+7. Treat a repeated ordered command sequence as one shared instructional step, whether it appears in two demos within the same HOD or in different HODs. Reuse the same step label, heading, alternative text, introduction, command explanations, expected result, note, troubleshooting summary, and recovery guidance. Only the replay and fallback image may differ when the environment shown is different. If the shared wording is inaccurate for one workflow, improve the canonical wording for every occurrence instead of creating a local variation.
 8. Review every demo title and Start Demo objective against the complete recorded workflow. Review every top-bar label, step heading, introduction, expected result, note, per-step recovery message, and general troubleshooting item against the commands and replay before publishing.
 9. Do not add a per-step Restart Demo action. Closing or refreshing an anonymous demo resets it; the next launch begins at step 1.
 10. Record the tested OS, architecture, and package or image version.
 11. Complete the instructional audit in `docs/LAB_CONTENT_REVIEW.md`, including the mandatory Technical Support Engineer, Solution Architect / Pre-Sales, Technical Consultant, Instructor, Student, Technical Marketing Manager, Technical Account Manager, and Sales perspectives. Save the findings as `content/labs/<demo-slug>/review.md` and share them even when no gaps are found.
 12. Add a source-backed `comparisons` block whenever learners may confuse related tools, packages, commands, or support models. Begin an ansible-core decision with the collections, platforms, and dependencies the automation requires. For a dependent choice, use `decisionGuide` to present the next decision without duplicating the first comparison. Use `followups` for short post-decision guardrails or validation boundaries that apply to the comparison as a whole.
-13. Add a `nextStep` card when the final check intentionally leaves a larger acceptance boundary untested. Describe the follow-on validation and link the future HOD only after its route exists.
+13. Keep every HOD independently useful. Do not add a linear next-step card or imply that learners must follow the HODs in sequence. When another published HOD is materially relevant, use an optional related-content link and describe it as an alternative or deeper reference rather than the required next lesson.
 14. Follow the enforced **Preview → Practice → Prove** structure. Give each demo outcomes and verification criteria, state its validation boundary, record its maintenance path, provide actionable next steps, and add an HOD-level recap with at least three durable takeaways.
 15. Sanitize recordings with `node scripts/sanitize-cast.mjs <file.cast>`, then run `pnpm validate:labs`, `pnpm lint`, and `pnpm build`. Test the exported root and dedicated demo route over local HTTP.
 
@@ -126,7 +126,7 @@ No central registry or route file needs to be edited. The build discovers each `
 - Lab JSON follows the versioned schema in `content/labs/schema.json`, allowing future content migrations without coupling content to UI components.
 - Optional comparison records render as accessible, mobile-scrollable tables with a practical decision takeaway and official references.
 - Reusable `prerequisiteCallouts` keep subscription, entitlement, and package-source explanations separate from concise prerequisite cards; comparison `followups` hold guardrails and validation boundaries without hard-coding them into a page component.
-- A reusable `nextStep` card can identify the next acceptance boundary without implying that the current HOD already validates it.
+- Optional related-content links can connect materially relevant HODs without imposing a course sequence or implying that one demo is required before another.
 - Demo modules can override the lab-level outcomes, so each Start Demo screen remains accurate as a single HOD grows to include multiple installation or operating-system workflows.
 
 ## Lab publishing standard

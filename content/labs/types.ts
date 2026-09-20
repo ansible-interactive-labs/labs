@@ -40,6 +40,7 @@ export type LabGuidanceCallout = {
 };
 
 export type LabProof = {
+  eyebrow?: string;
   title: string;
   introduction: string;
   items: Array<{
@@ -80,20 +81,6 @@ export type LabSupportGuidance = {
       command: string;
       detail: string;
     }>;
-  };
-};
-
-export type LabNextStep = {
-  eyebrow: string;
-  title: string;
-  detail: string;
-  status: string;
-  items: string[];
-  href?: string;
-  linkLabel?: string;
-  reference?: {
-    href: string;
-    label: string;
   };
 };
 
@@ -271,7 +258,6 @@ export type Lab = {
     introduction: string;
     items: LabGuidanceCallout[];
   };
-  nextStep?: LabNextStep;
   comparisons?: LabComparison[];
   demos: LabDemo[];
 };

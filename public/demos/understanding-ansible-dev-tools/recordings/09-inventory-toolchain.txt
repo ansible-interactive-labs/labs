@@ -14,4 +14,7 @@ tox-ansible                              26.8.0
 [rajat@demo ~]$ podman --version
 podman version 5.8.2
 
+[rajat@demo ~]$ podman info --format 'Host: {{.Host.OS}}/{{.Host.Arch}} | Rootless: {{.Host.Security.Rootless}}'
+Host: linux/arm64 | Rootless: true
+
 [rajat@demo ~]$

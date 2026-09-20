@@ -26,6 +26,10 @@
     <text x="68" y="377" fill="#ff8d80">[rajat@demo ~]$ rpm -q ansible-dev-tools</text>
     <text x="68" y="404" fill="#e8e4ea">package ansible-dev-tools is not installed</text>
     <text x="68" y="431" fill="#e8e4ea"> </text>
-    <text x="68" y="458" fill="#ff8d80">[rajat@demo ~]$</text>
+    <text x="68" y="458" fill="#ff8d80">[rajat@demo ~]$ rpm -q podman container-tools</text>
+    <text x="68" y="485" fill="#e8e4ea">package podman is not installed</text>
+    <text x="68" y="512" fill="#e8e4ea">package container-tools is not installed</text>
+    <text x="68" y="539" fill="#e8e4ea"> </text>
+    <text x="68" y="566" fill="#ff8d80">[rajat@demo ~]$</text>
   </g>
 </svg>

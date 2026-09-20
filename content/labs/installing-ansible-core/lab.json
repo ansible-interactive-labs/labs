@@ -331,24 +331,6 @@
       ]
     }
   },
-  "nextStep": {
-    "eyebrow": "Continue your validation",
-    "title": "Validate a Linux managed host",
-    "detail": "HOD 001 proves that the selected ansible-core runtime works locally. A planned follow-on HOD will validate the rest of the control path against a remote Linux host before the environment is treated as ready for managed-host development.",
-    "status": "Planned HOD",
-    "items": [
-      "Create an inventory containing a lab-managed Linux host",
-      "Verify SSH connectivity and establish the host’s identity",
-      "Confirm that the managed host has a compatible Python interpreter",
-      "Configure key-based authentication and the required become permissions",
-      "Run ansible.builtin.ping through the remote connection",
-      "Gather and inspect host facts with ansible.builtin.setup"
-    ],
-    "reference": {
-      "href": "https://docs.ansible.com/projects/ansible/latest/getting_started/index.html",
-      "label": "Review the Ansible control-node, inventory, and managed-node model"
-    }
-  },
   "comparisons": [
     {
       "title": "RHEL-provided ansible-core compatibility",
@@ -1082,7 +1064,7 @@
       "explanation": "Begin with a clear picture of the control node before changing it. This establishes the platform used in the demonstration and whether ansible-core is already present.",
       "commands": [
             { "command": "cat /etc/redhat-release", "explanation": "Reads the RHEL release file to identify the installed operating-system name and major release." },
-            { "command": "uname -m", "explanation": "Reports the processor architecture, which determines the architecture shown in repository and package results." },
+            { "command": "uname -m", "explanation": "Reports the processor architecture, which determines which architecture-specific repositories and packages apply to the host." },
         { "command": "hostnamectl --static", "explanation": "Displays the static hostname so learners can identify the control node used in the demonstration." },
             { "command": "rpm -q ansible-core", "explanation": "Queries the RPM database for the RHEL-provided ansible-core package. A not-installed result confirms the clean package state expected here." }
       ],
@@ -1126,12 +1108,12 @@
       "commands": [
         { "command": "sudo rhc status", "explanation": "Reports the system's current connections to Subscription Management, Red Hat Lightspeed, and remote host configuration services." }
       ],
-      "expected": "The system is connected to Red Hat Subscription Management and Red Hat Lightspeed. The recorded client uses the former Red Hat Insights name in its output.",
-      "note": "The remote host configuration daemon may later report inactive. That optional daemon state does not prevent DNF from installing packages from subscribed repositories.",
-      "troubleshooting": "Read each rhc status line separately. Subscription Management and Red Hat Lightspeed must be connected for this workflow; remote host configuration is not required for DNF package access.",
+      "expected": "The recorded system is connected to Red Hat Subscription Management and Red Hat Lightspeed. The recorded client uses the former Red Hat Insights name, and remote host configuration may be inactive.",
+      "note": "Subscription Management is required for DNF repository access. Red Hat Lightspeed and remote host configuration are separate services; their state does not determine whether DNF can use subscribed repositories.",
+      "troubleshooting": "Read each rhc status line separately. Return to registration when Subscription Management is disconnected; do not treat an inactive Lightspeed or remote host configuration connection as a DNF repository failure.",
       "recovery": [
-        { "symptom": "Subscription Management or Lightspeed is disconnected", "detail": "Return to the Register RHEL step and reconnect the system before relying on subscribed repositories." },
-        { "symptom": "Only remote host configuration is inactive", "detail": "Continue when the two required connections are active. An inactive optional remote host configuration daemon does not block this package workflow." }
+        { "symptom": "Subscription Management is disconnected", "detail": "Return to the interactive registration step, confirm the entitled RHEL account and network path, then repeat the connection check.", "command": "sudo rhc connect\nsudo rhc status" },
+        { "symptom": "Only Lightspeed or remote host configuration is inactive", "detail": "Continue with the DNF workflow when Subscription Management is connected. Investigate the other service only when the organization uses that capability." }
       ],
       "media": {
         "type": "terminal",
@@ -1405,7 +1387,7 @@
           "explanation": "Establish the operating-system, processor architecture, Ansible RPM state, and default Python version before selecting packages. This baseline distinguishes the later upstream installation from software already managed by RHEL.",
           "commands": [
             { "command": "cat /etc/redhat-release", "explanation": "Reads the RHEL release file to identify the installed operating-system name and major release." },
-            { "command": "uname -m", "explanation": "Reports the processor architecture, which determines the architecture shown in repository and package results." },
+            { "command": "uname -m", "explanation": "Reports the processor architecture, which determines which architecture-specific repositories and packages apply to the host." },
             { "command": "rpm -q ansible-core", "explanation": "Queries the RPM database for the RHEL-provided ansible-core package. A not-installed result confirms the clean package state expected here." },
             { "command": "python3 --version", "explanation": "Shows the version behind RHEL's default python3 command before an additional interpreter is installed." }
           ],
@@ -1449,12 +1431,12 @@
           "commands": [
             { "command": "sudo rhc status", "explanation": "Reports the system's current connections to Subscription Management, Red Hat Lightspeed, and remote host configuration services." }
           ],
-          "expected": "The system is connected to Red Hat Subscription Management and Red Hat Lightspeed. The recorded client uses the former Red Hat Insights name in its output.",
-          "note": "The remote host configuration daemon may later report inactive. That optional daemon state does not prevent DNF from installing packages from subscribed repositories.",
-          "troubleshooting": "Read each rhc status line separately. Subscription Management and Red Hat Lightspeed must be connected for this workflow; remote host configuration is not required for DNF package access.",
+          "expected": "The recorded system is connected to Red Hat Subscription Management and Red Hat Lightspeed. The recorded client uses the former Red Hat Insights name, and remote host configuration may be inactive.",
+          "note": "Subscription Management is required for DNF repository access. Red Hat Lightspeed and remote host configuration are separate services; their state does not determine whether DNF can use subscribed repositories.",
+          "troubleshooting": "Read each rhc status line separately. Return to registration when Subscription Management is disconnected; do not treat an inactive Lightspeed or remote host configuration connection as a DNF repository failure.",
           "recovery": [
-            { "symptom": "Subscription Management or Lightspeed is disconnected", "detail": "Return to the Register RHEL step and reconnect the system before relying on subscribed repositories." },
-            { "symptom": "Only remote host configuration is inactive", "detail": "Continue when the two required connections are active. An inactive optional remote host configuration daemon does not block this package workflow." }
+            { "symptom": "Subscription Management is disconnected", "detail": "Return to the interactive registration step, confirm the entitled RHEL account and network path, then repeat the connection check.", "command": "sudo rhc connect\nsudo rhc status" },
+            { "symptom": "Only Lightspeed or remote host configuration is inactive", "detail": "Continue with the DNF workflow when Subscription Management is connected. Investigate the other service only when the organization uses that capability." }
           ],
           "media": {
             "type": "terminal",
@@ -1808,7 +1790,7 @@
           "explanation": "Establish the operating-system, processor architecture, Ansible RPM state, and default Python version before selecting packages. This baseline distinguishes the later upstream installation from software already managed by RHEL.",
           "commands": [
             { "command": "cat /etc/redhat-release", "explanation": "Reads the RHEL release file to identify the installed operating-system name and major release." },
-            { "command": "uname -m", "explanation": "Reports the processor architecture, which determines the architecture shown in repository and package results." },
+            { "command": "uname -m", "explanation": "Reports the processor architecture, which determines which architecture-specific repositories and packages apply to the host." },
             { "command": "rpm -q ansible-core", "explanation": "Queries the RPM database for the RHEL-provided ansible-core package. A not-installed result confirms the clean package state expected here." },
             { "command": "python3 --version", "explanation": "Shows the version behind RHEL's default python3 command before an additional interpreter is installed." }
           ],
@@ -1852,12 +1834,12 @@
           "commands": [
             { "command": "sudo rhc status", "explanation": "Reports the system's current connections to Subscription Management, Red Hat Lightspeed, and remote host configuration services." }
           ],
-          "expected": "The system is connected to Red Hat Subscription Management and Red Hat Lightspeed. The recorded client uses the former Red Hat Insights name in its output.",
-          "note": "The remote host configuration daemon may later report inactive. That optional daemon state does not prevent DNF from installing packages from subscribed repositories.",
-          "troubleshooting": "Read each rhc status line separately. Subscription Management and Red Hat Lightspeed must be connected for this workflow; remote host configuration is not required for DNF package access.",
+          "expected": "The recorded system is connected to Red Hat Subscription Management and Red Hat Lightspeed. The recorded client uses the former Red Hat Insights name, and remote host configuration may be inactive.",
+          "note": "Subscription Management is required for DNF repository access. Red Hat Lightspeed and remote host configuration are separate services; their state does not determine whether DNF can use subscribed repositories.",
+          "troubleshooting": "Read each rhc status line separately. Return to registration when Subscription Management is disconnected; do not treat an inactive Lightspeed or remote host configuration connection as a DNF repository failure.",
           "recovery": [
-            { "symptom": "Subscription Management or Lightspeed is disconnected", "detail": "Return to the Register RHEL step and reconnect the system before relying on subscribed repositories." },
-            { "symptom": "Only remote host configuration is inactive", "detail": "Continue when the two required connections are active. An inactive optional remote host configuration daemon does not block this package workflow." }
+            { "symptom": "Subscription Management is disconnected", "detail": "Return to the interactive registration step, confirm the entitled RHEL account and network path, then repeat the connection check.", "command": "sudo rhc connect\nsudo rhc status" },
+            { "symptom": "Only Lightspeed or remote host configuration is inactive", "detail": "Continue with the DNF workflow when Subscription Management is connected. Investigate the other service only when the organization uses that capability." }
           ],
           "media": {
             "type": "terminal",

@@ -1,5 +1,8 @@
 [rajat@demo ansible-projects]$ cd adt-demo
 
-[rajat@demo adt-demo]$ ansible-lint site.yml 2> /dev/null
+[rajat@demo adt-demo]$ ANSIBLE_HOME="$HOME/.ansible" ansible-lint site.yml && echo "Verified: ansible-lint passed"
+
+Passed: 0 failure(s), 0 warning(s) in 1 files processed of 1 encountered. Last profile that met the validation criteria was 'production'.
+Verified: ansible-lint passed
 
 [rajat@demo adt-demo]$

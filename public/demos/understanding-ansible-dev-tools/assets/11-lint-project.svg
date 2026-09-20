@@ -16,8 +16,11 @@
   <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">
     <text x="68" y="134" fill="#ff8d80">[rajat@demo ansible-projects]$ cd adt-demo</text>
     <text x="68" y="161" fill="#e8e4ea"> </text>
-    <text x="68" y="188" fill="#ff8d80">[rajat@demo adt-demo]$ ansible-lint site.yml 2&gt; /dev/null</text>
+    <text x="68" y="188" fill="#ff8d80">[rajat@demo adt-demo]$ ANSIBLE_HOME="$HOME/.ansible" ansible-lint site.yml &amp;&amp; echo "Verified: ansible-lint passed"</text>
     <text x="68" y="215" fill="#e8e4ea"> </text>
-    <text x="68" y="242" fill="#ff8d80">[rajat@demo adt-demo]$</text>
+    <text x="68" y="242" fill="#e8e4ea">Passed: 0 failure(s), 0 warning(s) in 1 files processed of 1 encountered.</text>
+    <text x="68" y="269" fill="#e8e4ea">Verified: ansible-lint passed</text>
+    <text x="68" y="296" fill="#e8e4ea"> </text>
+    <text x="68" y="323" fill="#ff8d80">[rajat@demo adt-demo]$</text>
   </g>
 </svg>
