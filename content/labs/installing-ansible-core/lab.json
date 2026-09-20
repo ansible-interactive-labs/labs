@@ -1,7 +1,7 @@
 {
   "$schema": "../schema.json",
   "schemaVersion": 2,
-  "hodId": "HOD-001",
+  "hodId": "ANSIBLE-HOD-001",
   "slug": "installing-ansible-core",
   "title": "Installing ansible-core",
   "shortDescription": "Choose and verify the right ansible-core installation path on RHEL 9 without mixing package ownership.",
@@ -17,7 +17,7 @@
   "duration": "60 min",
   "durationMinutes": 60,
   "difficulty": "Beginner",
-  "topic": "Foundation",
+  "topic": "Ansible",
   "platform": "RHEL 9",
   "status": "Available",
   "hodNumber": 1,
@@ -1033,7 +1033,7 @@
   "demos": [
     {
       "id": "install-and-validate",
-      "demoId": "HOD-001-D01",
+      "demoId": "ANSIBLE-HOD-001-D01",
       "title": "Install Red Hat-provided ansible-core on RHEL 9",
       "objective": "Register a RHEL 9 system, install the Red Hat-provided ansible-core RPM from AppStream, record and reproduce its installed package baseline, inspect its content boundary, and validate it locally with ansible.builtin.ping.",
       "coverImage": "/demos/installing-ansible-core/demo-01-rhel-appstream.svg",
@@ -1355,7 +1355,7 @@
     },
     {
       "id": "install-upstream-from-pypi-rhel",
-      "demoId": "HOD-001-D02",
+      "demoId": "ANSIBLE-HOD-001-D02",
       "title": "Install upstream ansible-core with pip on RHEL 9",
       "objective": "Register RHEL, install a supported Python from subscribed repositories, isolate upstream ansible-core in a virtual environment, record and rebuild its exact Python package baseline, and verify its content boundary and runtime behavior.",
       "coverImage": "/demos/installing-ansible-core/demo-02-pip-venv.svg",
@@ -1757,7 +1757,7 @@
     },
     {
       "id": "install-upstream-with-pipx-rhel",
-      "demoId": "HOD-001-D03",
+      "demoId": "ANSIBLE-HOD-001-D03",
       "title": "Install upstream ansible-core with pipx on RHEL 9",
       "objective": "Register RHEL, install a supported Python and pipx, create an isolated upstream ansible-core application, record and recreate its exact package baseline, restore its pin, and verify its provenance, content boundary, and runtime behavior.",
       "coverImage": "/demos/installing-ansible-core/demo-03-pipx.svg",

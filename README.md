@@ -82,6 +82,7 @@ The project explicitly targets Chrome 125+, Edge 125+, Firefox 124+, Safari 17.3
 13. Keep every HOD independently useful. Do not add a linear next-step card or imply that learners must follow the HODs in sequence. When another published HOD is materially relevant, use an optional related-content link and describe it as an alternative or deeper reference rather than the required next lesson.
 14. Follow the enforced **Preview → Practice → Prove** structure. Give each demo outcomes and verification criteria, state its validation boundary, record its maintenance path, provide actionable next steps, and add an HOD-level recap with at least three durable takeaways.
 15. Sanitize recordings with `node scripts/sanitize-cast.mjs <file.cast>`, then run `pnpm validate:labs`, `pnpm lint`, and `pnpm build`. Test the exported root and dedicated demo route over local HTTP.
+16. Assign every HOD to exactly one technology-specific track through its `topic` field. The currently approved technology tracks are `Ansible` and `RHEL`. Number HODs independently inside each track and include that track in every public identifier: `ANSIBLE-HOD-001`, `ANSIBLE-HOD-002`, and `RHEL-HOD-001`. Demo IDs inherit the complete HOD ID, such as `RHEL-HOD-001-D01`. The catalog automatically includes every HOD in the default `All` filter, so do not duplicate `All` in lab metadata. Do not introduce another track without deliberately extending the schema, loader, catalog options, validator, and review standard together.
 
 Use this recording command for every terminal step:
 

@@ -27,7 +27,7 @@
   <rect width="1600" height="900" rx="48" fill="url(#grid)"/>
   <circle cx="800" cy="478" r="390" fill="url(#glow)"/>
 
-  <text x="90" y="104" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="31" font-weight="700">HOD-002</text>
+  <text x="90" y="104" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="31" font-weight="700">ANSIBLE-HOD-002</text>
   <text x="90" y="146" fill="#adc7d3" font-family="Inter, Arial, sans-serif" font-size="20" letter-spacing="2">RAJAT’S APPLIED TECHNOLOGY LAB</text>
 
   <g fill="none" stroke="#75ead6" stroke-opacity=".42" stroke-width="3">

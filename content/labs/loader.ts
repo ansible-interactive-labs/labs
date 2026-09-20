@@ -5,6 +5,8 @@ import type { Lab, LabSummary } from "./types";
 
 const labsDirectory = join(process.cwd(), "content", "labs");
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const supportedTopics = new Set(["Ansible", "RHEL"]);
+const topicIdPrefixes = { Ansible: "ANSIBLE", RHEL: "RHEL" } as const;
 
 const labFile = (slug: string) => join(labsDirectory, slug, "lab.json");
 
@@ -15,6 +17,11 @@ const assertLab = (value: unknown, source: string): Lab => {
   requiredStrings.forEach((key) => {
     if (typeof lab[key] !== "string" || !(lab[key] as string).trim()) throw new Error(`${source}: ${String(key)} is required`);
   });
+  if (!supportedTopics.has(lab.topic ?? "")) throw new Error(`${source}: topic must be Ansible or RHEL`);
+  const expectedHodId = lab.topic && lab.hodNumber
+    ? `${topicIdPrefixes[lab.topic]}-HOD-${String(lab.hodNumber).padStart(3, "0")}`
+    : "";
+  if (lab.hodId !== expectedHodId) throw new Error(`${source}: hodId must match its technology track and hodNumber (${expectedHodId})`);
   if (lab.schemaVersion !== 2) throw new Error(`${source}: unsupported schemaVersion`);
   if (!slugPattern.test(lab.slug ?? "")) throw new Error(`${source}: slug must use lowercase words separated by hyphens`);
   if (!Array.isArray(lab.demos)) throw new Error(`${source}: demos must be an array`);

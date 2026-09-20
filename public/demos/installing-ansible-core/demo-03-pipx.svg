@@ -9,7 +9,7 @@
   </defs>
   <rect width="1600" height="900" rx="48" fill="url(#bg)"/><rect width="1600" height="900" rx="48" fill="url(#grid)"/>
   <circle cx="810" cy="490" r="345" fill="#5de0c7" fill-opacity=".13" filter="url(#glow)"/>
-  <text x="90" y="100" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="30" font-weight="750">HOD-001-D03</text>
+  <text x="90" y="100" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="30" font-weight="750">ANSIBLE-HOD-001-D03</text>
   <text x="90" y="144" fill="#acd5d1" font-family="Inter,Arial,sans-serif" font-size="19" letter-spacing="2">UPSTREAM · ISOLATED CLI APPLICATION</text>
   <text x="90" y="238" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="54" font-weight="780">Isolation without manual activation</text>
   <text x="92" y="283" fill="#acd5d1" font-family="Inter,Arial,sans-serif" font-size="23">pipx-managed environment · launchers available on PATH</text>

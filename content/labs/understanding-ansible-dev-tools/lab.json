@@ -1,7 +1,7 @@
 {
   "$schema": "../schema.json",
   "schemaVersion": 2,
-  "hodId": "HOD-002",
+  "hodId": "ANSIBLE-HOD-002",
   "slug": "understanding-ansible-dev-tools",
   "title": "Getting started with ansible-dev-tools",
   "shortDescription": "Understand the ansible-dev-tools toolchain, compare its upstream and Red Hat delivery paths, and install the Red Hat-provided package on RHEL 9.",
@@ -12,7 +12,7 @@
   "duration": "26 min",
   "durationMinutes": 26,
   "difficulty": "Beginner",
-  "topic": "Ansible development tools",
+  "topic": "Ansible",
   "platform": "RHEL 9",
   "status": "Available",
   "seoTitle": "Install Red Hat ansible-dev-tools on RHEL 9",
@@ -578,7 +578,7 @@
   "demos": [
     {
       "id": "install-red-hat-adt-rhel",
-      "demoId": "HOD-002-D01",
+      "demoId": "ANSIBLE-HOD-002-D01",
       "title": "Install Red Hat ansible-dev-tools on RHEL 9",
       "objective": "Register RHEL, enable the matching Ansible Automation Platform repository, install the Red Hat ansible-dev-tools RPM, inventory its toolchain, and validate a generated project.",
       "coverImage": "/demos/understanding-ansible-dev-tools/demo-01-red-hat-rpm.svg",

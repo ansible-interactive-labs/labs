@@ -9,7 +9,7 @@
   </defs>
   <rect width="1600" height="900" rx="48" fill="url(#bg)"/><rect width="1600" height="900" rx="48" fill="url(#grid)"/>
   <circle cx="810" cy="465" r="330" fill="#ff4c47" fill-opacity=".14" filter="url(#glow)"/>
-  <text x="90" y="100" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="30" font-weight="750">HOD-001-D01</text>
+  <text x="90" y="100" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="30" font-weight="750">ANSIBLE-HOD-001-D01</text>
   <text x="90" y="144" fill="#dcb3ba" font-family="Inter,Arial,sans-serif" font-size="19" letter-spacing="2">RED HAT-PROVIDED INSTALLATION</text>
   <g font-family="Inter,Arial,sans-serif">
     <text x="90" y="238" fill="#fff" font-size="54" font-weight="780">AppStream to a working control node</text>

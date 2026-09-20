@@ -5,8 +5,10 @@ const root = process.cwd();
 const labsRoot = join(root, "content", "labs");
 const publicRoot = join(root, "public");
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const hodIdPattern = /^HOD-[0-9]{3,}$/;
-const demoIdPattern = /^HOD-[0-9]{3,}-D[0-9]{2,}$/;
+const hodIdPattern = /^(ANSIBLE|RHEL)-HOD-[0-9]{3,}$/;
+const demoIdPattern = /^(ANSIBLE|RHEL)-HOD-[0-9]{3,}-D[0-9]{2,}$/;
+const supportedTopics = new Set(["Ansible", "RHEL"]);
+const topicIdPrefixes = new Map([["Ansible", "ANSIBLE"], ["RHEL", "RHEL"]]);
 const imagePattern = /^\/demos\/.+\.(png|jpe?g|webp|svg)$/i;
 const maxImageBytes = 2 * 1024 * 1024;
 const maxLabImageBytes = 12 * 1024 * 1024;
@@ -119,6 +121,7 @@ for (const directory of directories) {
   ["seoTitle", "seoDescription", "audience"].forEach((key) => {
     if (lab[key] !== undefined && !nonEmptyString(lab[key])) fail(directory, `${key} must be a non-empty string when supplied`);
   });
+  if (!supportedTopics.has(lab.topic)) fail(directory, "topic must be one of the supported technology tracks: Ansible or RHEL");
   if (lab.socialImage !== undefined && !/^\/demos\/.+\.(png|jpe?g|webp)$/i.test(lab.socialImage)) {
     fail(directory, "socialImage must be a PNG, JPG, or WebP path under /demos");
   }
@@ -136,13 +139,14 @@ for (const directory of directories) {
   if (!Number.isInteger(lab.durationMinutes) || lab.durationMinutes < 1) fail(directory, "durationMinutes must be a positive integer");
   if (!Number.isInteger(lab.publishedOrder) || lab.publishedOrder < 0) fail(directory, "publishedOrder must be a non-negative integer");
   if (!Number.isInteger(lab.hodNumber) || lab.hodNumber < 1) fail(directory, "hodNumber must be a positive integer");
-  if (hodNumbers.has(lab.hodNumber)) fail(directory, `duplicate hodNumber ${lab.hodNumber}`);
-  hodNumbers.add(lab.hodNumber);
-  if (!hodIdPattern.test(lab.hodId ?? "")) fail(directory, "hodId must use the format HOD-001");
+  const trackNumber = `${lab.topic}:${lab.hodNumber}`;
+  if (hodNumbers.has(trackNumber)) fail(directory, `duplicate hodNumber ${lab.hodNumber} in the ${lab.topic} track`);
+  hodNumbers.add(trackNumber);
+  if (!hodIdPattern.test(lab.hodId ?? "")) fail(directory, "hodId must use a track-qualified format such as ANSIBLE-HOD-001 or RHEL-HOD-001");
   if (hodIds.has(lab.hodId)) fail(directory, `duplicate hodId ${lab.hodId}`);
   hodIds.add(lab.hodId);
-  const expectedHodId = `HOD-${String(lab.hodNumber).padStart(3, "0")}`;
-  if (lab.hodId !== expectedHodId) fail(directory, `hodId must match hodNumber (${expectedHodId})`);
+  const expectedHodId = `${topicIdPrefixes.get(lab.topic)}-HOD-${String(lab.hodNumber).padStart(3, "0")}`;
+  if (lab.hodId !== expectedHodId) fail(directory, `hodId must match its technology track and hodNumber (${expectedHodId})`);
   if (orders.has(lab.publishedOrder)) warn(directory, `publishedOrder ${lab.publishedOrder} is shared with another lab`);
   orders.add(lab.publishedOrder);
   if (!["Beginner", "Intermediate", "Expert"].includes(lab.difficulty)) fail(directory, "difficulty is invalid");
@@ -332,7 +336,7 @@ for (const directory of directories) {
     if (!slugPattern.test(demo?.id ?? "")) fail(sourceName, "id must contain lowercase words separated by hyphens");
     if (demoIds.has(demo?.id)) fail(sourceName, `duplicate demo id ${demo.id}`);
     demoIds.add(demo?.id);
-    if (!demoIdPattern.test(demo?.demoId ?? "")) fail(sourceName, "demoId must use the format HOD-001-D01");
+    if (!demoIdPattern.test(demo?.demoId ?? "")) fail(sourceName, "demoId must use a track-qualified format such as ANSIBLE-HOD-001-D01");
     if (!demo?.demoId?.startsWith(`${lab.hodId}-D`)) fail(sourceName, `demoId must begin with ${lab.hodId}-D`);
     if (demoTrackingIds.has(demo?.demoId)) fail(sourceName, `duplicate demoId ${demo.demoId}`);
     demoTrackingIds.add(demo?.demoId);

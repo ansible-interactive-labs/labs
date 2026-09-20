@@ -222,6 +222,8 @@ export type LabDemo = {
   };
 };
 
+export type LabTopic = "Ansible" | "RHEL";
+
 export type Lab = {
   schemaVersion: 2;
   hodId: string;
@@ -240,7 +242,7 @@ export type Lab = {
   duration: string;
   durationMinutes: number;
   difficulty: "Beginner" | "Intermediate" | "Expert";
-  topic: string;
+  topic: LabTopic;
   platform: string;
   status: "Available" | "Coming soon";
   hodNumber: number;

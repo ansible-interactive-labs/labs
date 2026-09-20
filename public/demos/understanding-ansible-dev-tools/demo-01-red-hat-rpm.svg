@@ -9,7 +9,7 @@
   <rect width="1600" height="900" rx="48" fill="url(#bg)"/>
   <circle cx="1370" cy="120" r="250" fill="#ee0000" opacity=".09"/>
   <circle cx="160" cy="820" r="310" fill="#54d3c2" opacity=".08"/>
-  <text x="110" y="105" fill="#70e1d2" font-family="system-ui,sans-serif" font-size="28" font-weight="700" letter-spacing="4">HOD-002-D01</text>
+  <text x="110" y="105" fill="#70e1d2" font-family="system-ui,sans-serif" font-size="28" font-weight="700" letter-spacing="4">ANSIBLE-HOD-002-D01</text>
   <text x="110" y="176" fill="#fff" font-family="system-ui,sans-serif" font-size="52" font-weight="750">Red Hat-provided development toolchain</text>
   <text x="110" y="225" fill="#b9cbd4" font-family="system-ui,sans-serif" font-size="25">Register · enable · install · verify · create · lint</text>
   <g filter="url(#shadow)">

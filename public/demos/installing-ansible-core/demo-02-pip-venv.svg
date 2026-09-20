@@ -9,7 +9,7 @@
   </defs>
   <rect width="1600" height="900" rx="48" fill="url(#bg)"/><rect width="1600" height="900" rx="48" fill="url(#grid)"/>
   <circle cx="875" cy="500" r="330" fill="#7a8cff" fill-opacity=".16" filter="url(#glow)"/>
-  <text x="90" y="100" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="30" font-weight="750">HOD-001-D02</text>
+  <text x="90" y="100" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="30" font-weight="750">ANSIBLE-HOD-001-D02</text>
   <text x="90" y="144" fill="#b6c7e5" font-family="Inter,Arial,sans-serif" font-size="19" letter-spacing="2">UPSTREAM · MANUAL VIRTUAL ENVIRONMENT</text>
   <text x="90" y="238" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="54" font-weight="780">Project-level Python isolation</text>
   <text x="92" y="283" fill="#b6c7e5" font-family="Inter,Arial,sans-serif" font-size="23">Python 3.12 · venv activation · pip ownership</text>

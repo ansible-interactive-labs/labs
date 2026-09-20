@@ -14,12 +14,12 @@ const pageSize = 12;
 export default function DemoCatalog({ labs }: { labs: LabSummary[] }) {
   const [query, setQuery] = useState("");
   const [difficulty, setDifficulty] = useState("All levels");
-  const [topic, setTopic] = useState("All topics");
+  const [topic, setTopic] = useState("All");
   const [sort, setSort] = useState("Recommended");
   const [visibleCount, setVisibleCount] = useState(pageSize);
 
   const difficulties = ["All levels", ...new Set(labs.map((lab) => lab.difficulty))];
-  const topics = ["All topics", ...new Set(labs.map((lab) => lab.topic))];
+  const topics: Array<"All" | LabSummary["topic"]> = ["All", "Ansible", "RHEL"];
 
   const filteredLabs = useMemo(() => {
     const search = query.trim().toLowerCase();
@@ -29,11 +29,11 @@ export default function DemoCatalog({ labs }: { labs: LabSummary[] }) {
         .toLowerCase()
         .includes(search);
       const matchesDifficulty = difficulty === "All levels" || lab.difficulty === difficulty;
-      const matchesTopic = topic === "All topics" || lab.topic === topic;
+      const matchesTopic = topic === "All" || lab.topic === topic;
       return matchesQuery && matchesDifficulty && matchesTopic;
     });
     return matches.sort((a, b) => {
-      if (sort === "Newest") return b.hodNumber - a.hodNumber;
+      if (sort === "Newest") return b.publishedOrder - a.publishedOrder;
       if (sort === "Title A–Z") return a.title.localeCompare(b.title);
       if (sort === "Shortest") return a.durationMinutes - b.durationMinutes;
       return a.publishedOrder - b.publishedOrder;
@@ -48,7 +48,7 @@ export default function DemoCatalog({ labs }: { labs: LabSummary[] }) {
       <div className="catalog-tools" role="search" aria-label="Filter interactive demos">
         <label className="search-field">
           <span>Search demos</span>
-          <input value={query} onChange={(event) => { setQuery(event.target.value); resetPage(); }} placeholder="Search commands, topics, or platforms" />
+          <input value={query} onChange={(event) => { setQuery(event.target.value); resetPage(); }} placeholder="Search demos, commands, or platforms" />
         </label>
         <label>
           <span>Difficulty</span>
@@ -109,7 +109,7 @@ export default function DemoCatalog({ labs }: { labs: LabSummary[] }) {
         <div className="empty-results">
           <strong>No demos match those filters.</strong>
           <p>Clear the search or choose a different topic.</p>
-          <button type="button" onClick={() => { setQuery(""); setDifficulty("All levels"); setTopic("All topics"); setSort("Recommended"); resetPage(); }}>Clear filters</button>
+          <button type="button" onClick={() => { setQuery(""); setDifficulty("All levels"); setTopic("All"); setSort("Recommended"); resetPage(); }}>Clear filters</button>
         </div>
       )}
     </>

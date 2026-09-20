@@ -1,4 +1,4 @@
-# HOD-002 Content Review
+# ANSIBLE-HOD-002 Content Review
 
 ## Readiness
 
@@ -13,13 +13,13 @@ The theory, comparison, support guidance, lifecycle guidance, and recorded Red H
 - The current upstream package requirement is described from package metadata. Learners are directed to check the metadata for the release they intend to install rather than assuming a Python requirement indefinitely.
 - The audience statement identifies the developer, platform-engineering, administrator, and learner profiles for whom the HOD is intended.
 - An execution environment is defined as a container image containing ansible-core, collections, Python dependencies, and system dependencies. The page makes clear that installing ADT neither creates nor validates one.
-- The upstream pointer links to HOD-001 only for its Python-isolation concepts. It does not present HOD-001 as an exact ADT procedure, and it warns that pipx does not expose dependency applications by default.
+- The upstream pointer links to ANSIBLE-HOD-001 only for its Python-isolation concepts. It does not present ANSIBLE-HOD-001 as an exact ADT procedure, and it warns that pipx does not expose dependency applications by default.
 - Registration and verification use `rhc connect` and `rhc status`. No learner workflow shows `subscription-manager register` or `subscription-manager status`.
-- HODs remain standalone demonstrations. HOD-002 does not contain a linear next-HOD card; its related-HOD link is an optional reference for learners who want background on upstream Python isolation.
+- HODs remain standalone demonstrations. ANSIBLE-HOD-002 does not contain a linear next-HOD card; its related-HOD link is an optional reference for learners who want background on upstream Python isolation.
 
 ## Learner experience
 
-- HOD-002-D01 contains eleven descriptive action-and-object steps.
+- ANSIBLE-HOD-002-D01 contains eleven descriptive action-and-object steps.
 - The first step checks RHEL, architecture, hostname, `ansible-dev-tools`, `podman`, and `container-tools`, preventing a pre-existing container package from silently changing the recorded workflow.
 - Every command has a concise explanation, expected result, troubleshooting guidance, and symptom-focused recovery guidance.
 - Package queries prove RPM ownership; installed DNF metadata records the ansible-dev-tools and Podman versions, architectures, source RPMs, and originating repositories; `adt --version` inventories the active executables; `podman info` proves local rootless engine initialization; `ansible-creator` and `ansible-lint` prove basic integrated work.
@@ -71,4 +71,4 @@ The theory, comparison, support guidance, lifecycle guidance, and recorded Red H
 
 ## Approval conclusion
 
-HOD-002 satisfies the eight-role review, Preview → Practice → Prove structure, focused troubleshooting standard, portable-path rule, package-provenance requirement, and explicit validation-boundary requirement. Final publication still depends on repository validation, lint, build, replay safety checks, and route-level browser checks.
+ANSIBLE-HOD-002 satisfies the eight-role review, Preview → Practice → Prove structure, focused troubleshooting standard, portable-path rule, package-provenance requirement, and explicit validation-boundary requirement. Final publication still depends on repository validation, lint, build, replay safety checks, and route-level browser checks.

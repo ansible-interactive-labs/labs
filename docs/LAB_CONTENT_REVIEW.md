@@ -69,6 +69,8 @@ Review each lab through all of these lenses:
 - Every HOD uses a dedicated 16:9 editorial cover that represents its subject; recording frames and step screenshots are not used as catalog artwork.
 - Every demo module uses its own 16:9 editorial cover that represents the specific workflow. It must differ from the HOD cover, every sibling demo cover, and every step image, including when the HOD contains only one demo.
 - Each HOD may contain one or more demo modules. Every module has its own objective, duration, steps, verification checks, step-specific recovery guidance, and optional cleanup.
+- Assign the HOD to one approved technology-specific track through `topic`. The current technology tracks are `Ansible` and `RHEL`. Every HOD must also appear automatically under the default `All` filter, while a technology filter must show only HODs assigned to that track.
+- Number HODs within their technology track, not across the global catalog. Require a track-qualified HOD ID such as `ANSIBLE-HOD-001` or `RHEL-HOD-001`, and require every demo ID to inherit that full identifier.
 - Preview each demo's existing verification criteria on its Start Demo screen so learners know what successful evidence will look like before they begin.
 - Give every recorded demo a copyable completion record that identifies the installation method, artifact source and owner, resolved version, runtime, executable, and functional result. Use placeholders when the learner must supply output from their own environment.
 - Record the maintenance path that owns future updates, state what the final check does and does not prove, and give the learner two to six concrete next actions.
