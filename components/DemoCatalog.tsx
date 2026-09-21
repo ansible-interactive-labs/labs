@@ -24,7 +24,7 @@ export default function DemoCatalog({ labs }: { labs: LabSummary[] }) {
   const filteredLabs = useMemo(() => {
     const search = query.trim().toLowerCase();
     const matches = labs.filter((lab) => {
-      const matchesQuery = !search || [lab.title, lab.description, lab.topic, lab.platform, ...lab.tags]
+      const matchesQuery = !search || [lab.title, lab.description, lab.topic, lab.platform, ...lab.tags, ...(lab.plannedDemos ?? []).flatMap((demo) => [demo.demoId, demo.title, demo.audience])]
         .join(" ")
         .toLowerCase()
         .includes(search);
@@ -86,6 +86,15 @@ export default function DemoCatalog({ labs }: { labs: LabSummary[] }) {
                 <div className="tags"><span>{lab.difficulty}</span></div>
                 <h3>{lab.title}</h3>
                 <p>{lab.description}</p>
+                {lab.plannedDemos?.length ? <div className="catalog-planned-demos">
+                  <strong>{lab.plannedDemos.length === 1 ? "Planned demonstration" : "Planned demonstrations"}</strong>
+                  <ol>
+                    {lab.plannedDemos.map((demo) => <li key={demo.demoId}>
+                      <span>{demo.demoId}</span>
+                      {demo.title}
+                    </li>)}
+                  </ol>
+                </div> : null}
                 <ul className="outcomes">
                   {lab.outcomes.slice(0, 3).map((outcome) => <li key={outcome}>{outcome}</li>)}
                 </ul>

@@ -416,9 +416,17 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
         <section className="demo-modules" aria-labelledby="demonstrations-title">
           <div className="demo-modules-heading">
             <p className="eyebrow"><span /> Demonstrations in preparation</p>
-            <h2 id="demonstrations-title">The reference page is ready</h2>
-            <p>The recorded installation and workflow demonstrations will be added after their commands, environments, and expected results have been tested.</p>
+            <h2 id="demonstrations-title">{lab.plannedDemos?.length === 1 ? "One focused demonstration is planned" : `${lab.plannedDemos?.length ?? 0} focused demonstrations are planned`}</h2>
+            <p>The theory reference is ready. Recordings will be added only after their commands, environments, expected results, and recovery paths have been tested.</p>
           </div>
+          {lab.plannedDemos?.length ? <div className="planned-demo-grid">
+            {lab.plannedDemos.map((demo) => <article className="planned-demo-card" key={demo.demoId}>
+              <div><span>{demo.demoId}</span><em>{demo.level}</em></div>
+              <h3>{demo.title}</h3>
+              <p>{demo.objective}</p>
+              <strong>{demo.audience}</strong>
+            </article>)}
+          </div> : null}
         </section>
       )}
 

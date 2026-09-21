@@ -5,6 +5,7 @@ const root = process.cwd();
 const labsRoot = join(root, "content", "labs");
 const publicRoot = join(root, "public");
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const demoFilePattern = /^demos\/[a-z0-9]+(?:-[a-z0-9]+)*\.json$/;
 const hodIdPattern = /^(ANSIBLE|RHEL)-HOD-[0-9]{3,}$/;
 const demoIdPattern = /^(ANSIBLE|RHEL)-HOD-[0-9]{3,}-D[0-9]{2,}$/;
 const supportedTopics = new Set(["Ansible", "RHEL"]);
@@ -100,16 +101,66 @@ for (const directory of directories) {
       if (section.length < 40) fail(directory, `${heading} must contain a substantive review finding`);
     });
   }
-  let lab;
+  let manifest;
   try {
-    lab = JSON.parse(readFileSync(source, "utf8"));
+    manifest = JSON.parse(readFileSync(source, "utf8"));
   } catch (error) {
     fail(directory, `invalid JSON (${error.message})`);
     continue;
   }
-  validatePortableCommandPaths(lab, directory);
+  if (Object.hasOwn(manifest, "demos")) {
+    fail(directory, "embedded demos are not allowed; store each demo under demos/ and reference it through demoFiles");
+  }
+  if (!Array.isArray(manifest.demoFiles)) {
+    fail(directory, "demoFiles must be an array");
+    manifest.demoFiles = [];
+  }
+  if (new Set(manifest.demoFiles).size !== manifest.demoFiles.length) {
+    fail(directory, "demoFiles must not contain duplicate paths");
+  }
+  const demos = [];
+  const referencedDemoFiles = new Set();
+  manifest.demoFiles.forEach((relativePath, demoIndex) => {
+    if (!nonEmptyString(relativePath) || !demoFilePattern.test(relativePath)) {
+      fail(directory, `demoFiles[${demoIndex}] must match demos/<slug>.json`);
+      return;
+    }
+    referencedDemoFiles.add(relativePath);
+    const demoSource = join(labsRoot, directory, relativePath);
+    if (!existsSync(demoSource)) {
+      fail(directory, `demo file does not exist: ${relativePath}`);
+      return;
+    }
+    let demoFile;
+    try {
+      demoFile = JSON.parse(readFileSync(demoSource, "utf8"));
+    } catch (error) {
+      fail(relativePath, `invalid JSON (${error.message})`);
+      return;
+    }
+    if (demoFile.schemaVersion !== 1) fail(relativePath, "schemaVersion must be 1");
+    if (demoFile.hodId !== manifest.hodId) fail(relativePath, `hodId must match ${manifest.hodId}`);
+    if (demoFile.$schema !== "../../demo.schema.json") fail(relativePath, "$schema must reference ../../demo.schema.json");
+    const demo = { ...demoFile };
+    delete demo.$schema;
+    delete demo.schemaVersion;
+    delete demo.hodId;
+    validatePortableCommandPaths(demo, relativePath);
+    demos.push(demo);
+  });
+  const demosDirectory = join(labsRoot, directory, "demos");
+  if (existsSync(demosDirectory)) {
+    readdirSync(demosDirectory, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && entry.name.endsWith(".json"))
+      .forEach((entry) => {
+        const relativePath = `demos/${entry.name}`;
+        if (!referencedDemoFiles.has(relativePath)) fail(directory, `unreferenced demo file: ${relativePath}`);
+      });
+  }
+  const lab = { ...manifest, demos };
+  validatePortableCommandPaths(manifest, directory);
 
-  if (lab.schemaVersion !== 2) fail(directory, "schemaVersion must be 2");
+  if (lab.schemaVersion !== 3) fail(directory, "schemaVersion must be 3");
   if (!slugPattern.test(lab.slug ?? "")) fail(directory, "slug must contain lowercase words separated by hyphens");
   if (lab.slug !== directory) fail(directory, `directory name must match slug ${lab.slug ?? "(missing)"}`);
   if (slugs.has(lab.slug)) fail(directory, `duplicate slug ${lab.slug}`);
@@ -155,9 +206,26 @@ for (const directory of directories) {
   ["tags", "outcomes", "prerequisites"].forEach((key) => {
     if (!Array.isArray(lab[key]) || lab[key].length === 0) fail(directory, `${key} must contain at least one item`);
   });
-  if (!Array.isArray(lab.demos)) fail(directory, "demos must be an array");
+  if (!Array.isArray(lab.demoFiles)) fail(directory, "demoFiles must be an array");
+  if (lab.plannedDemos !== undefined) {
+    if (!Array.isArray(lab.plannedDemos) || lab.plannedDemos.length === 0) {
+      fail(directory, "plannedDemos must contain at least one planned demonstration when provided");
+    }
+    const plannedIds = new Set();
+    (lab.plannedDemos ?? []).forEach((demo, index) => {
+      const sourceName = `plannedDemos[${index}]`;
+      if (!demoIdPattern.test(demo?.demoId ?? "")) fail(directory, `${sourceName}.demoId must use a track-qualified demo ID`);
+      if (!(demo?.demoId ?? "").startsWith(`${lab.hodId}-D`)) fail(directory, `${sourceName}.demoId must belong to ${lab.hodId}`);
+      if (plannedIds.has(demo.demoId)) fail(directory, `${sourceName}.demoId must be unique within the HOD`);
+      plannedIds.add(demo.demoId);
+      ["title", "audience", "objective"].forEach((key) => {
+        if (!nonEmptyString(demo?.[key])) fail(directory, `${sourceName}.${key} must be a non-empty string`);
+      });
+      if (!["Beginner", "Intermediate", "Expert"].includes(demo?.level)) fail(directory, `${sourceName}.level is invalid`);
+    });
+  }
   if (lab.status === "Available") {
-    if (lab.demos?.length === 0) fail(directory, "an available HOD must contain at least one demo");
+    if (lab.demoFiles?.length === 0) fail(directory, "an available HOD must reference at least one demo file");
     ["seoTitle", "seoDescription", "socialImage", "socialImageWidth", "socialImageHeight", "recap"].forEach((key) => {
       if (lab[key] === undefined || lab[key] === "") fail(directory, `${key} is required for an available HOD`);
     });

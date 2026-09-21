@@ -222,10 +222,25 @@ export type LabDemo = {
   };
 };
 
+export type LabDemoFile = LabDemo & {
+  $schema?: string;
+  schemaVersion: 1;
+  hodId: string;
+};
+
+export type LabPlannedDemo = {
+  demoId: string;
+  title: string;
+  audience: string;
+  objective: string;
+  level: "Beginner" | "Intermediate" | "Expert";
+};
+
 export type LabTopic = "Ansible" | "RHEL";
 
-export type Lab = {
-  schemaVersion: 2;
+export type LabManifest = {
+  $schema?: string;
+  schemaVersion: 3;
   hodId: string;
   slug: string;
   title: string;
@@ -261,6 +276,11 @@ export type Lab = {
     items: LabGuidanceCallout[];
   };
   comparisons?: LabComparison[];
+  plannedDemos?: LabPlannedDemo[];
+  demoFiles: string[];
+};
+
+export type Lab = LabManifest & {
   demos: LabDemo[];
 };
 
@@ -285,4 +305,5 @@ export type LabSummary = Pick<Lab,
 > & {
   stepCount: number;
   demoCount: number;
+  plannedDemos?: LabPlannedDemo[];
 };

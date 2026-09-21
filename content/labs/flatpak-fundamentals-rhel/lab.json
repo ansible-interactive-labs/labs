@@ -1,0 +1,703 @@
+{
+  "$schema": "../schema.json",
+  "schemaVersion": 3,
+  "hodId": "RHEL-HOD-001",
+  "slug": "flatpak-fundamentals-rhel",
+  "title": "Flatpak fundamentals and runtime administration on RHEL",
+  "shortDescription": "Learn how Flatpak applications, runtimes, remotes, installations, sandboxes, portals, updates, and removal work on RHEL.",
+  "description": "This administrator HOD explains the Flatpak application-delivery model from first principles. It follows an application from a remote through runtime resolution, local deployment, sandbox launch, portal-mediated desktop access, update, and removal, then helps administrators decide when Flatpak is preferable to an RPM or an OCI container.",
+  "audience": "Linux administrators, desktop support engineers, technical consultants, students, and architects who need to install, inspect, update, and remove Flatpak desktop applications and runtimes on RHEL.",
+  "coverImage": "/demos/flatpak-fundamentals-rhel/cover.svg",
+  "coverAlt": "Layered Flatpak architecture showing an application, runtime, sandbox, portals, remote, and a RHEL host",
+  "duration": "35 min",
+  "durationMinutes": 35,
+  "difficulty": "Beginner",
+  "topic": "RHEL",
+  "platform": "RHEL 9 and RHEL 10",
+  "status": "Coming soon",
+  "hodNumber": 1,
+  "publishedOrder": 3,
+  "tags": [
+    "Flatpak",
+    "RHEL",
+    "Linux desktop",
+    "runtimes",
+    "sandboxing",
+    "portals"
+  ],
+  "outcomes": [
+    "Explain what Flatpak is and which desktop application-delivery problem it addresses",
+    "Trace an application from a remote through runtime resolution, installation, launch, update, and removal",
+    "Distinguish applications, runtimes, remotes, refs, commits, deployments, and system or user installations",
+    "Explain how bubblewrap, Linux namespaces, seccomp, permissions, and portals shape the sandbox",
+    "Compare Flatpak with native RPM packages and Podman-managed OCI containers",
+    "Install and inspect an application and its runtime without confusing Flatpak content with the host RPM database"
+  ],
+  "overview": {
+    "title": "What is Flatpak?",
+    "introduction": "Flatpak is an open source system for building, distributing, and running sandboxed desktop applications on Linux. A publisher targets a named, versioned runtime and can bundle additional application-specific libraries. Flatpak installs the application and runtime independently of the host RPM database, then launches the application in a restricted environment with only declared or user-mediated access to host resources. The result is a more consistent application environment across Linux distributions, but the administrator must still choose the remote, installation scope, update policy, permissions, and support path.",
+    "itemsLabel": "Core parts of the Flatpak model",
+    "items": [
+      {
+        "title": "Application",
+        "detail": "The application payload is mounted at /app inside the sandbox. A reverse-DNS application ID, architecture, and branch identify its update stream."
+      },
+      {
+        "title": "Runtime",
+        "detail": "A versioned, distribution-independent base supplies common libraries and utilities under /usr. Applications can share one runtime, and several runtime branches can coexist."
+      },
+      {
+        "title": "Sandbox",
+        "detail": "bubblewrap assembles an isolated process environment with Linux namespaces, bind mounts, and seccomp filtering. The application still uses the RHEL host kernel."
+      },
+      {
+        "title": "Portal",
+        "detail": "A portal brokers a narrow desktop action such as choosing a file, printing, opening a URI, or taking a screenshot without granting broad permanent host access."
+      },
+      {
+        "title": "Remote",
+        "detail": "A remote identifies a content source that publishes applications, runtimes, metadata, trust information, and updates. The source determines provenance and lifecycle ownership."
+      },
+      {
+        "title": "Installation",
+        "detail": "Flatpak stores versioned deployments in a local repository. System installations serve all users; --user installations belong to the current user; named installations support additional managed scopes."
+      }
+    ],
+    "note": "Flatpak is designed primarily for desktop applications. It does not replace RPMs that provide the operating system, kernel modules, drivers, system services, privileged host utilities, or libraries consumed directly by RHEL."
+  },
+  "prerequisites": [
+    {
+      "label": "Knowledge",
+      "value": "Basic Linux administration",
+      "detail": "Be comfortable with packages, repositories, users, files, processes, and the distinction between a desktop application and an operating-system service."
+    },
+    {
+      "label": "System",
+      "value": "RHEL desktop test host",
+      "detail": "The future demonstration will use a non-production RHEL desktop with network access, a graphical session, and an account permitted to install or administer the selected scope."
+    },
+    {
+      "label": "Source decision",
+      "value": "Approved Flatpak remote",
+      "detail": "Know which remote will supply the application and runtime. The remote name alone is local configuration; record its actual URL or registry and publisher."
+    },
+    {
+      "label": "Scope decision",
+      "value": "System or user installation",
+      "detail": "Decide whether the application should be available to every user or only the current user. Use that scope consistently when searching, installing, inspecting, updating, and removing content."
+    },
+    {
+      "label": "Environment readiness",
+      "value": "Architecture, storage, network, and desktop",
+      "detail": "Confirm that the remote publishes the required architecture, sufficient storage is available for the application and runtime, DNS and required HTTPS endpoints are reachable through any proxy or TLS inspection layer, and the graphical session has a working portal backend."
+    }
+  ],
+  "prerequisiteCallouts": [
+    {
+      "title": "RHEL support depends on both the release and the content source",
+      "paragraphs": [
+        "On RHEL 9, the Flatpak package manager is fully supported while Red Hat-provided Flatpak applications are documented as Technology Preview. Third-party Flatpak applications are not supported by Red Hat.",
+        "RHEL 10 documents supported Red Hat applications from a Red Hat Flatpak remote. Always verify the deployed RHEL release and selected application rather than assuming that every Flatpak has the same support status."
+      ],
+      "links": [
+        {
+          "href": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/administering_the_system_using_the_gnome_desktop_environment/assembly_installing-applications-using-flatpak_administering-the-system-using-the-gnome-desktop-environment",
+          "label": "Review the RHEL 9 Flatpak guidance"
+        },
+        {
+          "href": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html/administering_rhel_by_using_the_gnome_desktop_environment/installing-applications-by-using-flatpak",
+          "label": "Review the RHEL 10 Flatpak guidance"
+        }
+      ]
+    },
+    {
+      "title": "Why administrators use Flatpak",
+      "paragraphs": [
+        "Flatpak separates a desktop application's user-space dependencies from the RHEL host, allows several runtime branches to coexist, and limits host interaction through an explicit sandbox and portal model. This can reduce dependency conflict and make application behavior more consistent across supported desktop systems.",
+        "Those benefits do not remove operational responsibility. Administrators still approve the content source, installation scope, runtime lifecycle, permissions, authentication, update path, storage use, support boundary, and removal policy."
+      ],
+      "links": [
+        {
+          "href": "https://docs.flatpak.org/en/latest/introduction.html",
+          "label": "Review Flatpak's intended benefits and limits"
+        }
+      ]
+    },
+    {
+      "title": "Reference scenario: a managed Thunderbird desktop application",
+      "paragraphs": [
+        "The theory uses Mozilla Thunderbird as a concrete administrator scenario: the learner evaluates its source, installs the org.mozilla.Thunderbird application and required runtime, inspects the deployment and permissions, applies an update, and later reviews removal and retained user data.",
+        "The recording will use this application only if it is available for the tested RHEL release, architecture, approved remote, and support boundary. If the environment requires another application, the same evidence model and terminology will be retained."
+      ],
+      "links": [
+        {
+          "href": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html/administering_rhel_by_using_the_gnome_desktop_environment/installing-applications-by-using-flatpak",
+          "label": "Review Red Hat's documented Thunderbird example"
+        }
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "title": "Follow the Flatpak lifecycle",
+      "introduction": "Flatpak is a chain of distinct responsibilities. A remote publishes versioned content; a local installation stores deployments; a runtime supplies the common user space; bubblewrap creates the sandbox; and portals mediate selected desktop interactions. Following the chain prevents every problem from being treated as an application failure.",
+      "eyebrow": "How Flatpak works",
+      "notesLabel": "Boundaries to keep clear",
+      "notes": [
+        {
+          "title": "The host kernel is shared",
+          "detail": "A Flatpak application does not boot a guest operating system. Its processes use the RHEL kernel while namespaces, mounts, seccomp rules, and permissions restrict what they can observe or access.",
+          "reference": {
+            "label": "Review Flatpak's underlying technologies",
+            "href": "https://docs.flatpak.org/en/latest/under-the-hood.html"
+          }
+        },
+        {
+          "title": "The runtime is not RHEL",
+          "detail": "The runtime supplies a stable user-space dependency set inside the sandbox. Kernel interfaces and explicitly exposed graphics, devices, files, sockets, and desktop services still cross the host boundary."
+        },
+        {
+          "title": "Sandboxed does not mean trusted",
+          "detail": "Permissions can expose files, devices, network access, sockets, or D-Bus services. Evaluate the publisher, remote, content, and effective access before installation."
+        }
+      ],
+      "summaryLabel": "Application lifecycle",
+      "rowHeader": "Stage",
+      "columns": [
+        "What happens",
+        "Administrator checkpoint"
+      ],
+      "rows": [
+        {
+          "aspect": "1. Configure a remote",
+          "values": [
+            "The administrator adds or receives a remote definition that points to an OSTree or OCI-backed content source and its trust configuration.",
+            "Verify the actual endpoint, publisher, authentication, installation scope, priority, filtering, and support boundary before using the friendly remote name."
+          ]
+        },
+        {
+          "aspect": "2. Select a ref",
+          "values": [
+            "Flatpak resolves an application ID to a kind, architecture, branch, and remote. The complete ref defines the selected update stream.",
+            "Confirm the origin, branch, architecture, application description, permissions, and runtime dependency before installation."
+          ]
+        },
+        {
+          "aspect": "3. Resolve the runtime",
+          "values": [
+            "The application declares a runtime branch. Flatpak installs it when absent and can share it with other compatible applications.",
+            "Record who publishes the runtime, its lifecycle, storage impact, and whether the application also bundles privately maintained libraries."
+          ]
+        },
+        {
+          "aspect": "4. Deploy versioned content",
+          "values": [
+            "Content-addressed objects are pulled into the chosen local installation and checked out as versioned application and runtime deployments.",
+            "Keep system and user installations distinct. Flatpak deployments and their history are separate from RPM transactions on the host."
+          ]
+        },
+        {
+          "aspect": "5. Assemble the sandbox",
+          "values": [
+            "At launch, bubblewrap presents the runtime as /usr, the application as /app, private application data, and only permitted host resources.",
+            "Inspect permissions rather than assuming isolation is complete, and avoid broad overrides as a first troubleshooting step."
+          ]
+        },
+        {
+          "aspect": "6. Use portals and exports",
+          "values": [
+            "Desktop launchers, icons, and AppStream metadata make the application discoverable, while portals broker selected host actions through desktop-specific backends.",
+            "Test the actual desktop workflow, including prompts, denied access, exported metadata, and behavior with clean portal state."
+          ]
+        },
+        {
+          "aspect": "7. Update or remove",
+          "values": [
+            "The application and runtime can update independently. Removal deletes the selected ref, while application data and shared or unused runtimes may remain.",
+            "Review changes before updating, understand application-data retention, and identify unused runtimes explicitly rather than deleting shared content blindly."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "Flatpak basic concepts",
+          "href": "https://docs.flatpak.org/en/latest/basic-concepts.html"
+        },
+        {
+          "label": "Flatpak under the hood",
+          "href": "https://docs.flatpak.org/en/latest/under-the-hood.html"
+        }
+      ]
+    },
+    {
+      "title": "Understand runtimes and dependency ownership",
+      "introduction": "A Flatpak runtime is a versioned user-space platform shared by applications. It makes the application environment more consistent, but it is neither the RHEL host nor a complete copy of every application dependency. Administrators need to know which layer supplies a library before they can assess storage, updates, vulnerabilities, or support.",
+      "eyebrow": "Runtime fundamentals",
+      "summaryLabel": "Dependency layers",
+      "rowHeader": "Layer",
+      "columns": [
+        "Provides",
+        "Lifecycle owner"
+      ],
+      "rows": [
+        {
+          "aspect": "RHEL host",
+          "values": [
+            "The kernel, device interfaces, system services, desktop session, Flatpak package, portal implementation, graphics integration, and resources explicitly exposed to the sandbox.",
+            "The RHEL administrator updates the host through supported RPM repositories and follows the RHEL lifecycle and support policy."
+          ]
+        },
+        {
+          "aspect": "Runtime",
+          "values": [
+            "Common user-space libraries and utilities mounted at /usr inside the sandbox. Several applications can share one branch, and multiple branches can coexist.",
+            "The runtime publisher provides updated runtime commits. Administrators must track runtime end-of-life and ensure required applications migrate."
+          ]
+        },
+        {
+          "aspect": "Application",
+          "values": [
+            "Application code and dependencies bundled under /app because they are absent from the runtime or intentionally controlled by the publisher.",
+            "The application publisher rebuilds and republishes bundled libraries. A runtime update cannot patch private content under /app."
+          ]
+        },
+        {
+          "aspect": "Extensions",
+          "values": [
+            "Optional or split content such as Locale, Debug, Sources, drivers, plug-ins, or framework extensions associated with an application or runtime.",
+            "The extension publisher maintains compatibility with its parent ref. Clients may download only applicable subsets, such as configured locales."
+          ]
+        },
+        {
+          "aspect": "Application data",
+          "values": [
+            "Per-user configuration, cache, and data stored outside the immutable application deployment in the application's private XDG directories.",
+            "The application publisher owns migrations; the user or organization owns backup, retention, privacy, and recovery decisions."
+          ]
+        }
+      ],
+      "takeaway": "When a library is vulnerable, first determine whether it belongs to RHEL, the runtime, an extension, or the application payload. The required update and support owner depend on that location.",
+      "sources": [
+        {
+          "label": "Flatpak runtimes and bundled libraries",
+          "href": "https://docs.flatpak.org/en/latest/basic-concepts.html"
+        },
+        {
+          "label": "Flatpak dependency guidance",
+          "href": "https://docs.flatpak.org/en/latest/dependencies.html"
+        }
+      ]
+    },
+    {
+      "title": "Choose Flatpak for the right workload",
+      "introduction": "Flatpak, RPM, and Podman all use Linux technology, but they solve different delivery problems. Choose from the workload and operating boundary rather than from the word container.",
+      "eyebrow": "Make the delivery decision",
+      "summaryLabel": "Delivery models",
+      "rowHeader": "Question",
+      "columns": [
+        "Flatpak",
+        "Native RPM",
+        "OCI container with Podman"
+      ],
+      "rows": [
+        {
+          "aspect": "Primary workload",
+          "values": [
+            "A sandboxed graphical desktop application with desktop integration and a versioned application runtime.",
+            "Operating-system components, services, libraries, drivers, command-line tools, and applications integrated with RHEL.",
+            "Server applications, services, build jobs, automation tools, and headless workloads delivered as container images."
+          ]
+        },
+        {
+          "aspect": "Dependency model",
+          "values": [
+            "A shared Flatpak runtime plus application-specific libraries bundled under /app.",
+            "Dependencies resolved through the host RPM repositories and installed into the host filesystem.",
+            "An image-defined root filesystem assembled from image layers and run by a container engine."
+          ]
+        },
+        {
+          "aspect": "Host integration",
+          "values": [
+            "Restricted by a desktop-oriented sandbox, declared permissions, portals, and explicit host exposure.",
+            "Native integration with the host's services, files, package database, security policy, and lifecycle.",
+            "Controlled through namespaces, mounts, devices, networking, capabilities, secrets, and the container runtime."
+          ]
+        },
+        {
+          "aspect": "Update authority",
+          "values": [
+            "The configured remote publishes application and runtime commits outside the host RPM transaction history.",
+            "The configured RPM repositories and system administrator control package transactions.",
+            "The image builder publishes new image versions; deployment tooling replaces or recreates containers."
+          ]
+        },
+        {
+          "aspect": "Poor fit",
+          "values": [
+            "Kernel modules, drivers, system services, privileged host utilities, or applications whose core workflow requires unrestricted host access.",
+            "A rapidly delivered cross-distribution desktop application that intentionally needs a publisher-controlled user-space stack.",
+            "A desktop application whose primary experience depends on launchers, software-center metadata, portals, and per-user desktop integration."
+          ]
+        }
+      ],
+      "decisionGuide": {
+        "label": "Quick decision path",
+        "title": "Start with the workload boundary",
+        "introduction": "The package format should follow what the software must integrate with and who owns its lifecycle.",
+        "options": [
+          {
+            "title": "Use Flatpak",
+            "label": "Desktop application",
+            "detail": "Choose Flatpak when a graphical Linux application benefits from a consistent runtime, repository delivery, desktop integration, and restricted host access.",
+            "bestFor": "End-user desktop applications whose core behavior works within the sandbox and portal model.",
+            "reference": {
+              "label": "Review the Flatpak introduction",
+              "href": "https://docs.flatpak.org/en/latest/introduction.html"
+            }
+          },
+          {
+            "title": "Use an RPM",
+            "label": "RHEL-integrated software",
+            "detail": "Choose an RPM when software must become part of the operating system, provide a service or shared library, or follow the RHEL package lifecycle.",
+            "bestFor": "Host components, system services, drivers, privileged utilities, and distribution-integrated command-line software."
+          },
+          {
+            "title": "Use an OCI container",
+            "label": "Application workload",
+            "detail": "Choose an OCI image and container engine when packaging a service, build, automation, or headless workload with image-based deployment semantics.",
+            "bestFor": "Server applications, build jobs, microservices, and workloads managed through Podman or an orchestrator."
+          }
+        ],
+        "pathTitle": "Ask in this order",
+        "path": [
+          {
+            "condition": "Must the software provide a kernel module, driver, system service, privileged host utility, or shared host library?",
+            "result": "Use an RPM or another native RHEL delivery mechanism."
+          },
+          {
+            "condition": "Is it a graphical desktop application whose workflows can operate through declared permissions and portals?",
+            "result": "Evaluate Flatpak, then verify the remote, runtime, permissions, and support boundary."
+          },
+          {
+            "condition": "Is it a server, build, automation, or headless application workload?",
+            "result": "Evaluate an OCI image with Podman or the appropriate container platform."
+          }
+        ]
+      },
+      "sources": [
+        {
+          "label": "Flatpak introduction and suitability guidance",
+          "href": "https://docs.flatpak.org/en/latest/introduction.html"
+        },
+        {
+          "label": "RHEL container documentation",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/building_running_and_managing_containers/index"
+        }
+      ]
+    },
+    {
+      "title": "Choose an installation and remote operating model",
+      "introduction": "Before running flatpak install, decide who receives the application, who controls its source, and how it will be updated. Mixing scopes and sources without a policy makes inventory, support, and removal harder later.",
+      "eyebrow": "Set the administration boundary",
+      "summaryLabel": "Operating models",
+      "rowHeader": "Model",
+      "columns": [
+        "Use when",
+        "Controls to define"
+      ],
+      "rows": [
+        {
+          "aspect": "System installation",
+          "values": [
+            "The application and remote should be available to every user and managed as part of the host's standard desktop configuration.",
+            "Administrative authority, approved remotes, update ownership, disk capacity, user-data responsibility, and inventory across all users."
+          ]
+        },
+        {
+          "aspect": "User installation",
+          "values": [
+            "One user is evaluating or individually managing an application without exposing it to other users.",
+            "Whether per-user remotes are permitted, how they are inventoried, who supports the content, and how stale user deployments are removed."
+          ]
+        },
+        {
+          "aspect": "Direct Red Hat remote",
+          "values": [
+            "A connected RHEL system consumes Red Hat-provided Flatpak content directly from the documented Red Hat endpoint.",
+            "RHEL and application support status, subscription or registry authentication, service-account use, endpoint access, architecture, and update policy."
+          ]
+        },
+        {
+          "aspect": "Approved third-party remote",
+          "values": [
+            "The organization accepts publisher support and lifecycle responsibility for an application that Red Hat does not support.",
+            "Publisher verification, remote trust, application and runtime ownership, permissions, monitoring, and an explicit exception or approval record."
+          ]
+        },
+        {
+          "aspect": "Centralized or disconnected delivery",
+          "values": [
+            "Clients cannot or should not reach the upstream remote directly, or content must be promoted through controlled environments.",
+            "Mirror ownership, application and runtime completeness, metadata and trust, synchronization, promotion, storage, offline transfer, and recovery. Advanced implementation belongs to RHEL-HOD-002."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "Flatpak system and user installations",
+          "href": "https://docs.flatpak.org/en/latest/using-flatpak.html"
+        },
+        {
+          "label": "RHEL 10 Red Hat remote and authentication guidance",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html/administering_rhel_by_using_the_gnome_desktop_environment/installing-applications-by-using-flatpak"
+        }
+      ]
+    },
+    {
+      "title": "Manage runtime, update, and removal state deliberately",
+      "introduction": "Applications, runtimes, extensions, application data, portal decisions, remotes, and authentication are separate state. A safe lifecycle procedure identifies which state an action changes before it is run.",
+      "eyebrow": "Protect the lifecycle",
+      "notesLabel": "Storage and update behavior",
+      "notes": [
+        {
+          "title": "Shared content changes capacity planning",
+          "detail": "Applications can share runtime branches and content-addressed objects, and updates can transfer deltas. Several runtime branches and application-specific bundled libraries can still consume substantial storage, so measure the selected fleet rather than assuming a fixed saving."
+        },
+        {
+          "title": "Runtime end-of-life requires application action",
+          "detail": "A runtime publisher can retire a branch. Identify every dependent application, test its supported replacement runtime, and plan migration before removing the retired branch."
+        },
+        {
+          "title": "Unused does not mean unimportant",
+          "detail": "Review the proposed unused-runtime removal in the correct scope and preserve anything needed for an approved rollback, offline workflow, or controlled test."
+        }
+      ],
+      "summaryLabel": "Lifecycle actions",
+      "rowHeader": "Action",
+      "columns": [
+        "Changes",
+        "Required check"
+      ],
+      "rows": [
+        {
+          "aspect": "Update",
+          "values": [
+            "Moves selected application and runtime refs to newer commits published by their configured origins.",
+            "Review the affected scope and refs, available changes, support status, application-data compatibility, and rollback candidate."
+          ]
+        },
+        {
+          "aspect": "Remove an application",
+          "values": [
+            "Removes the selected application deployment from the chosen installation; private application data normally remains unless explicitly deleted.",
+            "Confirm the application ID, installation scope, shared-user impact, backup requirement, and whether data retention is intended."
+          ]
+        },
+        {
+          "aspect": "Delete application data",
+          "values": [
+            "Removes the application's private user data in addition to its deployment when the explicit data-deletion option or equivalent controlled cleanup is used.",
+            "Treat this as destructive: identify the user, data path, retention requirement, backup, and recovery owner first."
+          ]
+        },
+        {
+          "aspect": "Remove unused runtimes",
+          "values": [
+            "Removes runtime and extension refs that Flatpak no longer considers required by installed applications in that scope.",
+            "Review the proposed transaction, rollback needs, pinned content, offline constraints, and the difference between system and user installations."
+          ]
+        },
+        {
+          "aspect": "Reset portal permissions",
+          "values": [
+            "Clears remembered portal decisions for the selected application without changing its immutable application deployment.",
+            "Preserve the original permission evidence and expect the user to be prompted again during the affected workflow."
+          ]
+        },
+        {
+          "aspect": "Remove a remote or credentials",
+          "values": [
+            "Changes future discovery, installation, and update access; removing authentication can affect every protected ref using that source.",
+            "Identify installed refs that depend on the remote, replacement origin, update continuity, shared credential scope, and revocation requirement."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "Flatpak update, removal, unused content, repair, permissions, and history",
+          "href": "https://docs.flatpak.org/en/latest/using-flatpak.html"
+        },
+        {
+          "label": "Flatpak repository and delta model",
+          "href": "https://docs.flatpak.org/en/latest/basic-concepts.html"
+        }
+      ]
+    },
+    {
+      "title": "Troubleshoot from the symptom to the owning layer",
+      "introduction": "Collect the installation scope, exact command, complete error, application or runtime ref, remote, and Flatpak version before changing configuration. The first diagnostic should narrow the layer, not bypass it.",
+      "eyebrow": "Support the foundation",
+      "summaryLabel": "First-response matrix",
+      "rowHeader": "Symptom",
+      "columns": [
+        "First evidence",
+        "Avoid as the first response"
+      ],
+      "rows": [
+        {
+          "aspect": "Remote or search result is missing",
+          "values": [
+            "Check the system or user remote list, actual endpoint, enabled state, architecture, filters, DNS, proxy, TLS, and authentication without exposing credentials.",
+            "Do not add an unapproved second remote or disable trust verification merely to obtain a result."
+          ]
+        },
+        {
+          "aspect": "Application installation cannot resolve a runtime",
+          "values": [
+            "Record the application ref and runtime requirement, then confirm that the same scope can reach a compatible runtime ref from an approved source.",
+            "Do not mix unrelated user and system remotes or install an arbitrary runtime branch without confirming compatibility."
+          ]
+        },
+        {
+          "aspect": "Application installs but does not launch",
+          "values": [
+            "Capture flatpak info, the launch error, runtime deployment, desktop session, portal components, and journal evidence for the failing user.",
+            "Do not grant broad filesystem, device, display, or D-Bus access before identifying the denied operation."
+          ]
+        },
+        {
+          "aspect": "Update fails",
+          "values": [
+            "Check the affected scope, origin, network and authentication, available storage, masks, repository metadata, and flatpak history.",
+            "Do not remove the application, remote, or local repository before preserving the failed transaction evidence."
+          ]
+        },
+        {
+          "aspect": "Disk use remains after application removal",
+          "values": [
+            "Separate shared runtimes, unused runtimes, repository objects, and per-user application data, then inspect the correct installation and user scope.",
+            "Do not delete repository or user-data directories manually; use supported inspection and cleanup operations after review."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "Flatpak troubleshooting commands",
+          "href": "https://docs.flatpak.org/en/latest/using-flatpak.html"
+        }
+      ]
+    }
+  ],
+  "supportGuidance": {
+    "title": "Identify the failing layer before changing access",
+    "introduction": "Start with the selected installation scope, application ref, runtime, remote, and observed workflow. Avoid broad permission overrides until the failure has been isolated.",
+    "routes": [
+      {
+        "title": "Host or Flatpak package",
+        "detail": "Use the RHEL support path for supported host, package, storage, SELinux, or desktop components and provide the RHEL release and Flatpak package version."
+      },
+      {
+        "title": "Remote or authentication",
+        "detail": "Route search, pull, signature, registry login, or metadata failures to the remote or registry owner with the endpoint, scope, ref, and sanitized error."
+      },
+      {
+        "title": "Runtime or application",
+        "detail": "Provide the full application and runtime refs and commits, origin, permissions, logs, and reproduction steps to the responsible publisher."
+      },
+      {
+        "title": "Portal or desktop integration",
+        "detail": "Record the desktop environment, portal components, requested action, prompt behavior, and permission state for chooser, printing, URI, screenshot, notification, or D-Bus issues."
+      }
+    ],
+    "diagnostics": {
+      "title": "Foundation evidence set",
+      "introduction": "Use an explicit --system or --user option when the installation scope might be ambiguous.",
+      "items": [
+        {
+          "command": "flatpak --version",
+          "detail": "Records the Flatpak command-line version supplied to the RHEL host."
+        },
+        {
+          "command": "flatpak remotes --show-details",
+          "detail": "Lists configured remotes and their endpoints and options for the selected default installation scope."
+        },
+        {
+          "command": "flatpak remote-ls REMOTE --app --columns=application,ref,arch,branch",
+          "detail": "Confirms that the selected remote publishes the required application, architecture, and branch before installation."
+        },
+        {
+          "command": "flatpak list --app --columns=application,ref,origin,installation",
+          "detail": "Shows installed applications with their complete refs, origins, and installation names."
+        },
+        {
+          "command": "flatpak list --runtime --columns=application,ref,origin,installation",
+          "detail": "Lists runtime and extension refs separately from applications."
+        },
+        {
+          "command": "flatpak info APPLICATION_ID",
+          "detail": "Displays the selected application's architecture, branch, version, runtime, origin, installation, commit, and other deployment metadata."
+        },
+        {
+          "command": "flatpak info --show-permissions APPLICATION_ID",
+          "detail": "Shows the static permission baseline shipped with the application. Advanced override and portal auditing belongs to RHEL-HOD-002."
+        }
+      ]
+    }
+  },
+  "recap": {
+    "title": "What you should retain",
+    "introduction": "Flatpak is easiest to administer when the application, runtime, host, remote, sandbox, portal, installation scope, and update owner remain separate in your mental model.",
+    "items": [
+      {
+        "title": "Flatpak targets desktop applications",
+        "detail": "It combines application packaging, runtime dependencies, repository delivery, sandboxing, portals, and desktop integration rather than replacing every Linux package or container workflow."
+      },
+      {
+        "title": "Runtimes are shared user-space platforms",
+        "detail": "A runtime supplies common libraries under /usr, while application code and bundled libraries live under /app and the RHEL host remains outside the deployment."
+      },
+      {
+        "title": "Container primitives create the boundary",
+        "detail": "bubblewrap uses host-kernel isolation features to assemble the sandbox; it does not create a virtual machine or an OCI workload managed by Podman."
+      },
+      {
+        "title": "Portals broker narrow desktop actions",
+        "detail": "Portals preserve useful file, print, URI, screenshot, notification, and other desktop workflows without requiring permanent blanket access."
+      },
+      {
+        "title": "Scope and source remain explicit",
+        "detail": "The remote, branch, architecture, installation scope, runtime, permissions, RHEL release, and support policy determine the deployment you are actually operating."
+      }
+    ],
+    "selfCheck": {
+      "title": "Can you explain the installation?",
+      "introduction": "Before recording the workflow, confirm that you can answer these questions without treating Flatpak as either an RPM or a Podman container.",
+      "questions": [
+        "Which files come from the application, runtime, and RHEL host, and who updates each layer?",
+        "How do a remote, application ID, full ref, commit, deployment, origin, and installation differ?",
+        "Why does Flatpak use both static permissions and portals for host interaction?",
+        "When should an administrator choose Flatpak, a native RPM, or an OCI container?",
+        "How will system and user installations be kept distinct during search, installation, inspection, update, and removal?",
+        "What state remains after application removal, and which checks must precede data deletion, unused-runtime cleanup, or remote removal?"
+      ]
+    }
+  },
+  "plannedDemos": [
+    {
+      "demoId": "RHEL-HOD-001-D01",
+      "title": "Install a Flatpak application and runtime on RHEL",
+      "audience": "Linux and desktop administrators",
+      "objective": "Verify the host and selected scope, configure a trusted remote, inspect the available application and runtime, install them, launch the application, and record the resulting deployment identity and permission baseline.",
+      "level": "Beginner"
+    },
+    {
+      "demoId": "RHEL-HOD-001-D02",
+      "title": "Manage Flatpak applications, runtimes, scopes, updates, and removal",
+      "audience": "Linux and desktop administrators",
+      "objective": "Compare system and user installations, inspect application and runtime refs, review and apply updates, remove an application safely, evaluate retained data, and review unused runtime cleanup.",
+      "level": "Intermediate"
+    }
+  ],
+  "demoFiles": []
+}

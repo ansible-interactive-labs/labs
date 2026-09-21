@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Flatpak fundamentals and runtime administration on RHEL</title>
+  <desc id="desc">A layered illustration of a Flatpak application, runtime, sandbox, portals, and a RHEL host</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#071922"/>
+      <stop offset="0.55" stop-color="#123444"/>
+      <stop offset="1" stop-color="#311524"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#72e6d4"/>
+      <stop offset="1" stop-color="#43a9df"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="24" stdDeviation="24" flood-color="#000" flood-opacity=".34"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <circle cx="1440" cy="95" r="280" fill="#ec315f" opacity=".12"/>
+  <circle cx="170" cy="790" r="330" fill="#40c8c2" opacity=".1"/>
+  <path d="M0 700C310 600 430 820 790 710s540-95 810-10v200H0Z" fill="#fff" opacity=".025"/>
+
+  <text x="90" y="105" fill="#72e6d4" font-family="Inter,Arial,sans-serif" font-size="29" font-weight="750" letter-spacing="3">RHEL-HOD-001</text>
+  <text x="90" y="190" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="66" font-weight="780">Flatpak fundamentals</text>
+  <text x="92" y="246" fill="#bed0d8" font-family="Inter,Arial,sans-serif" font-size="28">Applications · runtimes · remotes · portals</text>
+
+  <g transform="translate(915 155)" filter="url(#shadow)">
+    <rect x="0" y="0" width="520" height="585" rx="42" fill="#07141b" stroke="#ffffff" stroke-opacity=".16"/>
+    <g transform="translate(70 55)">
+      <rect x="0" y="0" width="380" height="105" rx="24" fill="#e8fbf8"/>
+      <circle cx="54" cy="52" r="25" fill="url(#accent)"/>
+      <path d="M44 52h20M54 42v20" stroke="#071922" stroke-width="6" stroke-linecap="round"/>
+      <text x="100" y="47" fill="#0b2631" font-family="Inter,Arial,sans-serif" font-size="26" font-weight="760">Application</text>
+      <text x="100" y="78" fill="#365a67" font-family="Inter,Arial,sans-serif" font-size="18">/app · ID · branch</text>
+    </g>
+    <g transform="translate(70 185)">
+      <rect x="0" y="0" width="380" height="105" rx="24" fill="#163a49" stroke="#72e6d4" stroke-opacity=".45"/>
+      <path d="M40 38h38v29H40zM48 29h22v9H48z" fill="#72e6d4"/>
+      <text x="100" y="47" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="26" font-weight="760">Runtime</text>
+      <text x="100" y="78" fill="#afd0da" font-family="Inter,Arial,sans-serif" font-size="18">/usr · shared libraries</text>
+    </g>
+    <g transform="translate(70 315)">
+      <rect x="0" y="0" width="380" height="105" rx="24" fill="#321a29" stroke="#ec315f" stroke-opacity=".55"/>
+      <path d="M57 25 82 36v20c0 20-12 31-25 38-13-7-25-18-25-38V36z" fill="none" stroke="#ff7693" stroke-width="5"/>
+      <text x="100" y="47" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="26" font-weight="760">Sandbox</text>
+      <text x="100" y="78" fill="#e6b8c5" font-family="Inter,Arial,sans-serif" font-size="18">bubblewrap · permissions</text>
+    </g>
+    <g transform="translate(70 445)">
+      <rect x="0" y="0" width="180" height="82" rx="22" fill="#102c38" stroke="#43a9df" stroke-opacity=".55"/>
+      <text x="90" y="36" text-anchor="middle" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="21" font-weight="720">Portals</text>
+      <text x="90" y="61" text-anchor="middle" fill="#a9cbd7" font-family="Inter,Arial,sans-serif" font-size="15">broker access</text>
+      <rect x="200" y="0" width="180" height="82" rx="22" fill="#3b1623" stroke="#ec315f" stroke-opacity=".55"/>
+      <text x="290" y="36" text-anchor="middle" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="21" font-weight="720">RHEL host</text>
+      <text x="290" y="61" text-anchor="middle" fill="#e2b3c0" font-family="Inter,Arial,sans-serif" font-size="15">shared kernel</text>
+    </g>
+  </g>
+
+  <g transform="translate(90 340)">
+    <text x="0" y="0" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="30" font-weight="720">One desktop application model</text>
+    <g transform="translate(0 48)" font-family="Inter,Arial,sans-serif">
+      <circle cx="13" cy="12" r="7" fill="#72e6d4"/><text x="38" y="20" fill="#d8e7ec" font-size="23">Versioned application and runtime</text>
+      <circle cx="13" cy="72" r="7" fill="#72e6d4"/><text x="38" y="80" fill="#d8e7ec" font-size="23">Restricted access to the host</text>
+      <circle cx="13" cy="132" r="7" fill="#72e6d4"/><text x="38" y="140" fill="#d8e7ec" font-size="23">Desktop-aware portal APIs</text>
+      <circle cx="13" cy="192" r="7" fill="#72e6d4"/><text x="38" y="200" fill="#d8e7ec" font-size="23">Remote-owned updates and support</text>
+    </g>
+  </g>
+  <text x="90" y="820" fill="#9cb7c1" font-family="Inter,Arial,sans-serif" font-size="20">Rajat’s Applied Technology Lab</text>
+</svg>

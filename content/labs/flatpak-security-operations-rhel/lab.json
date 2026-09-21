@@ -1,0 +1,1020 @@
+{
+  "$schema": "../schema.json",
+  "schemaVersion": 3,
+  "hodId": "RHEL-HOD-002",
+  "slug": "flatpak-security-operations-rhel",
+  "title": "Flatpak security and advanced operations on RHEL",
+  "shortDescription": "Audit Flatpak trust and permissions, govern repositories and credentials, troubleshoot deployments, and operate Flatpak safely across RHEL fleets.",
+  "description": "This advanced administrator HOD treats Flatpak as an enterprise application-delivery system. It covers provenance, effective permissions, D-Bus and portal exposure, repository and credential governance, exact deployment identity, updates, holds, rollback, repair, offline delivery, Satellite integration, fleet inventory, and support routing.",
+  "audience": "Experienced Linux administrators, security engineers, platform engineers, desktop engineering teams, support engineers, technical consultants, and solution architects operating Flatpak on RHEL.",
+  "coverImage": "/demos/flatpak-security-operations-rhel/cover.svg",
+  "coverAlt": "Flatpak security operations diagram showing trusted remotes, policy layers, audited deployments, and managed RHEL systems",
+  "duration": "45 min",
+  "durationMinutes": 45,
+  "difficulty": "Expert",
+  "topic": "RHEL",
+  "platform": "RHEL 9 and RHEL 10",
+  "status": "Coming soon",
+  "hodNumber": 2,
+  "publishedOrder": 4,
+  "tags": [
+    "Flatpak",
+    "RHEL",
+    "application security",
+    "platform operations",
+    "repository governance",
+    "incident response"
+  ],
+  "outcomes": [
+    "Record the exact ref, commit, origin, installation scope, runtime, and effective permissions of a deployment",
+    "Evaluate publisher, remote, signing, registry credential, and support boundaries before enterprise approval",
+    "Audit static permissions, overrides, portal state, D-Bus access, network access, devices, and filesystem exposure",
+    "Control update, hold, rollback, repair, cleanup, end-of-life, and data-migration decisions",
+    "Design online, mirrored, Satellite-managed, and offline delivery paths that include application and runtime content",
+    "Collect focused evidence and route failures to the host, Flatpak, runtime, portal, repository, or application owner"
+  ],
+  "overview": {
+    "title": "What changes at enterprise scale?",
+    "introduction": "Installing a Flatpak application proves only that one client can resolve and launch a ref. Enterprise operations must also prove where the content came from, which exact commit is deployed, what host resources the application can reach, who owns the runtime and bundled dependencies, how credentials and signing trust are protected, how updates are promoted, and how incidents can be investigated without destroying evidence. Flatpak provides the mechanisms; the organization still supplies policy, ownership, monitoring, and release control.",
+    "itemsLabel": "Advanced operating boundaries",
+    "items": [
+      {
+        "title": "Content provenance",
+        "detail": "The application ID alone is not enough. Record the origin remote, full ref, commit, architecture, branch, collection or registry identity, and system or user installation scope."
+      },
+      {
+        "title": "Effective access",
+        "detail": "Manifest permissions are only the baseline. Administrator and user overrides, temporary run options, portal permission-store decisions, desktop backend behavior, and policy tools can change observed access."
+      },
+      {
+        "title": "Dependency ownership",
+        "detail": "The host owner patches RHEL, the runtime publisher patches runtime content, and the application publisher owns bundled libraries under /app. A support record must identify each boundary."
+      },
+      {
+        "title": "Release control",
+        "detail": "Promotion, update cadence, holds, rollback candidates, end-of-life metadata, replacement refs, and application-data migrations require an explicit operating policy."
+      },
+      {
+        "title": "Fleet delivery",
+        "detail": "Clients need the application plus every required runtime and extension. Mirrors, Satellite content views, and offline media must carry the complete dependency set."
+      },
+      {
+        "title": "Incident evidence",
+        "detail": "Preserve deployment identity, logs, history, permissions, portal state, runtime details, and repository metadata before applying overrides, repair, rollback, or removal."
+      }
+    ],
+    "note": "RHEL-HOD-001 is a required prerequisite. This HOD begins with the application, runtime, remote, installation-scope, sandbox, portal, and lifecycle concepts established there and does not repeat their full explanations."
+  },
+  "prerequisites": [
+    {
+      "label": "Required HOD",
+      "value": "Complete RHEL-HOD-001",
+      "detail": "Complete Flatpak fundamentals and runtime administration on RHEL before beginning this advanced HOD. You must be able to identify applications, runtimes, remotes, refs, commits, deployments, origins, installation scopes, sandboxes, portals, updates, and removal boundaries.",
+      "href": "https://ansible-interactive-labs.github.io/labs/demos/flatpak-fundamentals-rhel/"
+    },
+    {
+      "label": "Flatpak knowledge",
+      "value": "Retain the RHEL-HOD-001 completion record",
+      "detail": "Keep the recorded remote, application ref, runtime ref, commits, origin, installation scope, permission baseline, and lifecycle observations available for the advanced exercises."
+    },
+    {
+      "label": "RHEL access",
+      "value": "Administrative test system",
+      "detail": "Use a non-production RHEL desktop where you can inspect system and user installations, configure a controlled remote, test updates, and restore the environment."
+    },
+    {
+      "label": "Governance inputs",
+      "value": "Named owners and approved sources",
+      "detail": "Identify the RHEL owner, remote operator, application publisher, runtime publisher, security approver, credential owner, and support path before rollout."
+    },
+    {
+      "label": "Recovery boundary",
+      "value": "Preserve evidence and user data",
+      "detail": "Know which application data must be backed up and how deployment changes will be recorded before exercising rollback, repair, reset, or removal."
+    },
+    {
+      "label": "Enterprise connectivity",
+      "value": "Document network and authentication dependencies",
+      "detail": "Identify DNS, proxy, TLS inspection, firewall, registry, Satellite or mirror endpoints, service accounts, certificate trust, storage, and disconnected-transfer requirements before testing enterprise delivery."
+    }
+  ],
+  "prerequisiteCallouts": [
+    {
+      "title": "Support follows the RHEL release and content source",
+      "paragraphs": [
+        "The Flatpak package manager, Red Hat-provided Flatpak applications, and applications obtained from third-party remotes do not share one support boundary. Verify the deployed RHEL release, selected remote, and application status before production approval.",
+        "RHEL 9 documents Red Hat Flatpak applications as Technology Preview and states that third-party Flatpak applications are unsupported by Red Hat. RHEL 10 documents supported Red Hat applications from its Red Hat Flatpak remote while retaining the third-party boundary."
+      ],
+      "links": [
+        {
+          "href": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/administering_the_system_using_the_gnome_desktop_environment/assembly_installing-applications-using-flatpak_administering-the-system-using-the-gnome-desktop-environment",
+          "label": "Review the RHEL 9 Flatpak guidance"
+        },
+        {
+          "href": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html/administering_rhel_by_using_the_gnome_desktop_environment/installing-applications-by-using-flatpak",
+          "label": "Review the RHEL 10 Flatpak guidance"
+        }
+      ]
+    },
+    {
+      "title": "Continue the managed Thunderbird scenario from RHEL-HOD-001",
+      "paragraphs": [
+        "Use the org.mozilla.Thunderbird completion record from RHEL-HOD-001 as the starting evidence for provenance, permission, update, rollback, recovery, and fleet-governance decisions. Do not assume that the same application build or support status applies to a different RHEL release, architecture, or remote.",
+        "If the recorded foundation uses a different approved application after environment validation, RHEL-HOD-002 will use that same application and preserve the same identifiers and evidence fields."
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "title": "Establish provenance and ownership before approval",
+      "introduction": "A repository name or familiar application ID is not sufficient evidence. Approval should bind an exact content source and deployment identity to the teams that own the host, runtime, application, credentials, and support relationship.",
+      "eyebrow": "Build the trust record",
+      "summaryLabel": "Approval evidence",
+      "rowHeader": "Decision",
+      "columns": [
+        "Record",
+        "Why it matters"
+      ],
+      "rows": [
+        {
+          "aspect": "Publisher and remote",
+          "values": [
+            "Remote URL or registry, repository configuration, publisher identity, signing or registry trust, authentication method, and who may change each item.",
+            "A recognizable application name does not prove who built the selected content or who controls its future updates."
+          ]
+        },
+        {
+          "aspect": "Exact deployment",
+          "values": [
+            "Installation name, system or user scope, application or runtime kind, complete ref, commit, origin, architecture, branch, and deployment state.",
+            "Users on one host can run different branches, commits, origins, or installation scopes under the same application ID."
+          ]
+        },
+        {
+          "aspect": "Runtime and bundled content",
+          "values": [
+            "Runtime ref and commit, BaseApps or extensions, known bundled libraries, maintenance owner, advisory-monitoring path, and end-of-life trigger.",
+            "Runtime fixes do not patch a vulnerable library bundled under /app, while rebuilding the application does not patch the RHEL host."
+          ]
+        },
+        {
+          "aspect": "Credentials and signing",
+          "values": [
+            "Registry service accounts, user or system authentication files, signing identities, secret storage, rotation, revocation, automation access, and incident owner.",
+            "Long-lived personal tokens or broadly accessible signing material turn application distribution into an avoidable supply-chain risk."
+          ]
+        },
+        {
+          "aspect": "Support route",
+          "values": [
+            "RHEL release, Flatpak package source and version, application support status, remote operator, runtime publisher, application publisher, and internal escalation contact.",
+            "The right diagnostic evidence and responder differ depending on whether the failure is in RHEL, Flatpak, a portal backend, the runtime, the repository, or application code."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "Flatpak basic concepts",
+          "href": "https://docs.flatpak.org/en/latest/basic-concepts.html"
+        },
+        {
+          "label": "RHEL 10 Flatpak administration",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html/administering_rhel_by_using_the_gnome_desktop_environment/installing-applications-by-using-flatpak"
+        }
+      ]
+    },
+    {
+      "title": "Read refs, commits, and deployments precisely",
+      "introduction": "Flatpak separates a human-facing application identity from the repository object and the checked-out deployment that actually runs. These terms are essential during change review, vulnerability response, rollback, and escalation.",
+      "eyebrow": "Identify the running content",
+      "summaryLabel": "Object model",
+      "rowHeader": "Object",
+      "columns": [
+        "Meaning",
+        "Operational use"
+      ],
+      "rows": [
+        {
+          "aspect": "Application ID",
+          "values": [
+            "A reverse-DNS name such as org.example.Application that identifies the application family.",
+            "Useful for user-facing commands, but insufficient for a change record because it omits kind, architecture, branch, commit, origin, and scope."
+          ]
+        },
+        {
+          "aspect": "Ref",
+          "values": [
+            "A repository reference combining kind, ID, architecture, and branch, such as app/org.example.Application/aarch64/stable.",
+            "Defines the update stream. Record the complete ref when approving a stable, beta, architecture-specific, or runtime deployment."
+          ]
+        },
+        {
+          "aspect": "Commit",
+          "values": [
+            "An immutable content-addressed repository revision reached by a ref at a point in time.",
+            "Provides the exact version for reproduction, incident correlation, promotion, comparison, or rollback."
+          ]
+        },
+        {
+          "aspect": "Deployment",
+          "values": [
+            "A checked-out commit in a named local installation, with metadata and an active version used at launch.",
+            "Explains which content runs on one client even when the remote ref has moved to a newer commit."
+          ]
+        },
+        {
+          "aspect": "Origin and installation",
+          "values": [
+            "The source remote recorded for the ref and the system, user, or named installation that owns the local deployment.",
+            "Prevents a system deployment, user deployment, or same-ID application from another remote from being mistaken for the approved instance."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "Flatpak under the hood",
+          "href": "https://docs.flatpak.org/en/latest/under-the-hood.html"
+        },
+        {
+          "label": "Flatpak command reference",
+          "href": "https://docs.flatpak.org/en/latest/flatpak-command-reference.html"
+        }
+      ]
+    },
+    {
+      "title": "Audit the sandbox as layered policy",
+      "introduction": "The permission set shipped by the publisher is only one layer. A meaningful audit compares the baseline with administrator and user overrides, temporary launch options, portal permission state, D-Bus behavior, desktop backends, and the host resources actually exposed during the workflow.",
+      "eyebrow": "Measure effective access",
+      "notesLabel": "High-risk shortcuts",
+      "notes": [
+        {
+          "title": "Do not grant the complete session bus",
+          "detail": "Broad session-bus access can expose powerful desktop services and undermine isolation. Identify the required bus name or portal instead of granting the entire bus to silence an error."
+        },
+        {
+          "title": "Treat filesystem access as data exposure",
+          "detail": "Home, host, and broad directory grants can expose credentials, source code, documents, and application data. Prefer document-portal access or the narrowest persistent path."
+        },
+        {
+          "title": "Network permission is not a destination policy",
+          "detail": "A network grant allows network use; it does not by itself restrict destinations. Combine application policy with host or network controls when destination-level enforcement is required."
+        }
+      ],
+      "summaryLabel": "Permission layers",
+      "rowHeader": "Layer",
+      "columns": [
+        "Inspect",
+        "Security question"
+      ],
+      "rows": [
+        {
+          "aspect": "Publisher baseline",
+          "values": [
+            "Static metadata and finish-args for filesystem, network, sockets, devices, features, environment, and D-Bus names.",
+            "Does each grant serve an approved workflow, and could a portal or narrower path replace it?"
+          ]
+        },
+        {
+          "aspect": "Administrator and user overrides",
+          "values": [
+            "System and per-user flatpak override layers plus any policy tooling that modifies or resets them.",
+            "Who authorized the difference from the publisher baseline, how is it inventoried, and can it survive or conflict with updates?"
+          ]
+        },
+        {
+          "aspect": "Portal state",
+          "values": [
+            "Dynamic choices and grants retained by the permission store, along with the desktop portal frontend and backend involved.",
+            "Was access mediated with user intent, can it be revoked, and does a clean profile reproduce the same behavior?"
+          ]
+        },
+        {
+          "aspect": "D-Bus and sockets",
+          "values": [
+            "Owned and called bus names, observed attempts, display sockets, audio, SSH agent, smartcard, printing, and other exposed services.",
+            "Does the application reach a privileged interface indirectly, and is each socket needed for the accepted workflow?"
+          ]
+        },
+        {
+          "aspect": "Devices and kernel boundary",
+          "values": [
+            "Device grants, shared host kernel behavior, seccomp restrictions, graphics access, and any exception required by the application.",
+            "Does the application require hardware or kernel access that is incompatible with the intended security boundary or better delivered another way?"
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "Flatpak sandbox permissions",
+          "href": "https://docs.flatpak.org/en/latest/sandbox-permissions.html"
+        },
+        {
+          "label": "Flatpak portal APIs",
+          "href": "https://docs.flatpak.org/en/latest/portal-api-reference.html"
+        }
+      ]
+    },
+    {
+      "title": "Operate updates, recovery, offline delivery, and fleets",
+      "introduction": "A controlled rollout manages applications and their runtimes as related but independently versioned content. Recovery must also distinguish deployment rollback from application-data migration, and repair from incident preservation.",
+      "eyebrow": "Control the lifecycle",
+      "summaryLabel": "Operational controls",
+      "rowHeader": "Control",
+      "columns": [
+        "Required practice",
+        "Failure avoided"
+      ],
+      "rows": [
+        {
+          "aspect": "Stage and promote",
+          "values": [
+            "Test identified application and runtime commits, portal workflows, permissions, upgrades, rollback, and user-data behavior before promotion to the production remote or Satellite content view.",
+            "A moving branch is approved by name while the fleet receives a different, untested combination of application and runtime commits."
+          ]
+        },
+        {
+          "aspect": "Hold and update",
+          "values": [
+            "Define who can mask or hold refs, how exceptions expire, when updates are applied, and how security fixes override ordinary maintenance windows.",
+            "A temporary hold becomes permanent technical debt, or automatic updates bypass enterprise change control."
+          ]
+        },
+        {
+          "aspect": "Rollback and data",
+          "values": [
+            "Retain an approved prior commit and separately test whether its code can read data migrated by the newer application. Back up required data before destructive recovery.",
+            "A successful deployment rollback is mistaken for complete recovery even though the user-data format is no longer backward compatible."
+          ]
+        },
+        {
+          "aspect": "Repair and preserve evidence",
+          "values": [
+            "Collect history, deployment details, permissions, logs, and repository state before using repair. Begin with a dry run and target only the affected installation scope.",
+            "Repair or removal changes the local state before the underlying repository, storage, or application failure can be understood."
+          ]
+        },
+        {
+          "aspect": "Mirror or distribute offline",
+          "values": [
+            "Carry application, runtime, extensions, metadata, trust configuration, and updates through a repository, supported removable-media workflow, or Satellite lifecycle.",
+            "A single application bundle arrives without its runtime dependencies or AppStream metadata and cannot be installed or governed predictably."
+          ]
+        },
+        {
+          "aspect": "Inventory all scopes",
+          "values": [
+            "Inventory system, user, and named installations; origins; refs; commits; runtimes; unused content; overrides; portal state; and authentication files where policy permits.",
+            "Per-user deployments and overrides remain invisible to a system-only inventory and create inconsistent exposure across the fleet."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "Flatpak tips and tricks",
+          "href": "https://docs.flatpak.org/en/latest/tips-and-tricks.html"
+        },
+        {
+          "label": "Flatpak single-file bundle limitations",
+          "href": "https://docs.flatpak.org/en/latest/single-file-bundles.html"
+        },
+        {
+          "label": "Red Hat Satellite Flatpak repository management",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_satellite/6.18/html/managing_content/managing-flatpak-repositories-in-project"
+        }
+      ]
+    },
+    {
+      "title": "Choose the enterprise operating model",
+      "introduction": "Advanced controls depend on how clients obtain content and who owns the source, credentials, promotion, and update decision. Choose one primary model for each managed population and document exceptions.",
+      "eyebrow": "Design the control plane",
+      "summaryLabel": "Deployment patterns",
+      "rowHeader": "Pattern",
+      "columns": [
+        "Appropriate when",
+        "Required controls"
+      ],
+      "rows": [
+        {
+          "aspect": "Direct approved remote",
+          "values": [
+            "Connected clients may consume a documented Red Hat or approved third-party remote without centralized content promotion.",
+            "Remote configuration, system or user scope, authentication, update policy, inventory, support ownership, and an exception process for additional remotes."
+          ]
+        },
+        {
+          "aspect": "Centrally configured clients",
+          "values": [
+            "Clients reach upstream content directly, but configuration management enforces approved remotes, scopes, overrides, and update behavior.",
+            "Idempotent configuration, drift detection, per-user visibility, secret handling, staged client groups, and rollback of policy changes."
+          ]
+        },
+        {
+          "aspect": "Satellite-managed content",
+          "values": [
+            "The organization must scan, mirror, curate, promote, and serve application and runtime repositories through managed lifecycle environments.",
+            "Satellite roles, registry service accounts, products, synchronization, application and runtime repositories, content views, promotion, Capsules, client access, and capacity."
+          ]
+        },
+        {
+          "aspect": "Disconnected or offline delivery",
+          "values": [
+            "Clients or Satellite environments cannot reach the upstream source and content must cross a controlled transfer boundary.",
+            "Export and import procedure, application and runtime completeness, metadata and trust, removable-media custody, malware review, promotion, and update frequency."
+          ]
+        }
+      ],
+      "decisionGuide": {
+        "label": "Adoption readiness",
+        "title": "Confirm the organization can operate the model",
+        "introduction": "Flatpak adoption is ready for controlled use only when the application source, support route, user population, connectivity, security policy, content lifecycle, and recovery owner are known.",
+        "options": [
+          {
+            "title": "Proceed with controlled adoption",
+            "label": "Owned operating model",
+            "detail": "The source, support, installation scope, permissions, runtime, credentials, updates, inventory, data, and recovery path all have named owners.",
+            "bestFor": "A defined desktop population with an approved application and a tested lifecycle."
+          },
+          {
+            "title": "Run a limited evaluation",
+            "label": "Open operational questions",
+            "detail": "The workload is suitable, but storage, network, permission, support, lifecycle, or inventory assumptions still require validation.",
+            "bestFor": "A non-production group with measurable success criteria and a removal plan."
+          },
+          {
+            "title": "Do not approve yet",
+            "label": "Unowned trust or recovery",
+            "detail": "The publisher, remote, runtime, permission exposure, credential owner, update authority, or recovery process cannot be established.",
+            "bestFor": "Applications whose risk or operating boundary remains unknown."
+          }
+        ],
+        "pathTitle": "Qualification questions",
+        "path": [
+          {
+            "condition": "Is the publisher, remote, support status, application ref, runtime, and architecture approved?",
+            "result": "If not, stop before installation and resolve provenance and support."
+          },
+          {
+            "condition": "Can the required workflow operate with an accepted permission and portal model?",
+            "result": "If not, reject the delivery model or document an explicit security exception."
+          },
+          {
+            "condition": "Can the organization update, inventory, recover, and retire the content in its connected or disconnected environment?",
+            "result": "If not, limit the work to evaluation until the lifecycle exists."
+          }
+        ]
+      },
+      "sources": [
+        {
+          "label": "RHEL 10 Red Hat remote and service-account guidance",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html/administering_rhel_by_using_the_gnome_desktop_environment/installing-applications-by-using-flatpak"
+        },
+        {
+          "label": "Satellite Flatpak repository management",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_satellite/6.18/html/managing_content/managing-flatpak-repositories-in-project"
+        }
+      ]
+    },
+    {
+      "title": "Audit effective access in a fixed sequence",
+      "introduction": "Do not begin by resetting permissions or granting an override. Preserve the original state, identify every policy layer, observe the failing workflow, and compare the result with the approved requirement.",
+      "eyebrow": "Run the permission audit",
+      "summaryLabel": "Audit sequence",
+      "rowHeader": "Stage",
+      "columns": [
+        "Evidence to collect",
+        "Decision"
+      ],
+      "rows": [
+        {
+          "aspect": "1. Identify the deployment",
+          "values": [
+            "Application ID, full ref, commit, origin, runtime ref and commit, architecture, branch, installation name, and system or user scope.",
+            "Confirm that the tested instance is the approved deployment before interpreting any permission result."
+          ]
+        },
+        {
+          "aspect": "2. Record the publisher baseline",
+          "values": [
+            "Static filesystem, socket, device, feature, network, environment, and D-Bus grants reported for the application.",
+            "Map every broad grant to an approved workflow and identify where a portal or narrower resource could replace it."
+          ]
+        },
+        {
+          "aspect": "3. Record system and user overrides",
+          "values": [
+            "System-wide and per-user override layers, including grants, denials, reset behavior, and the authority that created them.",
+            "Determine whether observed access differs from the publisher baseline and whether that difference is approved, inventoried, and still required."
+          ]
+        },
+        {
+          "aspect": "4. Record portal state",
+          "values": [
+            "Permission-store entries, prior user choices, portal frontend and backend versions, desktop environment, and the exact portal operation.",
+            "Determine whether access was dynamically mediated, can be revoked, and reproduces in a clean user profile."
+          ]
+        },
+        {
+          "aspect": "5. Observe the workflow",
+          "values": [
+            "Application logs, journal evidence, D-Bus attempts, sockets, devices, filesystem paths, network dependency, prompts, and denial behavior while reproducing one action.",
+            "Identify the narrow missing or excessive access without granting the full home directory, host filesystem, device set, or session bus."
+          ]
+        },
+        {
+          "aspect": "6. Compare and preserve",
+          "values": [
+            "Approved requirement, observed access, proposed change, test result, residual risk, owner, and rollback or reset instruction.",
+            "Approve, reject, or time-bound the change; retain the original and resulting evidence without credentials or unrelated personal data."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "Flatpak sandbox permissions",
+          "href": "https://docs.flatpak.org/en/latest/sandbox-permissions.html"
+        },
+        {
+          "label": "Flatpak portal APIs",
+          "href": "https://docs.flatpak.org/en/latest/portal-api-reference.html"
+        }
+      ]
+    },
+    {
+      "title": "Distinguish lifecycle and recovery actions",
+      "introduction": "These commands solve different problems. Treating mask, pin, rollback, repair, permission reset, override reset, removal, and rebase as interchangeable can create outages or destroy evidence.",
+      "eyebrow": "Choose the correct control",
+      "summaryLabel": "Action boundaries",
+      "rowHeader": "Action",
+      "columns": [
+        "Purpose",
+        "Safety boundary"
+      ],
+      "rows": [
+        {
+          "aspect": "Update",
+          "values": [
+            "Moves selected application or runtime refs to newer published commits.",
+            "Stage identified commits, test application-data migration, retain a recovery candidate, and record the resulting application and runtime commits."
+          ]
+        },
+        {
+          "aspect": "Mask",
+          "values": [
+            "Prevents matching refs from being automatically installed or updated in the selected installation scope.",
+            "Use a documented pattern, scope, reason, owner, and event-based removal trigger; a mask is an update exception, not a permanent patch strategy."
+          ]
+        },
+        {
+          "aspect": "Pin",
+          "values": [
+            "Prevents matching runtime refs from being automatically removed as unused.",
+            "Pin only runtimes intentionally retained for rollback, offline use, or testing and review them when dependent applications or recovery plans change."
+          ]
+        },
+        {
+          "aspect": "Rollback to a commit",
+          "values": [
+            "Deploys an earlier available application or runtime commit; downgrading a system installation requires appropriate administrative authority.",
+            "Preserve current evidence and back up data. Older code may not understand data migrated by the newer release."
+          ]
+        },
+        {
+          "aspect": "Repair",
+          "values": [
+            "Verifies and repairs inconsistencies in the selected local installation repository.",
+            "Collect evidence first, begin with --dry-run, target one scope, and do not use repair as a substitute for diagnosing remote, application, or portal failures."
+          ]
+        },
+        {
+          "aspect": "Permission or override reset",
+          "values": [
+            "Clears remembered portal decisions or returns override layers toward their baseline without changing the immutable application commit.",
+            "Record original state and expect behavior or prompts to change; reset only the affected application and scope."
+          ]
+        },
+        {
+          "aspect": "Remove or delete data",
+          "values": [
+            "Removes a deployment; an explicit data-deletion action also removes private application data.",
+            "Confirm retention, backup, user identity, shared scope, runtime dependencies, and legal or incident holds before destructive cleanup."
+          ]
+        },
+        {
+          "aspect": "End-of-life and rebase",
+          "values": [
+            "Retires a branch or application and can direct users toward a replacement ref when repository metadata and delivery tooling support that path.",
+            "Test replacement availability, permissions, runtime, data migration, desktop integration, support ownership, and rollback limits separately."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "Flatpak masking and rollback guidance",
+          "href": "https://docs.flatpak.org/en/latest/tips-and-tricks.html"
+        },
+        {
+          "label": "Flatpak repair, permission reset, and history guidance",
+          "href": "https://docs.flatpak.org/en/latest/using-flatpak.html"
+        }
+      ]
+    },
+    {
+      "title": "Protect credentials and promote complete Satellite content",
+      "introduction": "Authentication proves access to a source; it does not approve its content. Keep user credentials, service accounts, signing trust, Satellite upstream credentials, and client repository access in distinct scopes, and promote the application together with every required runtime repository.",
+      "eyebrow": "Secure enterprise delivery",
+      "notesLabel": "Credential boundaries",
+      "notes": [
+        {
+          "title": "Use service accounts for shared automation",
+          "detail": "Do not place a person's registry password in system-wide configuration, Satellite, automation, recordings, or support bundles. Use a scoped service account with a named owner, protected storage, rotation, and revocation process."
+        },
+        {
+          "title": "Know where authentication is stored",
+          "detail": "Temporary Podman authentication, per-user Flatpak OCI authentication, system-wide Flatpak OCI authentication, and Satellite-held upstream credentials have different audiences and exposure. Record the path and owner, never the secret."
+        },
+        {
+          "title": "Signing or authentication is not a quality verdict",
+          "detail": "Valid source authentication helps establish where content came from. It does not replace application review, permission assessment, vulnerability response, testing, or support ownership."
+        }
+      ],
+      "summaryLabel": "Satellite delivery sequence",
+      "rowHeader": "Stage",
+      "columns": [
+        "Required action",
+        "Completion evidence"
+      ],
+      "rows": [
+        {
+          "aspect": "1. Create and authenticate the remote",
+          "values": [
+            "Configure the Flatpak index endpoint in Satellite and use a protected registry service account when the upstream requires authentication.",
+            "Remote ID, organization, endpoint, credential owner, last successful authentication, and Satellite role authorization."
+          ]
+        },
+        {
+          "aspect": "2. Scan and select repositories",
+          "values": [
+            "Scan the remote, select the application repository, and identify every corresponding runtime or extension repository required by the target architecture and RHEL release.",
+            "Application and runtime repository IDs, architecture, tags or branches, upstream source, and dependency mapping."
+          ]
+        },
+        {
+          "aspect": "3. Mirror and synchronize",
+          "values": [
+            "Mirror selected Flatpak repositories into a controlled product and synchronize their container content according to capacity and connectivity policy.",
+            "Product and repository IDs, synchronization result, content count, storage consumption, and failed-content report."
+          ]
+        },
+        {
+          "aspect": "4. Publish and promote",
+          "values": [
+            "Add application and runtime repositories to the intended content view, publish an identified version, test it, and promote it through lifecycle environments.",
+            "Content-view version, included repositories, test result, approval, lifecycle environment, Capsule availability, and rollback version."
+          ]
+        },
+        {
+          "aspect": "5. Enable and verify clients",
+          "values": [
+            "Make the promoted repositories available to the intended hosts, configure the client remote, and verify installation and update without reaching an unapproved upstream source.",
+            "Host population, enabled repository set, client remote endpoint, installed application and runtime commits, and successful update path."
+          ]
+        },
+        {
+          "aspect": "6. Export for disconnected use",
+          "values": [
+            "Export and import the promoted Flatpak content through the approved disconnected workflow while preserving application, runtime, metadata, and trust relationships.",
+            "Export version, custody record, integrity check, imported repositories, content-view mapping, and clean-client installation result."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "RHEL 10 Flatpak registry authentication",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html/administering_rhel_by_using_the_gnome_desktop_environment/installing-applications-by-using-flatpak"
+        },
+        {
+          "label": "Satellite Flatpak remote, mirroring, and host delivery",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_satellite/6.18/html/managing_content/managing-flatpak-repositories-in-project"
+        },
+        {
+          "label": "Satellite content views and lifecycle environments",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_satellite/6.18/html/managing_content/managing-content-views-and-content-view-environments"
+        }
+      ]
+    },
+    {
+      "title": "Define fleet inventory and event-driven review",
+      "introduction": "A system-only application list cannot describe a Flatpak fleet. Inventory every permitted installation scope and review the deployment when an event changes trust, access, compatibility, support, or recovery assumptions.",
+      "eyebrow": "Keep the control current",
+      "summaryLabel": "Minimum operational record",
+      "rowHeader": "Record group",
+      "columns": [
+        "Required fields",
+        "Review trigger"
+      ],
+      "rows": [
+        {
+          "aspect": "Host and installation",
+          "values": [
+            "Host, owner, RHEL release, architecture, Flatpak version, installation name, system or user scope, and applicable user identity.",
+            "RHEL upgrade, Flatpak package change, user departure, scope change, host rebuild, or inventory drift."
+          ]
+        },
+        {
+          "aspect": "Application and runtime",
+          "values": [
+            "Application ID, full ref, commit, origin, runtime ref and commit, branch, extensions, installed version, and application-data owner.",
+            "New application commit, runtime end-of-life, rebase, branch change, vulnerability notice, failed update, or data migration."
+          ]
+        },
+        {
+          "aspect": "Trust and access",
+          "values": [
+            "Remote endpoint, publisher, support status, authentication owner, static permissions, system and user overrides, portal state summary, masks, and pins.",
+            "Remote or publisher change, signing or service-account change, new permission, override request, portal-policy change, or security exception expiry."
+          ]
+        },
+        {
+          "aspect": "Lifecycle and support",
+          "values": [
+            "Last successful update, promoted source version, rollback candidate, backup status, removal policy, support owner, and current exception or incident reference.",
+            "Promotion, rollback, repair, incident closure, support-policy change, disconnected import, or recovery-plan change."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "Flatpak command reference",
+          "href": "https://docs.flatpak.org/en/latest/flatpak-command-reference.html"
+        }
+      ]
+    },
+    {
+      "title": "Preserve evidence before advanced recovery",
+      "introduction": "The same visible symptom can originate in the host, local installation, remote, runtime, sandbox policy, portal, application, or Satellite. Collect the smallest evidence set that distinguishes those layers before state-changing recovery.",
+      "eyebrow": "Respond by symptom",
+      "summaryLabel": "Advanced first response",
+      "rowHeader": "Symptom",
+      "columns": [
+        "Evidence and likely owner",
+        "Safe next step"
+      ],
+      "rows": [
+        {
+          "aspect": "Protected remote or registry fails",
+          "values": [
+            "Scope, endpoint, DNS, proxy, TLS trust, sanitized HTTP or registry response, authentication-file owner, token status, and remote or Satellite sync evidence.",
+            "Verify connectivity and credential scope without printing the secret; rotate or revoke through the credential owner rather than copying personal credentials."
+          ]
+        },
+        {
+          "aspect": "Approved workflow is denied",
+          "values": [
+            "Deployment identity, static permissions, system and user overrides, portal state, desktop backend, D-Bus attempts, path or device, and exact reproduction action.",
+            "Propose the narrowest portal or permission change, test denial and success paths, document residual risk, and retain a reset instruction."
+          ]
+        },
+        {
+          "aspect": "Update introduces a regression",
+          "values": [
+            "flatpak history, prior and current application and runtime commits, available remote history, data migration, logs, scope, and clean-profile reproduction.",
+            "Preserve data and current evidence, test the prior commit in a controlled profile, then decide whether rollback, mask, publisher escalation, or a fixed update is appropriate."
+          ]
+        },
+        {
+          "aspect": "Local installation appears inconsistent",
+          "values": [
+            "Affected scope, storage health and capacity, transaction history, deployment state, journal evidence, and repair dry-run result.",
+            "Escalate storage or host failures first; apply repair only to the identified installation after evidence collection and an understood recovery path."
+          ]
+        },
+        {
+          "aspect": "Satellite client cannot install content",
+          "values": [
+            "Remote scan, mirrored application and runtime repositories, synchronization, product, content-view version, lifecycle promotion, host assignment, enabled content, Capsule path, and client remote endpoint.",
+            "Locate the first missing stage instead of bypassing Satellite with an upstream remote; republish or promote the corrected complete content set."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "Flatpak troubleshooting and history",
+          "href": "https://docs.flatpak.org/en/latest/using-flatpak.html"
+        },
+        {
+          "label": "Satellite Flatpak repository management",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_satellite/6.18/html/managing_content/managing-flatpak-repositories-in-project"
+        }
+      ]
+    },
+    {
+      "title": "Adopt a minimum Flatpak deployment standard",
+      "introduction": "A short operating standard keeps daily administration consistent without turning this HOD into an architecture-design document. Record the standard once for each managed population and attach only justified exceptions.",
+      "eyebrow": "Make the policy actionable",
+      "summaryLabel": "Minimum standard",
+      "rowHeader": "Policy area",
+      "columns": [
+        "Required decision",
+        "Minimum record"
+      ],
+      "rows": [
+        {
+          "aspect": "Approved sources",
+          "values": [
+            "Permit named remotes and publishers only; define whether users may add personal remotes and how exceptions are approved.",
+            "Remote endpoint, publisher, trust method, support status, allowed application and runtime refs, and source owner."
+          ]
+        },
+        {
+          "aspect": "Default installation scope",
+          "values": [
+            "Choose system or user scope for the managed population and define when the other scope is permitted.",
+            "Default scope, administrative authority, user impact, inventory method, and exception owner."
+          ]
+        },
+        {
+          "aspect": "Authentication and secrets",
+          "values": [
+            "Use service accounts for shared automation, protect authentication files and Satellite credentials, and define rotation and revocation.",
+            "Credential type, owner, storage location, permitted consumers, rotation trigger, and incident path without recording the secret value."
+          ]
+        },
+        {
+          "aspect": "Permissions and overrides",
+          "values": [
+            "Define prohibited grants, review authority, portal preference, override scope, exception evidence, and reset procedure.",
+            "Baseline, approved difference, business workflow, reviewer, residual risk, expiry event, and rollback command."
+          ]
+        },
+        {
+          "aspect": "Updates and promotion",
+          "values": [
+            "Choose automatic, administrator-controlled, or Satellite-promoted updates and define emergency security handling.",
+            "Update authority, tested commits or content-view version, promotion evidence, mask exceptions, rollback candidate, and notification owner."
+          ]
+        },
+        {
+          "aspect": "Inventory and monitoring",
+          "values": [
+            "Inventory all permitted scopes and monitor runtime end-of-life, application advisories, drift, failed updates, and capacity.",
+            "Required fields, collection method, visibility gaps, review triggers, alert owner, and exception reconciliation."
+          ]
+        },
+        {
+          "aspect": "Data, removal, and recovery",
+          "values": [
+            "Define application-data backup and retention, unused-runtime cleanup, removal approval, rollback limits, repair sequence, and rebase or end-of-life handling.",
+            "Data owner, backup evidence, removal boundary, preserved commits, recovery test, destructive-action approval, and final disposition."
+          ]
+        },
+        {
+          "aspect": "Support and escalation",
+          "values": [
+            "Assign the RHEL, remote, runtime, application, portal, Satellite, security, and business owners and define the sanitized evidence package.",
+            "Support route, entitlement or publisher relationship, severity path, evidence checklist, redaction rule, and incident owner."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "Flatpak administration and troubleshooting",
+          "href": "https://docs.flatpak.org/en/latest/using-flatpak.html"
+        },
+        {
+          "label": "RHEL 10 Flatpak administration",
+          "href": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html/administering_rhel_by_using_the_gnome_desktop_environment/installing-applications-by-using-flatpak"
+        }
+      ]
+    }
+  ],
+  "supportGuidance": {
+    "title": "Collect evidence before changing the environment",
+    "introduction": "Start with the installation scope and exact deployment, then collect the smallest evidence set that identifies the responsible layer. Redact credentials, tokens, personal file paths, and unrelated user data before sharing diagnostics.",
+    "routes": [
+      {
+        "title": "RHEL host or Flatpak package",
+        "detail": "Route installation database, storage, SELinux, kernel, package-manager, or supported Red Hat component failures with the RHEL release, package version, affected scope, journal evidence, and reproduction steps."
+      },
+      {
+        "title": "Remote, registry, or Satellite",
+        "detail": "Route resolution, authentication, signature, metadata, content-view, mirror, or download failures with the remote configuration, exact ref, sanitized endpoint response, and repository or lifecycle version."
+      },
+      {
+        "title": "Runtime, application, or bundled library",
+        "detail": "Route functional regressions and content vulnerabilities with the application and runtime refs and commits, origin, logs, permission state, and clean-profile reproduction."
+      },
+      {
+        "title": "Portal or desktop integration",
+        "detail": "Route portal, chooser, printing, notification, screenshot, URI, display, or D-Bus problems with the desktop environment, portal components, requested operation, effective permissions, and portal state."
+      }
+    ],
+    "diagnostics": {
+      "title": "Focused administrator evidence",
+      "introduction": "Use the commands for the affected installation scope. Preserve the original result before applying overrides, reset, repair, rollback, or removal.",
+      "items": [
+        {
+          "command": "flatpak --system info APPLICATION_ID",
+          "detail": "Shows deployment identity for the system installation. Use --user instead when the affected application belongs to the current user."
+        },
+        {
+          "command": "flatpak info --show-ref --show-commit --show-origin APPLICATION_ID",
+          "detail": "Records the complete ref, immutable commit, and origin used in the incident or change record."
+        },
+        {
+          "command": "flatpak info --show-permissions APPLICATION_ID",
+          "detail": "Shows the application's static permission baseline. Review overrides and portal permission-store state separately."
+        },
+        {
+          "command": "flatpak override --show APPLICATION_ID",
+          "detail": "Displays effective override configuration for the selected default scope; add --system or --user explicitly when ambiguity is possible."
+        },
+        {
+          "command": "flatpak permission-show APPLICATION_ID",
+          "detail": "Shows dynamic portal permission-store entries associated with the application. Interpret them together with the portal backend and static permissions."
+        },
+        {
+          "command": "flatpak remote-info --log REMOTE APPLICATION_ID",
+          "detail": "Lists available commit history from the selected remote for update or rollback analysis without changing the deployment."
+        },
+        {
+          "command": "flatpak mask && flatpak pin",
+          "detail": "Lists system-scope masked ref patterns and pinned runtime patterns. Use --user to inspect the current user's corresponding scope."
+        },
+        {
+          "command": "flatpak history",
+          "detail": "Correlates installation and update activity with a reported regression."
+        },
+        {
+          "command": "sudo flatpak repair --system --dry-run",
+          "detail": "Checks the system installation without applying repair. Use flatpak repair --user --dry-run for the current user's installation."
+        }
+      ]
+    }
+  },
+  "recap": {
+    "title": "What you should retain",
+    "introduction": "Advanced Flatpak operations depend on exact identity, layered access, explicit ownership, controlled lifecycle, and evidence-preserving recovery.",
+    "items": [
+      {
+        "title": "Identity is more than an application ID",
+        "detail": "Record the full ref, commit, origin, installation scope, runtime, branch, architecture, and effective permissions."
+      },
+      {
+        "title": "Sandbox access is layered",
+        "detail": "Review the publisher baseline together with administrator and user overrides, portal state, temporary options, D-Bus access, sockets, devices, and desktop behavior."
+      },
+      {
+        "title": "Patch ownership crosses boundaries",
+        "detail": "RHEL, Flatpak, the runtime, bundled libraries, portals, repositories, and application code can have different owners and support routes."
+      },
+      {
+        "title": "Rollback does not reverse user data",
+        "detail": "Deployment rollback can restore prior code while leaving a newer and potentially incompatible application-data format in place."
+      },
+      {
+        "title": "Fleet delivery includes dependencies",
+        "detail": "Mirrors, Satellite, and offline media must carry the application, runtime, extensions, metadata, trust configuration, and lifecycle updates."
+      },
+      {
+        "title": "Credentials and reviews follow ownership events",
+        "detail": "Use service accounts for shared automation, record secret ownership without exposing values, and revisit approval when sources, keys, runtimes, permissions, promotions, support, or recovery assumptions change."
+      }
+    ],
+    "selfCheck": {
+      "title": "Can you approve and support the deployment?",
+      "introduction": "Before recording the advanced workflow, confirm that the operating team can answer these questions from retained evidence.",
+      "questions": [
+        "Which remote, full ref, commit, origin, runtime, installation scope, and support policy identify the approved deployment?",
+        "Which static permissions, overrides, portal decisions, D-Bus names, sockets, devices, and filesystem paths form its effective access?",
+        "Who patches the RHEL host, runtime content, bundled application libraries, portal components, and application code?",
+        "How will the team stage, hold, update, roll back, repair, retire, or rebase content without losing evidence or user data?",
+        "Can every managed and offline client reach the application, runtime, extensions, metadata, and trust material required by the approved release?",
+        "Which event requires the deployment, permission, credential, support, or recovery decision to be reviewed again?"
+      ]
+    }
+  },
+  "plannedDemos": [
+    {
+      "demoId": "RHEL-HOD-002-D01",
+      "title": "Audit Flatpak provenance and effective permissions",
+      "audience": "Administrators, security engineers, and platform engineers",
+      "objective": "Record exact deployment provenance, inspect static permissions, system and user overrides, portal state, D-Bus and resource exposure, reproduce one workflow, and document the resulting security decision.",
+      "level": "Expert"
+    },
+    {
+      "demoId": "RHEL-HOD-002-D02",
+      "title": "Control Flatpak updates, rollback, repair, and recovery",
+      "audience": "Administrators, support engineers, and security engineers",
+      "objective": "Review update history and remote commits, distinguish masks from runtime pins, test a controlled update and rollback, preserve application data, and use repair dry-run evidence before recovery.",
+      "level": "Expert"
+    },
+    {
+      "demoId": "RHEL-HOD-002-D03",
+      "title": "Govern Flatpak content across an enterprise fleet",
+      "audience": "Platform engineers, Satellite administrators, consultants, and architects",
+      "objective": "Use service-account authentication, mirror an application and its runtime, promote complete content through a managed lifecycle, verify client access, and record the minimum fleet inventory and disconnected-delivery evidence.",
+      "level": "Expert"
+    }
+  ],
+  "demoFiles": []
+}
